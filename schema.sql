@@ -1,47 +1,50 @@
 -- ============================================================
--- DDL SCHEMA FOR CJM MOTOR (Supabase PostgreSQL)
--- Sistem Informasi Service Bengkel Motor
+-- SCHEMA DATABASE SUPABASE POSTGRESQL - BENGKEL MOTOR (CJM MOTOR)
 -- ============================================================
 
--- Enable UUID extension if needed in future
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- 1. TABEL ADMINS
+-- 1. TABEL ADMINS (Pengguna Panel Admin Bengkel)
 CREATE TABLE IF NOT EXISTS admins (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. TABEL CUSTOMERS
+-- 2. TABEL CUSTOMERS (Data Pelanggan Bengkel)
 CREATE TABLE IF NOT EXISTS customers (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
+    phone VARCHAR(20),
     address TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. TABEL VEHICLES (KENDARAAN)
+-- Index untuk pencarian cepat nama & nomor HP
+CREATE INDEX IF NOT EXISTS idx_customers_phone ON customers(phone);
+CREATE INDEX IF NOT EXISTS idx_customers_name ON customers(name);
+
+-- 3. TABEL VEHICLES (Data Kendaraan Motor)
 CREATE TABLE IF NOT EXISTS vehicles (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     customer_id BIGINT NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
-    plate_number VARCHAR(15) UNIQUE NOT NULL,
+    plate_number VARCHAR(20) UNIQUE NOT NULL,
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
-    year SMALLINT,
+    year INT,
     color VARCHAR(30),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    photo_url TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Index untuk percepatan pencarian CS berdasarkan nomor polisi
+-- Index untuk pencarian cepat nomor polisi
 CREATE INDEX IF NOT EXISTS idx_vehicles_plate_number ON vehicles(plate_number);
 CREATE INDEX IF NOT EXISTS idx_vehicles_customer_id ON vehicles(customer_id);
 
--- 4. TABEL SERVICES
+-- 4. TABEL SERVICES (Transaksi Service Bengkel)
 CREATE TABLE IF NOT EXISTS services (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     vehicle_id BIGINT NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
@@ -53,6 +56,7 @@ CREATE TABLE IF NOT EXISTS services (
     status VARCHAR(30) NOT NULL DEFAULT 'Menunggu',
     notes TEXT,
     total_cost DECIMAL(12,2) DEFAULT 0.00,
+    attachment_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -73,6 +77,30 @@ CREATE TABLE IF NOT EXISTS service_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_service_items_service_id ON service_items(service_id);
+
+-- ============================================================
+-- 6. SUPABASE STORAGE BUCKET: cjm-motor-files
+-- (Bucket publik untuk penyimpanan foto kendaraan & dokumen service)
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('cjm-motor-files', 'cjm-motor-files', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Policy Akses Publik
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE policyname = 'Public Read cjm-motor-files'
+    ) THEN
+        CREATE POLICY "Public Read cjm-motor-files" ON storage.objects FOR SELECT USING (bucket_id = 'cjm-motor-files');
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE policyname = 'Public Insert cjm-motor-files'
+    ) THEN
+        CREATE POLICY "Public Insert cjm-motor-files" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'cjm-motor-files');
+    END IF;
+END $$;
 
 -- ============================================================
 -- DATA INITIAL / SEED ADMIN DEFAULT
