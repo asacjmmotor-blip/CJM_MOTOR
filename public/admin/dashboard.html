@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-    <link rel="stylesheet" href="/assets/css/style.css"/>
-    <link rel="stylesheet" href="/assets/css/admin.css"/>
+    <link rel="stylesheet" href="../assets/css/style.css"/>
+    <link rel="stylesheet" href="../assets/css/admin.css"/>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen pb-24 md:pb-0">
 
@@ -38,11 +38,12 @@
         </div>
 
         <ul class="flex flex-col gap-1">
-            <li><a href="/admin/dashboard.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-900 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-            <li><a href="/admin/customers.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">person</span>Customer</a></li>
-            <li><a href="/admin/vehicles.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">two_wheeler</span>Kendaraan</a></li>
-            <li><a href="/admin/services.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">build</span>Service</a></li>
-            <li><a href="/admin/reports.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">assessment</span>Laporan</a></li>
+            <li><a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-900 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+            <li><a href="customers.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">person</span>Customer</a></li>
+            <li><a href="vehicles.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">two_wheeler</span>Kendaraan</a></li>
+            <li><a href="services.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">build</span>Service</a></li>
+            <li><a href="reports.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">assessment</span>Laporan</a></li>
+            <li class="mt-4 border-t pt-4"><button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">logout</span>Logout</button></li>
         </ul>
     </nav>
 
@@ -100,7 +101,7 @@
         <section class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-slate-900 text-base">Service Terbaru</h3>
-                <a href="/admin/services.html" class="text-xs font-bold text-blue-900 hover:underline">Lihat Semua →</a>
+                <a href="services.html" class="text-xs font-bold text-blue-900 hover:underline">Lihat Semua →</a>
             </div>
 
             <div id="recent-services" class="flex flex-col gap-3">
@@ -109,7 +110,7 @@
         </section>
     </main>
 
-    <script src="/assets/js/api.js"></script>
+    <script src="../assets/js/api.js"></script>
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const navigationDrawer = document.getElementById('navigationDrawer');
@@ -165,7 +166,7 @@
                 }
             } catch (err) {
                 if (err.message.includes('Akses ditolak')) {
-                    window.location.href = '/admin/login.html';
+                    window.location.href = 'login.html';
                 }
             }
         }
@@ -174,7 +175,7 @@
             try {
                 await apiRequest('/auth/logout.php', 'POST');
             } finally {
-                window.location.href = '/admin/login.html';
+                window.location.href = 'login.html';
             }
         }
 

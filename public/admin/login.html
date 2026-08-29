@@ -35,11 +35,11 @@
         </form>
 
         <div class="mt-6 text-center">
-            <a href="/cs/index.html" class="text-xs text-slate-400 hover:text-blue-400 font-medium">← Kembali ke Halaman CS</a>
+            <a href="../cs/index.html" class="text-xs text-slate-400 hover:text-blue-400 font-medium">← Kembali ke Halaman CS</a>
         </div>
     </div>
 
-    <script src="/assets/js/api.js"></script>
+    <script src="../assets/js/api.js"></script>
     <script>
         async function handleLogin() {
             const username = document.getElementById('username').value.trim();
@@ -54,7 +54,7 @@
             try {
                 const res = await apiRequest('/auth/login.php', 'POST', { username, password });
                 if (res.success) {
-                    window.location.href = '/admin/dashboard.html';
+                    window.location.href = 'dashboard.html';
                 }
             } catch (err) {
                 errorBox.textContent = err.message || 'Login gagal.';

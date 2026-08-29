@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-    <link rel="stylesheet" href="/assets/css/style.css"/>
-    <link rel="stylesheet" href="/assets/css/mobile.css"/>
+    <link rel="stylesheet" href="../assets/css/style.css"/>
+    <link rel="stylesheet" href="../assets/css/mobile.css"/>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
     <main class="flex-grow flex flex-col justify-center items-center p-4 md:p-6 w-full max-w-lg mx-auto">
@@ -41,13 +41,13 @@
 
         <div class="mt-8 text-center px-4">
             <p class="text-xs text-slate-500">
-                Pencarian Khusus Customer Service (CS). Untuk akses sistem internal admin, <a class="text-blue-900 font-bold hover:underline" href="/admin/login.html">Login Admin</a>.
+                Pencarian Khusus Customer Service (CS). Untuk akses sistem internal admin, <a class="text-blue-900 font-bold hover:underline" href="../admin/login.html">Login Admin</a>.
             </p>
         </div>
     </main>
 
-    <script src="/assets/js/api.js"></script>
-    <script src="/assets/js/cs.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/cs.js"></script>
     <script>
         formatPlateInput(document.getElementById('nopol'));
 
@@ -73,7 +73,7 @@
                 const res = await apiRequest(`/vehicles/search.php?nopol=${encodeURIComponent(val)}`);
                 if (res.success && res.data) {
                     sessionStorage.setItem('cs_search_result', JSON.stringify(res.data));
-                    window.location.href = '/cs/result.html';
+                    window.location.href = 'result.html';
                 }
             } catch (err) {
                 errorMsg.textContent = err.message || 'Data kendaraan tidak ditemukan.';
