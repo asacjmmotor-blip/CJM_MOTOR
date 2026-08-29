@@ -7,22 +7,51 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
+    <!-- Top AppBar -->
     <header class="fixed top-0 w-full z-40 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4">
         <div class="flex items-center gap-3">
-            <a href="/admin/dashboard.html" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </a>
+            <button id="menuToggle" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
             <h1 class="font-extrabold text-blue-950 text-lg">Kelola Customer</h1>
         </div>
-        <button onclick="openModal()" class="h-9 px-3 bg-blue-900 text-white rounded-lg text-xs font-bold flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">add</span>
-            <span>Tambah</span>
-        </button>
+        <div class="flex items-center gap-2">
+            <button onclick="openModal()" class="h-9 px-3 bg-blue-900 text-white rounded-lg text-xs font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">add</span>
+                <span>Tambah</span>
+            </button>
+            <button onclick="logout()" class="text-xs text-red-600 font-bold hover:underline p-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">logout</span>
+            </button>
+        </div>
     </header>
 
-    <main class="pt-20 px-4 max-w-4xl mx-auto">
+    <!-- Sidebar / Offcanvas Drawer -->
+    <div id="drawerOverlay" class="fixed inset-0 bg-slate-900/50 z-50 hidden"></div>
+    <nav id="navigationDrawer" class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl h-full w-[280px] -translate-x-full transition-transform duration-300 flex flex-col py-6 px-4">
+        <div class="mb-6 flex items-center gap-3 px-2">
+            <div class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold">A</div>
+            <div>
+                <h2 class="font-bold text-slate-900 text-sm">Admin Bengkel</h2>
+                <p class="text-xs text-slate-500">System Operator</p>
+            </div>
+        </div>
+
+        <ul class="flex flex-col gap-1">
+            <li><a href="/admin/dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+            <li><a href="/admin/customers.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-900 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">person</span>Customer</a></li>
+            <li><a href="/admin/vehicles.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">two_wheeler</span>Kendaraan</a></li>
+            <li><a href="/admin/services.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">build</span>Service</a></li>
+            <li><a href="/admin/reports.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">assessment</span>Laporan</a></li>
+            <li class="mt-4 border-t pt-4"><button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">logout</span>Logout</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 px-4 max-w-4xl mx-auto md:ml-[280px] md:pt-24">
         <div class="mb-4">
             <input type="text" id="search-input" onkeyup="loadCustomers()" placeholder="Cari nama atau nomor HP..." class="w-full h-11 bg-white border border-slate-200 rounded-xl px-4 text-xs font-medium focus:border-blue-900 outline-none"/>
         </div>
@@ -60,6 +89,20 @@
 
     <script src="/assets/js/api.js"></script>
     <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navigationDrawer = document.getElementById('navigationDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+
+        menuToggle.addEventListener('click', () => {
+            navigationDrawer.classList.remove('-translate-x-full');
+            drawerOverlay.classList.remove('hidden');
+        });
+
+        drawerOverlay.addEventListener('click', () => {
+            navigationDrawer.classList.add('-translate-x-full');
+            drawerOverlay.classList.add('hidden');
+        });
+
         async function loadCustomers() {
             const q = document.getElementById('search-input').value.trim();
             try {
@@ -142,6 +185,14 @@
                 loadCustomers();
             } catch (err) {
                 alert(err.message);
+            }
+        }
+
+        async function logout() {
+            try {
+                await apiRequest('/auth/logout.php', 'POST');
+            } finally {
+                window.location.href = '/admin/login.html';
             }
         }
 
