@@ -21,7 +21,7 @@
         <div class="flex items-center gap-2">
             <button onclick="openCreateModal()" class="h-9 px-3 bg-blue-900 text-white rounded-lg text-xs font-bold flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">add_circle</span>
-                <span>Service Baru</span>
+                <span>+ Service Baru</span>
             </button>
             <button onclick="logout()" class="text-xs text-red-600 font-bold hover:underline p-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">logout</span>
@@ -68,58 +68,56 @@
         </div>
     </main>
 
-    <!-- Modal Form Service Baru (Stepper) -->
+    <!-- Modal Form Intake Service & Kendaraan (Unified Flow) -->
     <div id="modal-service" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between mb-4 border-b pb-3">
-                <h3 class="font-bold text-lg text-slate-900">Tambah Service Baru</h3>
+                <h3 class="font-bold text-lg text-slate-900">Form Service Bengkel</h3>
                 <span id="step-indicator" class="text-xs font-bold bg-blue-50 text-blue-900 px-3 py-1 rounded-full">Step 1 dari 3</span>
             </div>
 
             <form id="service-form" onsubmit="event.preventDefault();">
-                <!-- Step 1: Pilih Kendaraan -->
+                <!-- Step 1: Input & Cek Nomor Polisi -->
                 <div id="step-1" class="flex flex-col gap-4">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 1: Pilih Kendaraan Customer</h4>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 1: Pengecekan Kendaraan (Nomor Polisi)</h4>
                     
-                    <!-- Quick Brand Filter Chips -->
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Filter Merek Motor</label>
-                        <div class="flex flex-wrap gap-1.5" id="brand-chips">
-                            <button type="button" onclick="filterVehicleBrand('')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-bold bg-blue-900 text-white">Semua</button>
-                            <button type="button" onclick="filterVehicleBrand('Honda')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Honda</button>
-                            <button type="button" onclick="filterVehicleBrand('Yamaha')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Yamaha</button>
-                            <button type="button" onclick="filterVehicleBrand('Suzuki')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Suzuki</button>
-                            <button type="button" onclick="filterVehicleBrand('Kawasaki')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Kawasaki</button>
-                            <button type="button" onclick="filterVehicleBrand('Vespa')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Vespa</button>
-                            <button type="button" onclick="filterVehicleBrand('TVS')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">TVS</button>
-                            <button type="button" onclick="filterVehicleBrand('Bajaj')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Bajaj</button>
+                        <label class="block text-xs font-bold text-blue-950 mb-1">Nomor Polisi Kendaraan <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="text" id="srv-plate" oninput="checkPlateLive()" required class="nopol-input w-full h-12 border border-slate-300 rounded-xl px-4 text-base font-extrabold uppercase outline-none focus:border-blue-900 bg-slate-50" placeholder="Contoh: B 1234 ABC"/>
+                            <span id="check-spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 animate-spin">progress_activity</span>
                         </div>
                     </div>
 
-                    <!-- Search Input for Vehicles -->
-                    <div>
-                        <input type="text" id="veh-search-step1" onkeyup="filterVehicleDropdown()" placeholder="Cari plat nomor, merek (Honda/Yamaha...), atau nama customer..." class="w-full h-10 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900"/>
+                    <!-- Dynamic Notification Box for Plate Check -->
+                    <div id="plate-notify-box" class="hidden p-4 rounded-xl border text-xs leading-relaxed">
+                        <!-- Content inserted dynamically -->
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Kendaraan Terdaftar</label>
-                        <select id="srv-vehicle" required class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900">
-                            <option value="">-- Pilih Kendaraan --</option>
-                        </select>
-                    </div>
-
-                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center justify-between">
-                        <span class="text-xs text-blue-950 font-medium">Kendaraan belum terdaftar?</span>
-                        <a href="vehicles.html" target="_blank" class="text-xs font-bold text-blue-900 hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">add_circle</span>
-                            <span>+ Tambah Kendaraan</span>
-                        </a>
+                    <!-- Vehicle details (Auto-filled or manual for new vehicle) -->
+                    <div id="vehicle-fields-group" class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Merek Motor <span class="text-red-500">*</span></label>
+                            <input type="text" id="srv-brand" required class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Honda / Yamaha / Suzuki..."/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Model / Tipe <span class="text-red-500">*</span></label>
+                            <input type="text" id="srv-model" required class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Beat / NMAX / Vario..."/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Pemilik (Opsional)</label>
+                            <input type="text" id="srv-cust-name" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Budi Santoso"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">No HP Pemilik (Opsional)</label>
+                            <input type="text" id="srv-cust-phone" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="08123456789"/>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Step 2: Rincian Service -->
+                <!-- Step 2: Rincian Service & Keluhan -->
                 <div id="step-2" class="hidden flex-col gap-4">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 2: Rincian & Mekanik</h4>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 2: Rincian Service & Mekanik</h4>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Service</label>
                         <select id="srv-type" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900">
@@ -171,6 +169,7 @@
     </div>
 
     <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/cs.js"></script>
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const navigationDrawer = document.getElementById('navigationDrawer');
@@ -186,69 +185,79 @@
             drawerOverlay.classList.add('hidden');
         });
 
+        formatPlateInput(document.getElementById('srv-plate'));
+
         let currentStep = 1;
-        let vehiclesMap = [];
-        let selectedBrandFilter = '';
+        let selectedVehicleId = null;
+        let plateCheckDebounce = null;
 
-        async function loadVehiclesDropdown() {
-            try {
-                const res = await apiRequest('/vehicles/index.php');
-                if (res.success) {
-                    vehiclesMap = res.data;
-                    renderVehiclesDropdown(vehiclesMap);
-                }
-            } catch (err) {}
-        }
+        async function checkPlateLive() {
+            const plateInput = document.getElementById('srv-plate');
+            const notifyBox = document.getElementById('plate-notify-box');
+            const spinner = document.getElementById('check-spinner');
+            const val = plateInput.value.trim();
 
-        function renderVehiclesDropdown(items) {
-            const select = document.getElementById('srv-vehicle');
-            if (!items || items.length === 0) {
-                select.innerHTML = '<option value="">-- Kendaraan Tidak Ditemukan --</option>';
+            clearTimeout(plateCheckDebounce);
+            selectedVehicleId = null;
+
+            if (!val || val.length < 3) {
+                notifyBox.classList.add('hidden');
                 return;
             }
 
-            // Group items by brand
-            const groups = {};
-            items.forEach(v => {
-                const brand = (v.brand || 'Lainnya').toUpperCase();
-                if (!groups[brand]) groups[brand] = [];
-                groups[brand].push(v);
-            });
+            spinner.classList.remove('hidden');
 
-            let html = '<option value="">-- Pilih Kendaraan --</option>';
-            for (const [brand, list] of Object.entries(groups)) {
-                html += `<optgroup label="🛵 Merek: ${brand}">`;
-                html += list.map(v => `<option value="${v.id}">${v.plate_number} - ${v.brand} ${v.model} (${v.customer_name})</option>`).join('');
-                html += `</optgroup>`;
-            }
-            select.innerHTML = html;
-        }
+            plateCheckDebounce = setTimeout(async () => {
+                try {
+                    const res = await apiRequest(`/vehicles/search.php?nopol=${encodeURIComponent(val)}`);
+                    spinner.classList.add('hidden');
 
-        function filterVehicleBrand(brand) {
-            selectedBrandFilter = brand;
-            const chips = document.querySelectorAll('.chip-brand');
-            chips.forEach(c => {
-                if ((brand === '' && c.textContent.trim() === 'Semua') || (c.textContent.trim().toUpperCase() === brand.toUpperCase())) {
-                    c.className = 'chip-brand px-2.5 py-1 rounded-full text-xs font-bold bg-blue-900 text-white';
-                } else {
-                    c.className = 'chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
+                    if (res.success && res.data && res.data.vehicle) {
+                        const veh = res.data.vehicle;
+                        const servicesCount = (res.data.services || []).length;
+                        selectedVehicleId = veh.id;
+
+                        // Auto fill fields
+                        document.getElementById('srv-brand').value = veh.brand || '';
+                        document.getElementById('srv-model').value = veh.model || '';
+                        document.getElementById('srv-cust-name').value = veh.customer_name || '';
+                        document.getElementById('srv-cust-phone').value = veh.customer_phone || '';
+
+                        notifyBox.className = 'p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-950 text-xs leading-relaxed';
+                        notifyBox.innerHTML = `
+                            <div class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-emerald-700 text-base font-bold">check_circle</span>
+                                <div>
+                                    <p class="font-bold text-emerald-900 text-xs uppercase">DATA KENDARAAN DITEMUKAN! (Pelanggan Lama)</p>
+                                    <p class="mt-0.5 font-semibold text-emerald-800">${veh.plate_number} • ${veh.brand} ${veh.model}</p>
+                                    <p class="text-[11px] text-emerald-700 mt-0.5">Pemilik: ${veh.customer_name || 'Umum'} • Telah service <strong>${servicesCount} kali</strong> sebelumnya.</p>
+                                    <p class="text-[10px] text-emerald-600 mt-1">✓ Penambahan service ini akan otomatis dicatat sebagai service baru di hari berbeda.</p>
+                                </div>
+                            </div>
+                        `;
+                        notifyBox.classList.remove('hidden');
+                    }
+                } catch (err) {
+                    spinner.classList.add('hidden');
+                    // Vehicle not found -> new vehicle notification
+                    document.getElementById('srv-brand').value = '';
+                    document.getElementById('srv-model').value = '';
+                    document.getElementById('srv-cust-name').value = '';
+                    document.getElementById('srv-cust-phone').value = '';
+
+                    notifyBox.className = 'p-4 rounded-xl border border-blue-200 bg-blue-50 text-blue-950 text-xs leading-relaxed';
+                    notifyBox.innerHTML = `
+                        <div class="flex items-start gap-2">
+                            <span class="material-symbols-outlined text-blue-700 text-base font-bold">info</span>
+                            <div>
+                                <p class="font-bold text-blue-900 text-xs uppercase">KENDARAAN BARU (Belum Terdaftar)</p>
+                                <p class="mt-0.5 text-blue-800">Plat nomor belum ada di sistem. Data kendaraan & service baru akan otomatis terdaftar bersamaan.</p>
+                            </div>
+                        </div>
+                    `;
+                    notifyBox.classList.remove('hidden');
                 }
-            });
-            filterVehicleDropdown();
-        }
-
-        function filterVehicleDropdown() {
-            const query = (document.getElementById('veh-search-step1').value || '').toLowerCase().trim();
-            const filtered = vehiclesMap.filter(v => {
-                const matchBrand = !selectedBrandFilter || (v.brand || '').toLowerCase().includes(selectedBrandFilter.toLowerCase());
-                const matchQuery = !query || 
-                    (v.plate_number || '').toLowerCase().includes(query) ||
-                    (v.brand || '').toLowerCase().includes(query) ||
-                    (v.model || '').toLowerCase().includes(query) ||
-                    (v.customer_name || '').toLowerCase().includes(query);
-                return matchBrand && matchQuery;
-            });
-            renderVehiclesDropdown(filtered);
+            }, 300);
         }
 
         async function loadServices() {
@@ -276,7 +285,7 @@
                                         <span class="text-xs font-mono text-slate-400">${s.service_code}</span>
                                     </div>
                                     <p class="text-xs font-semibold text-slate-800 mt-1">${s.service_type} • ${s.brand} ${s.model}</p>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">${s.customer_name} • ${s.service_date} ${s.mechanic ? `• Mekanik: ${s.mechanic}` : ''}</p>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">${s.customer_name || 'Umum'} • ${s.service_date} ${s.mechanic ? `• Mekanik: ${s.mechanic}` : ''}</p>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <span class="text-xs font-bold px-2.5 py-1 rounded-full ${statusColor}">${s.status}</span>
@@ -293,6 +302,13 @@
 
         function openCreateModal() {
             currentStep = 1;
+            selectedVehicleId = null;
+            document.getElementById('srv-plate').value = '';
+            document.getElementById('srv-brand').value = '';
+            document.getElementById('srv-model').value = '';
+            document.getElementById('srv-cust-name').value = '';
+            document.getElementById('srv-cust-phone').value = '';
+            document.getElementById('plate-notify-box').classList.add('hidden');
             updateStepView();
             document.getElementById('items-container').innerHTML = '';
             addItemRow();
@@ -318,8 +334,16 @@
 
         function nextStep() {
             if (currentStep === 1) {
-                if (!document.getElementById('srv-vehicle').value) {
-                    alert('Silakan pilih kendaraan terlebih dahulu.');
+                const plate = document.getElementById('srv-plate').value.trim();
+                const brand = document.getElementById('srv-brand').value.trim();
+                const model = document.getElementById('srv-model').value.trim();
+
+                if (!plate) {
+                    alert('Nomor Polisi wajib diisi.');
+                    return;
+                }
+                if (!brand || !model) {
+                    alert('Merek dan Model motor wajib diisi.');
                     return;
                 }
                 currentStep = 2;
@@ -359,7 +383,12 @@
         }
 
         async function saveService() {
-            const vehicleId = document.getElementById('srv-vehicle').value;
+            const plateNumber = document.getElementById('srv-plate').value.trim();
+            const brand = document.getElementById('srv-brand').value.trim();
+            const model = document.getElementById('srv-model').value.trim();
+            const custName = document.getElementById('srv-cust-name').value.trim();
+            const custPhone = document.getElementById('srv-cust-phone').value.trim();
+
             const serviceType = document.getElementById('srv-type').value;
             const complaint = document.getElementById('srv-complaint').value;
             const mechanic = document.getElementById('srv-mechanic').value;
@@ -378,7 +407,12 @@
 
             try {
                 await apiRequest('/services/create.php', 'POST', {
-                    vehicle_id: vehicleId,
+                    vehicle_id: selectedVehicleId,
+                    plate_number: plateNumber,
+                    brand: brand,
+                    model: model,
+                    customer_name: custName,
+                    customer_phone: custPhone,
                     service_type: serviceType,
                     complaint: complaint,
                     mechanic: mechanic,
@@ -400,10 +434,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadVehiclesDropdown();
-            loadServices();
-        });
+        document.addEventListener('DOMContentLoaded', loadServices);
     </script>
 </body>
 </html>
