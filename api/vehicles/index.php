@@ -14,6 +14,39 @@ requireAdminAuth();
 $pdo = getDbConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 
+function resolveCustomerId($pdo, $inputCustomerId, $customerName, $customerPhone = '') {
+    $custName = trim($customerName ?? '');
+    $custPhone = trim($customerPhone ?? '');
+
+    if ($inputCustomerId) {
+        return $inputCustomerId;
+    }
+
+    if ($custName !== '') {
+        $stmt = $pdo->prepare("SELECT id FROM customers WHERE name ILIKE :name LIMIT 1");
+        $stmt->execute(['name' => $custName]);
+        $existingId = $stmt->fetchColumn();
+        if ($existingId) {
+            return $existingId;
+        }
+
+        $ins = $pdo->prepare("INSERT INTO customers (name, phone, created_at) VALUES (:name, :phone, NOW()) RETURNING id");
+        $ins->execute(['name' => $custName, 'phone' => $custPhone]);
+        return $ins->fetchColumn();
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM customers WHERE name = 'Umum / Non-Member' LIMIT 1");
+    $stmt->execute();
+    $defaultId = $stmt->fetchColumn();
+    if ($defaultId) {
+        return $defaultId;
+    }
+
+    $ins = $pdo->prepare("INSERT INTO customers (name, phone, created_at) VALUES ('Umum / Non-Member', '-', NOW()) RETURNING id");
+    $ins->execute();
+    return $ins->fetchColumn();
+}
+
 if ($method === 'GET') {
     $search = trim($_GET['q'] ?? '');
     if ($search !== '') {
@@ -37,15 +70,20 @@ if ($method === 'GET') {
     sendJsonResponse($stmt->fetchAll());
 } elseif ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
-    $customerId = filter_var($input['customer_id'] ?? null, FILTER_VALIDATE_INT);
+    $rawCustomerId = filter_var($input['customer_id'] ?? null, FILTER_VALIDATE_INT);
+    $custName = trim($input['customer_name'] ?? '');
+    $custPhone = trim($input['customer_phone'] ?? '');
+
+    $customerId = resolveCustomerId($pdo, $rawCustomerId, $custName, $custPhone);
+
     $plateNumber = normalizePlateNumber($input['plate_number'] ?? '');
     $brand = trim($input['brand'] ?? '');
     $model = trim($input['model'] ?? '');
     $year = filter_var($input['year'] ?? null, FILTER_VALIDATE_INT);
     $color = trim($input['color'] ?? '');
 
-    if (!$customerId || empty($plateNumber) || empty($brand) || empty($model)) {
-        sendErrorResponse('Customer, Nomor Polisi, Merek, dan Tipe/Model wajib diisi.', 400);
+    if (empty($plateNumber) || empty($brand) || empty($model)) {
+        sendErrorResponse('Nomor Polisi, Merek, dan Tipe/Model wajib diisi.', 400);
     }
 
     // Check duplicate plate
