@@ -80,12 +80,41 @@
             <form id="service-form" onsubmit="event.preventDefault();">
                 <!-- Step 1: Pilih Kendaraan -->
                 <div id="step-1" class="flex flex-col gap-4">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 1: Pilih Kendaraan</h4>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 1: Pilih Kendaraan Customer</h4>
+                    
+                    <!-- Quick Brand Filter Chips -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Kendaraan Customer</label>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Filter Merek Motor</label>
+                        <div class="flex flex-wrap gap-1.5" id="brand-chips">
+                            <button type="button" onclick="filterVehicleBrand('')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-bold bg-blue-900 text-white">Semua</button>
+                            <button type="button" onclick="filterVehicleBrand('Honda')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Honda</button>
+                            <button type="button" onclick="filterVehicleBrand('Yamaha')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Yamaha</button>
+                            <button type="button" onclick="filterVehicleBrand('Suzuki')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Suzuki</button>
+                            <button type="button" onclick="filterVehicleBrand('Kawasaki')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Kawasaki</button>
+                            <button type="button" onclick="filterVehicleBrand('Vespa')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Vespa</button>
+                            <button type="button" onclick="filterVehicleBrand('TVS')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">TVS</button>
+                            <button type="button" onclick="filterVehicleBrand('Bajaj')" class="chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Bajaj</button>
+                        </div>
+                    </div>
+
+                    <!-- Search Input for Vehicles -->
+                    <div>
+                        <input type="text" id="veh-search-step1" onkeyup="filterVehicleDropdown()" placeholder="Cari plat nomor, merek (Honda/Yamaha...), atau nama customer..." class="w-full h-10 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Kendaraan Terdaftar</label>
                         <select id="srv-vehicle" required class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900">
                             <option value="">-- Pilih Kendaraan --</option>
                         </select>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center justify-between">
+                        <span class="text-xs text-blue-950 font-medium">Kendaraan belum terdaftar?</span>
+                        <a href="vehicles.html" target="_blank" class="text-xs font-bold text-blue-900 hover:underline flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">add_circle</span>
+                            <span>+ Tambah Kendaraan</span>
+                        </a>
                     </div>
                 </div>
 
@@ -160,17 +189,67 @@
 
         let currentStep = 1;
         let vehiclesMap = [];
+        let selectedBrandFilter = '';
 
         async function loadVehiclesDropdown() {
             try {
                 const res = await apiRequest('/vehicles/index.php');
                 if (res.success) {
                     vehiclesMap = res.data;
-                    const select = document.getElementById('srv-vehicle');
-                    select.innerHTML = '<option value="">-- Pilih Kendaraan --</option>' + 
-                        res.data.map(v => `<option value="${v.id}">${v.plate_number} - ${v.brand} ${v.model} (${v.customer_name})</option>`).join('');
+                    renderVehiclesDropdown(vehiclesMap);
                 }
             } catch (err) {}
+        }
+
+        function renderVehiclesDropdown(items) {
+            const select = document.getElementById('srv-vehicle');
+            if (!items || items.length === 0) {
+                select.innerHTML = '<option value="">-- Kendaraan Tidak Ditemukan --</option>';
+                return;
+            }
+
+            // Group items by brand
+            const groups = {};
+            items.forEach(v => {
+                const brand = (v.brand || 'Lainnya').toUpperCase();
+                if (!groups[brand]) groups[brand] = [];
+                groups[brand].push(v);
+            });
+
+            let html = '<option value="">-- Pilih Kendaraan --</option>';
+            for (const [brand, list] of Object.entries(groups)) {
+                html += `<optgroup label="🛵 Merek: ${brand}">`;
+                html += list.map(v => `<option value="${v.id}">${v.plate_number} - ${v.brand} ${v.model} (${v.customer_name})</option>`).join('');
+                html += `</optgroup>`;
+            }
+            select.innerHTML = html;
+        }
+
+        function filterVehicleBrand(brand) {
+            selectedBrandFilter = brand;
+            const chips = document.querySelectorAll('.chip-brand');
+            chips.forEach(c => {
+                if ((brand === '' && c.textContent.trim() === 'Semua') || (c.textContent.trim().toUpperCase() === brand.toUpperCase())) {
+                    c.className = 'chip-brand px-2.5 py-1 rounded-full text-xs font-bold bg-blue-900 text-white';
+                } else {
+                    c.className = 'chip-brand px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
+                }
+            });
+            filterVehicleDropdown();
+        }
+
+        function filterVehicleDropdown() {
+            const query = (document.getElementById('veh-search-step1').value || '').toLowerCase().trim();
+            const filtered = vehiclesMap.filter(v => {
+                const matchBrand = !selectedBrandFilter || (v.brand || '').toLowerCase().includes(selectedBrandFilter.toLowerCase());
+                const matchQuery = !query || 
+                    (v.plate_number || '').toLowerCase().includes(query) ||
+                    (v.brand || '').toLowerCase().includes(query) ||
+                    (v.model || '').toLowerCase().includes(query) ||
+                    (v.customer_name || '').toLowerCase().includes(query);
+                return matchBrand && matchQuery;
+            });
+            renderVehiclesDropdown(filtered);
         }
 
         async function loadServices() {
