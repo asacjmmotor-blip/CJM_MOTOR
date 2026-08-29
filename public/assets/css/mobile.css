@@ -1,0 +1,11 @@
+/* CJM Motor Mobile Specific Styles */
+@media (max-width: 767.98px) {
+  body {
+    padding-bottom: 80px;
+  }
+
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BengkelPro - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e0e3e5",
+                      "on-primary-fixed-variant": "#214779",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "secondary-container": "#d0e1fb",
+                      "on-primary-container": "#99bcf5",
+                      "on-secondary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#001c3b",
+                      "status-danger": "#DC3545",
+                      "primary-fixed": "#d5e3ff",
+                      "mechanic-dark": "#1E293B",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "surface-container-highest": "#e0e3e5",
+                      "tertiary-container": "#6a4100",
+                      "surface": "#f7f9fb",
+                      "tertiary-fixed": "#ffddb8",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#e6e8ea",
+                      "surface-white": "#FFFFFF",
+                      "surface-bright": "#f7f9fb",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "secondary-fixed": "#d3e4fe",
+                      "inverse-primary": "#a7c8ff",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container": "#eceef0",
+                      "surface-tint": "#3b5f92",
+                      "tertiary-fixed-dim": "#f7bb73",
+                      "on-surface": "#191c1e",
+                      "on-secondary-container": "#54647a",
+                      "surface-dim": "#d8dadc",
+                      "primary-fixed-dim": "#a7c8ff",
+                      "tertiary": "#4b2d00",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "primary": "#033465",
+                      "status-warning": "#FFC107",
+                      "outline-variant": "#c3c6d0",
+                      "on-background": "#191c1e",
+                      "inverse-on-surface": "#eff1f3",
+                      "secondary": "#505f76",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "on-surface-variant": "#43474f",
+                      "status-info": "#0DCAF0",
+                      "inverse-surface": "#2d3133",
+                      "on-tertiary-fixed": "#2b1700",
+                      "status-success": "#198754",
+                      "primary-container": "#254b7d",
+                      "on-tertiary-container": "#e9af68",
+                      "background": "#f7f9fb",
+                      "on-error-container": "#93000a",
+                      "outline": "#737780",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "24px",
+                      "touch-target": "44px",
+                      "margin-mobile": "16px",
+                      "unit": "4px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "status-badge": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "status-badge": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+            color: #191c1e;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background relative min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface flex items-center justify-between px-margin-mobile h-[64px]">
+<button class="w-touch-target h-touch-target flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full active:opacity-80 transition-opacity" id="menuToggle">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">BengkelPro</h1>
+<div class="w-touch-target h-touch-target rounded-full overflow-hidden border-2 border-outline-variant flex items-center justify-center bg-surface-container">
+<img alt="User Profile" class="object-cover w-full h-full" data-alt="Close up profile picture of a professional mechanic in a clean blue uniform, well-lit studio lighting, smiling slightly, modern corporate aesthetic with subtle workshop background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyUKqaceY4sx9FMlCArXav_Yxud6yfziPWoAFjkaXeuF32JBYcOP0c2lBxVIqeM7A-ip_8eQrPeLCTro1mN7A2E1lHEJ1xir0XMnPjXlbTDyjn_wD9veq9nfYoulY5jTTAgAxKE-tWb75FHwKF4OeiBA2uk3ErrSF0jbEtmEXX6gLAbetFCVT395oVWJny8RhghiKUtNOR2S7nDuuHbRfBHkYNSyv6iXHOh27ymDltAA5Q0Qp81bEmzQ"/>
+</div>
+</header>
+<!-- NavigationDrawer (Mobile Offcanvas Menu) -->
+<div class="fixed inset-0 bg-on-background/50 z-[55] hidden opacity-0 transition-opacity duration-300" id="drawerOverlay"></div>
+<nav class="fixed inset-y-0 left-0 z-[60] flex flex-col py-4 bg-surface dark:bg-inverse-surface shadow-xl h-full w-[280px] rounded-r-xl transform -translate-x-full transition-transform duration-300 ease-in-out" id="navigationDrawer">
+<div class="px-6 mb-6 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
+<img alt="Admin Workspace" class="object-cover w-full h-full" data-alt="Close up profile picture of a professional mechanic in a clean blue uniform, well-lit studio lighting, smiling slightly, modern corporate aesthetic with subtle workshop background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdseaZTgPTo22-enrbQE4_ykqsAVPkr7tmcXI3tLW-pI6VOoN5c7uwgak_DdoNQYEiJSeb-9Zz4PI23-z9l2LxXXg4YeMQj5IU_2FRvFhMKmxA_vHq3_sXIz2KRZYV10FJCeYjZTrVrspBrTfHpHJYFY-Iq_uT5bDM13PChFLCq7RKHY1MnB1OpfL0SwJ6Y5ThfsseYQBtVLx6ovpn7PPvSGlAku9QnUL-8O_VgoVzu6z2HXWN1g8-KQ"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Admin Bengkel</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Workshop Manager</p>
+</div>
+</div>
+<ul class="flex flex-col gap-2 flex-grow overflow-y-auto no-scrollbar">
+<li>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-body-lg text-body-lg font-semibold">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95 hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-lg text-body-lg">Customer</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95 hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined">motorcycle</span>
+<span class="font-body-lg text-body-lg">Kendaraan</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95 hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-body-lg text-body-lg">Service</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95 hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-body-lg text-body-lg">Laporan</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-[80px] px-margin-mobile max-w-7xl mx-auto md:ml-[280px] md:pt-[88px]">
+<!-- Welcome Section -->
+<section class="mb-6">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Selamat datang, Admin</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Berikut adalah ringkasan bengkel hari ini.</p>
+</section>
+<!-- Summary Cards Grid (Bento style) -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-gutter mb-8">
+<!-- Card 1 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant flex flex-col justify-between aspect-square">
+<div class="flex items-start justify-between mb-2">
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-primary-fixed-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">120</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Total Customer</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant flex flex-col justify-between aspect-square">
+<div class="flex items-start justify-between mb-2">
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-primary-fixed-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">two_wheeler</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">180</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Total Kendaraan</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant flex flex-col justify-between aspect-square">
+<div class="flex items-start justify-between mb-2">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">today</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-1">15</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Service Hari Ini</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant flex flex-col justify-between aspect-square">
+<div class="flex items-start justify-between mb-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-status-success">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">10</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Service Selesai</p>
+</div>
+</div>
+</section>
+<!-- Service Terbaru Section -->
+<section class="mb-8">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Service Terbaru</h3>
+<a class="font-label-caps text-label-caps text-primary hover:underline uppercase tracking-wider" href="#">Lihat Semua</a>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Service Card 1 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-status-warning rounded-l-xl"></div>
+<div class="flex items-center justify-between mb-3 pl-2">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-on-surface uppercase tracking-wider">B 1234 XYZ</span>
+</div>
+<span class="font-status-badge text-status-badge bg-status-warning text-surface-white px-2 py-1 rounded">Dalam Pengerjaan</span>
+</div>
+<div class="pl-2">
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-1 font-semibold">Honda Vario 150</p>
+<p class="font-body-sm text-body-sm text-outline">Ganti Oli &amp; Servis Rutin • Budi Santoso</p>
+</div>
+</div>
+<!-- Service Card 2 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-status-info rounded-l-xl"></div>
+<div class="flex items-center justify-between mb-3 pl-2">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-on-surface uppercase tracking-wider">D 5678 ABC</span>
+</div>
+<span class="font-status-badge text-status-badge bg-status-info text-surface-white px-2 py-1 rounded">Menunggu Part</span>
+</div>
+<div class="pl-2">
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-1 font-semibold">Yamaha NMAX</p>
+<p class="font-body-sm text-body-sm text-outline">Ganti Kampas Rem • Agus Setiawan</p>
+</div>
+</div>
+<!-- Service Card 3 -->
+<div class="bg-surface-white rounded-xl p-4 shadow-sm border border-outline-variant relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-status-success rounded-l-xl"></div>
+<div class="flex items-center justify-between mb-3 pl-2">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-on-surface uppercase tracking-wider">L 9012 DEF</span>
+</div>
+<span class="font-status-badge text-status-badge bg-status-success text-surface-white px-2 py-1 rounded">Selesai</span>
+</div>
+<div class="pl-2">
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-1 font-semibold">Suzuki GSX-R150</p>
+<p class="font-body-sm text-body-sm text-outline">Ganti Rantai • Siti Aminah</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+        // Drawer logic
+        const menuToggle = document.getElementById('menuToggle');
+        const navigationDrawer = document.getElementById('navigationDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        let drawerOpen = false;
+
+        function toggleDrawer() {
+            drawerOpen = !drawerOpen;
+            if (drawerOpen) {
+                navigationDrawer.classList.remove('-translate-x-full');
+                drawerOverlay.classList.remove('hidden');
+                setTimeout(() => drawerOverlay.classList.remove('opacity-0'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                navigationDrawer.classList.add('-translate-x-full');
+                drawerOverlay.classList.add('opacity-0');
+                setTimeout(() => drawerOverlay.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            }
+        }
+
+        menuToggle.addEventListener('click', toggleDrawer);
+        drawerOverlay.addEventListener('click', toggleDrawer);
+    </script>
+</body></html>

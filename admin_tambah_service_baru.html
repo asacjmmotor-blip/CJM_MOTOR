@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add New Service - BengkelPro Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e0e3e5",
+                        "on-primary-fixed-variant": "#214779",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#d0e1fb",
+                        "on-primary-container": "#99bcf5",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001c3b",
+                        "status-danger": "#DC3545",
+                        "primary-fixed": "#d5e3ff",
+                        "mechanic-dark": "#1E293B",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-container-highest": "#e0e3e5",
+                        "tertiary-container": "#6a4100",
+                        "surface": "#f7f9fb",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-white": "#FFFFFF",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "secondary-fixed": "#d3e4fe",
+                        "inverse-primary": "#a7c8ff",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container": "#eceef0",
+                        "surface-tint": "#3b5f92",
+                        "tertiary-fixed-dim": "#f7bb73",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#54647a",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "tertiary": "#4b2d00",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "primary": "#033465",
+                        "status-warning": "#FFC107",
+                        "outline-variant": "#c3c6d0",
+                        "on-background": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary": "#505f76",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-surface-variant": "#43474f",
+                        "status-info": "#0DCAF0",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-fixed": "#2b1700",
+                        "status-success": "#198754",
+                        "primary-container": "#254b7d",
+                        "on-tertiary-container": "#e9af68",
+                        "background": "#f7f9fb",
+                        "on-error-container": "#93000a",
+                        "outline": "#737780",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "24px",
+                        "touch-target": "44px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "status-badge": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "status-badge": ["12px", { "lineHeight": "1", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .plate-input {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile h-[64px] w-full">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors active:opacity-80 transition-opacity p-2 rounded-full flex items-center justify-center min-w-[44px] min-h-[44px]">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">BengkelPro</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant flex items-center justify-center min-w-[44px] min-h-[44px]">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+</div>
+</div>
+</header>
+<!-- Navigation Drawer (Desktop only for this flow, acting as side menu if viewport is large) -->
+<nav class="hidden md:flex bg-surface dark:bg-inverse-surface shadow-xl h-full w-[280px] rounded-r-xl fixed inset-y-0 left-0 z-[60] flex-col py-4 mt-[64px]">
+<div class="px-6 mb-6 flex flex-col items-start">
+<div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary">Admin Bengkel</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Workshop Manager</p>
+</div>
+<a class="text-on-surface-variant hover:bg-surface-container-highest transition-all rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-lg text-body-lg">Dashboard</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-highest transition-all rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-body-lg text-body-lg">Customer</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-highest transition-all rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="motorcycle">motorcycle</span>
+<span class="font-body-lg text-body-lg">Kendaraan</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="font-body-lg text-body-lg font-bold">Service</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-highest transition-all rounded-full mx-2 px-4 py-3 flex items-center gap-3 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-body-lg text-body-lg">Laporan</span>
+</a>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow pt-[80px] pb-[100px] px-margin-mobile md:ml-[280px] md:px-margin-desktop md:pt-[88px]">
+<div class="max-w-2xl mx-auto w-full">
+<!-- Header -->
+<div class="mb-6 flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-background">Add New Service</h2>
+<div class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">Step 1 of 3</div>
+</div>
+<!-- Stepper Content Card -->
+<div class="bg-surface-white rounded-xl border border-outline-variant p-6 mb-6">
+<!-- Step 1: Vehicle Selection -->
+<div class="flex flex-col gap-6" id="step-1">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface">Vehicle Selection</h3>
+<div class="flex flex-col gap-2">
+<label class="font-body-sm text-body-sm font-semibold text-on-surface-variant" for="nopol">Search License Plate (Nomor Polisi)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input autocomplete="off" class="plate-input w-full h-touch-target pl-10 pr-4 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-headline-md text-headline-md text-center text-on-surface transition-colors" id="nopol" placeholder="B 1234 ABC" type="text"/>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Enter complete plate number to find existing vehicle or register a new one.</p>
+</div>
+<!-- Mock Search Result (Hidden by default, shown for UI completeness) -->
+<div class="hidden bg-surface-container-low border border-outline-variant rounded-lg p-4 mt-4 flex items-center justify-between">
+<div>
+<p class="font-body-lg text-body-lg font-bold text-on-surface uppercase">B 1234 ABC</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Honda Vario 150 - John Doe</p>
+</div>
+<button class="h-touch-target px-4 bg-primary-container text-on-primary-container rounded-lg font-body-sm text-body-sm font-bold active:scale-95 transition-transform" type="button">Select</button>
+</div>
+</div>
+<!-- Step 2: Service Details (Hidden initially) -->
+<div class="hidden flex-col gap-6" id="step-2">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface">Service Details</h3>
+<div class="flex flex-col gap-2">
+<label class="font-body-sm text-body-sm font-semibold text-on-surface-variant" for="service-type">Service Type</label>
+<select class="w-full h-touch-target px-4 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-lg text-body-lg text-on-surface" id="service-type">
+<option value="">Select Service Type</option>
+<option value="routine">Routine Maintenance</option>
+<option value="repair">Repair</option>
+<option value="inspection">Inspection</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-body-sm text-body-sm font-semibold text-on-surface-variant" for="complaints">Complaints / Notes</label>
+<textarea class="w-full p-4 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-lg text-body-lg text-on-surface resize-none" id="complaints" placeholder="Describe customer complaints..." rows="3"></textarea>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-body-sm text-body-sm font-semibold text-on-surface-variant" for="mechanic">Assign Mechanic</label>
+<select class="w-full h-touch-target px-4 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-lg text-body-lg text-on-surface" id="mechanic">
+<option value="">Select Mechanic (Optional)</option>
+<option value="m1">Budi Santoso</option>
+<option value="m2">Agus Setiawan</option>
+</select>
+</div>
+</div>
+<!-- Step 3: Status (Hidden initially) -->
+<div class="hidden flex-col gap-6" id="step-3">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface">Service Status</h3>
+<div class="flex flex-col gap-4">
+<label class="font-body-sm text-body-sm font-semibold text-on-surface-variant">Initial Status</label>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<label class="relative flex items-center p-4 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-container/10">
+<input checked="" class="sr-only" name="status" type="radio" value="menunggu"/>
+<div class="flex flex-col gap-1 w-full">
+<div class="flex items-center justify-between">
+<span class="font-body-lg text-body-lg font-bold text-on-surface">Menunggu</span>
+<span class="material-symbols-outlined text-status-warning" data-icon="schedule" data-weight="fill" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Waiting for mechanic</span>
+</div>
+</label>
+<label class="relative flex items-center p-4 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-container/10">
+<input class="sr-only" name="status" type="radio" value="dikerjakan"/>
+<div class="flex flex-col gap-1 w-full">
+<div class="flex items-center justify-between">
+<span class="font-body-lg text-body-lg font-bold text-on-surface">Dikerjakan</span>
+<span class="material-symbols-outlined text-status-info" data-icon="build_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">build_circle</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Currently being worked on</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Footer (Form Actions) -->
+<div class="fixed bottom-[80px] md:bottom-0 left-0 w-full md:pl-[280px] bg-surface-white border-t border-outline-variant z-40 p-4">
+<div class="max-w-2xl mx-auto w-full flex items-center justify-between gap-4">
+<button class="h-touch-target px-6 rounded-lg border border-outline text-on-surface font-body-lg text-body-lg font-semibold active:scale-95 transition-transform hidden" id="btn-back" type="button">
+                Back
+            </button>
+<div class="flex-grow"></div>
+<button class="h-touch-target px-8 rounded-lg bg-primary text-on-primary font-body-lg text-body-lg font-semibold active:scale-95 transition-transform flex items-center justify-center min-w-[120px]" id="btn-next" type="button">
+                Next
+            </button>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only - Destination Navigation) -->
+<nav class="md:hidden bg-surface dark:bg-inverse-surface border-t border-outline-variant dark:border-outline fixed bottom-0 w-full z-50 h-[80px] flex justify-around items-center px-4">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-caps text-label-caps mt-1">Cari</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-caps text-label-caps mt-1">Input Baru</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-caps text-label-caps mt-1">Riwayat</span>
+</a>
+</nav>
+<!-- Simple Script for Stepper Logic Demonstration -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentStep = 1;
+            const maxSteps = 3;
+            const btnNext = document.getElementById('btn-next');
+            const btnBack = document.getElementById('btn-back');
+            const stepIndicator = document.querySelector('.font-label-caps.bg-surface-container-high');
+
+            function updateView() {
+                for(let i=1; i<=maxSteps; i++) {
+                    const el = document.getElementById(`step-${i}`);
+                    if(el) {
+                        if(i === currentStep) {
+                            el.classList.remove('hidden');
+                            el.classList.add('flex');
+                        } else {
+                            el.classList.add('hidden');
+                            el.classList.remove('flex');
+                        }
+                    }
+                }
+
+                stepIndicator.textContent = `Step ${currentStep} of ${maxSteps}`;
+
+                if(currentStep === 1) {
+                    btnBack.classList.add('hidden');
+                    btnNext.textContent = 'Next';
+                } else if(currentStep === maxSteps) {
+                    btnBack.classList.remove('hidden');
+                    btnNext.textContent = 'Save Service';
+                } else {
+                    btnBack.classList.remove('hidden');
+                    btnNext.textContent = 'Next';
+                }
+            }
+
+            btnNext.addEventListener('click', () => {
+                if(currentStep < maxSteps) {
+                    currentStep++;
+                    updateView();
+                } else {
+                    // Simulate save loading state
+                    const originalText = btnNext.textContent;
+                    btnNext.innerHTML = `<span class="material-symbols-outlined animate-spin mr-2" data-icon="autorenew">autorenew</span> Menyimpan...`;
+                    btnNext.disabled = true;
+                    btnNext.classList.add('opacity-70');
+                    
+                    setTimeout(() => {
+                        alert('Service saved successfully (Mock)!');
+                        btnNext.innerHTML = originalText;
+                        btnNext.disabled = false;
+                        btnNext.classList.remove('opacity-70');
+                        currentStep = 1;
+                        updateView();
+                    }, 1500);
+                }
+            });
+
+            btnBack.addEventListener('click', () => {
+                if(currentStep > 1) {
+                    currentStep--;
+                    updateView();
+                }
+            });
+        });
+    </script>
+</body></html>

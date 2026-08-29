@@ -1,0 +1,35 @@
+/* CJM Motor Base Styles */
+:root {
+  --primary: #033465;
+  --primary-container: #254b7d;
+  --on-primary: #ffffff;
+  --bg-surface: #f7f9fb;
+  --surface-white: #ffffff;
+  --text-main: #191c1e;
+  --text-muted: #43474f;
+  --border-color: #c3c6d0;
+  --status-warning: #ffc107;
+  --status-info: #0dcaf0;
+  --status-success: #198754;
+  --status-danger: #dc3545;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+}
+
+.nopol-input {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.card-custom {
+  background: var(--surface-white);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}

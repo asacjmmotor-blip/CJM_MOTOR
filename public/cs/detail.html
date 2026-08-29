@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Detail Service - CJM Motor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 h-16 flex items-center justify-between max-w-lg mx-auto w-full">
+        <a href="/cs/result.html" class="flex items-center gap-2 text-slate-700 hover:text-blue-900 font-semibold text-sm">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Kembali</span>
+        </a>
+        <h1 class="font-bold text-blue-950 text-base">Detail Service</h1>
+        <div class="w-6"></div>
+    </header>
+
+    <main class="flex-grow p-4 w-full max-w-lg mx-auto flex flex-col gap-4" id="detail-container">
+        <!-- Content inserted dynamically -->
+    </main>
+
+    <script src="/assets/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const serviceId = sessionStorage.getItem('cs_selected_service_id');
+            const container = document.getElementById('detail-container');
+
+            if (!serviceId) {
+                window.location.href = '/cs/result.html';
+                return;
+            }
+
+            try {
+                const res = await apiRequest(`/services/detail.php?id=${serviceId}`);
+                if (res.success && res.data) {
+                    const s = res.data;
+                    let statusColor = 'bg-yellow-100 text-yellow-800';
+                    if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800';
+                    if (s.status === 'Dikerjakan') statusColor = 'bg-blue-100 text-blue-800';
+
+                    container.innerHTML = `
+                        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400">KODE SERVICE</p>
+                                    <p class="text-base font-extrabold text-blue-950">${s.service_code}</p>
+                                </div>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${s.status}</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs">
+                                <div>
+                                    <p class="text-slate-400 font-medium">Kendaraan</p>
+                                    <p class="font-bold text-slate-800 text-sm mt-0.5">${s.plate_number}</p>
+                                    <p class="text-slate-500">${s.brand} ${s.model}</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-400 font-medium">Tanggal Service</p>
+                                    <p class="font-bold text-slate-800 text-sm mt-0.5">${s.service_date}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">Jenis Service</p>
+                                <p class="font-bold text-slate-800 text-sm mt-0.5">${s.service_type}</p>
+                            </div>
+
+                            ${s.mechanic ? `
+                                <div>
+                                    <p class="text-xs text-slate-400 font-medium">Mekanik</p>
+                                    <p class="font-bold text-slate-800 text-sm mt-0.5">${s.mechanic}</p>
+                                </div>
+                            ` : ''}
+
+                            ${s.complaint ? `
+                                <div>
+                                    <p class="text-xs text-slate-400 font-medium">Keluhan / Catatan Awal</p>
+                                    <p class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-1">${s.complaint}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Item Pekerjaan / Sparepart -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Item Pekerjaan & Sparepart</h3>
+                            <div class="flex flex-col gap-2">
+                                ${(s.items && s.items.length > 0) ? s.items.map(item => `
+                                    <div class="flex items-center justify-between text-xs py-2 border-b border-slate-50 last:border-0">
+                                        <div>
+                                            <p class="font-bold text-slate-800">${item.item_name}</p>
+                                            <p class="text-slate-400 text-[10px] uppercase">${item.item_type} • Qty: ${item.quantity}</p>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p class="text-xs text-slate-400">Tidak ada rincian item tambahan.</p>'}
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center text-slate-500">
+                        <p class="font-semibold text-sm text-red-600">Gagal Memuat Detail</p>
+                        <p class="text-xs mt-1">${err.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Laporan Operasional - CJM Motor Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+    <header class="fixed top-0 w-full z-40 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4">
+        <div class="flex items-center gap-3">
+            <a href="/admin/dashboard.html" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h1 class="font-extrabold text-blue-950 text-lg">Laporan Operasional</h1>
+        </div>
+    </header>
+
+    <main class="pt-20 px-4 max-w-4xl mx-auto pb-10">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-6">
+            <h3 class="font-bold text-slate-900 text-sm mb-4">Ringkasan Laporan Bengkel</h3>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-xs text-slate-500 font-medium">Total Customer</p>
+                    <p id="rep-cust" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-xs text-slate-500 font-medium">Total Kendaraan</p>
+                    <p id="rep-veh" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-xs text-slate-500 font-medium">Service Hari Ini</p>
+                    <p id="rep-today" class="text-2xl font-bold text-blue-900 mt-1">0</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-xs text-slate-500 font-medium">Service Aktif</p>
+                    <p id="rep-active" class="text-2xl font-bold text-yellow-700 mt-1">0</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-xs text-slate-500 font-medium">Service Selesai</p>
+                    <p id="rep-done" class="text-2xl font-bold text-emerald-700 mt-1">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-blue-950 text-white rounded-2xl p-6 shadow-sm">
+            <p class="text-xs text-blue-200 uppercase tracking-wider font-bold">Catatan Laporan</p>
+            <p class="text-xs text-blue-100 mt-2 leading-relaxed">
+                Data laporan ini diambil langsung dari basis data Supabase PostgreSQL. Anda dapat melihat aktivitas service harian, status pengerjaan kendaraan, dan total data kendaraan/customer yang terdaftar.
+            </p>
+        </div>
+    </main>
+
+    <script src="/assets/js/api.js"></script>
+    <script>
+        async function loadReports() {
+            try {
+                const res = await apiRequest('/reports/index.php');
+                if (res.success && res.data) {
+                    const d = res.data;
+                    document.getElementById('rep-cust').textContent = d.total_customers;
+                    document.getElementById('rep-veh').textContent = d.total_vehicles;
+                    document.getElementById('rep-today').textContent = d.today_services;
+                    document.getElementById('rep-active').textContent = d.active_services;
+                    document.getElementById('rep-done').textContent = d.completed_services;
+                }
+            } catch (err) {
+                if (err.message.includes('Akses ditolak')) window.location.href = '/admin/login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadReports);
+    </script>
+</body>
+</html>

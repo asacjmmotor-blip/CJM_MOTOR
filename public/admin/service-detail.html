@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Detail & Edit Service - CJM Motor Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+    <header class="fixed top-0 w-full z-40 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4">
+        <div class="flex items-center gap-3">
+            <a href="/admin/services.html" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h1 class="font-extrabold text-blue-950 text-lg">Kelola Detail Service</h1>
+        </div>
+        <button onclick="deleteCurrentService()" class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+            <span class="material-symbols-outlined text-sm">delete</span>
+        </button>
+    </header>
+
+    <main class="pt-20 px-4 max-w-2xl mx-auto pb-10" id="main-content">
+        <!-- Dynamic service details -->
+    </main>
+
+    <script src="/assets/js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const serviceId = urlParams.get('id');
+
+        async function loadServiceDetail() {
+            if (!serviceId) {
+                window.location.href = '/admin/services.html';
+                return;
+            }
+
+            try {
+                const res = await apiRequest(`/services/detail.php?id=${serviceId}`);
+                if (res.success && res.data) {
+                    const s = res.data;
+                    document.getElementById('main-content').innerHTML = `
+                        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4 mb-4">
+                            <div class="flex items-center justify-between border-b pb-3">
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400">KODE SERVICE</p>
+                                    <p class="text-lg font-extrabold text-blue-950">${s.service_code}</p>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">Ubah Status</label>
+                                    <select onchange="updateStatus(this.value)" class="h-9 border border-slate-300 rounded-xl px-2 text-xs font-bold bg-slate-50 outline-none">
+                                        <option value="Menunggu" ${s.status === 'Menunggu' ? 'selected' : ''}>Menunggu</option>
+                                        <option value="Dikerjakan" ${s.status === 'Dikerjakan' ? 'selected' : ''}>Dikerjakan</option>
+                                        <option value="Selesai" ${s.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                        <option value="Diambil" ${s.status === 'Diambil' ? 'selected' : ''}>Diambil</option>
+                                        <option value="Dibatalkan" ${s.status === 'Dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs">
+                                <div>
+                                    <p class="text-slate-400 font-medium">Kendaraan</p>
+                                    <p class="font-bold text-slate-900 text-sm uppercase">${s.plate_number}</p>
+                                    <p class="text-slate-500">${s.brand} ${s.model}</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-400 font-medium">Pemilik</p>
+                                    <p class="font-bold text-slate-900 text-sm">${s.customer_name}</p>
+                                    <p class="text-slate-500">${s.customer_phone}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs border-t pt-3">
+                                <div>
+                                    <p class="text-slate-400 font-medium">Jenis Service</p>
+                                    <p class="font-bold text-slate-800 mt-0.5">${s.service_type}</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-400 font-medium">Mekanik</p>
+                                    <p class="font-bold text-slate-800 mt-0.5">${s.mechanic || '-'}</p>
+                                </div>
+                            </div>
+
+                            ${s.complaint ? `
+                                <div class="border-t pt-3">
+                                    <p class="text-xs text-slate-400 font-medium mb-1">Keluhan Pelanggan</p>
+                                    <p class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border">${s.complaint}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Items list -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Item Pekerjaan & Sparepart</h3>
+                            <div class="flex flex-col gap-2">
+                                ${(s.items && s.items.length > 0) ? s.items.map(item => `
+                                    <div class="flex items-center justify-between text-xs py-2 border-b border-slate-50 last:border-0">
+                                        <div>
+                                            <p class="font-bold text-slate-800">${item.item_name}</p>
+                                            <p class="text-slate-400 text-[10px] uppercase">${item.item_type} • Qty: ${item.quantity}</p>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p class="text-xs text-slate-400">Belum ada item ditambahkan.</p>'}
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                if (err.message.includes('Akses ditolak')) window.location.href = '/admin/login.html';
+            }
+        }
+
+        async function updateStatus(newStatus) {
+            try {
+                await apiRequest(`/services/update.php?id=${serviceId}`, 'POST', { status: newStatus });
+                alert('Status service berhasil diperbarui.');
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        async function deleteCurrentService() {
+            if (!confirm('Apakah Anda yakin ingin menghapus data service ini?')) return;
+            try {
+                await apiRequest(`/services/detail.php?id=${serviceId}`, 'DELETE');
+                window.location.href = '/admin/services.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadServiceDetail);
+    </script>
+</body>
+</html>

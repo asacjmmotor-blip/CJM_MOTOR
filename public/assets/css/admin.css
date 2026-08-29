@@ -1,0 +1,10 @@
+/* CJM Motor Admin Specific Styles */
+.sidebar-nav {
+  width: 280px;
+}
+
+@media (max-width: 767.98px) {
+  .admin-main-content {
+    margin-left: 0 !important;
+  }
+}
