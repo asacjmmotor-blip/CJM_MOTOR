@@ -160,9 +160,11 @@
                 </div>
 
                 <div class="flex justify-between items-center mt-6 border-t pt-4">
-                    <button type="button" id="btn-back" onclick="prevStep()" class="h-10 px-4 text-xs font-bold text-slate-600 bg-slate-100 rounded-xl hidden">Kembali</button>
-                    <div class="flex-grow"></div>
-                    <button type="button" id="btn-next" onclick="nextStep()" class="h-10 px-6 text-xs font-bold text-white bg-blue-900 rounded-xl">Lanjut</button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="closeCreateModal()" class="h-10 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                        <button type="button" id="btn-back" onclick="prevStep()" class="h-10 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl hidden">Kembali</button>
+                    </div>
+                    <button type="button" id="btn-next" onclick="nextStep()" class="h-10 px-6 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-xl">Lanjut</button>
                 </div>
             </form>
         </div>
