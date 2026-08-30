@@ -52,7 +52,7 @@
             btn.textContent = 'Memproses...';
 
             try {
-                const res = await apiRequest('/auth/login.php', 'POST', { username, password });
+                const res = await apiRequest('/auth/login', 'POST', { username, password });
                 if (res.success) {
                     window.location.href = 'dashboard.html';
                 }

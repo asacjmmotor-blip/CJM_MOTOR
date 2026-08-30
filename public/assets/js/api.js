@@ -1,5 +1,5 @@
 /**
- * Central Fetch API Client (Supports Vercel Serverless & PHP Endpoints)
+ * Central Fetch API Client (Optimized for Vercel Serverless Functions)
  * CJM Motor - Sistem Informasi Service Bengkel Motor
  */
 
@@ -20,18 +20,19 @@ async function apiRequest(endpoint, method = 'GET', data = null) {
     }
   }
 
-  // Generate fallback endpoint without .php extension for Vercel Node.js Serverless functions
-  const jsEndpoint = endpoint.replace(/\.php$/, '.js').replace(/\.php(\?.*)?$/, '$1');
+  // Strip .php extension so endpoints cleanly hit Vercel Serverless Functions (/api/auth/login.js)
+  const cleanEndpoint = endpoint.replace(/\.php$/, '').replace(/\.php(\?.*)?$/, '$1');
 
   try {
-    let response = await fetch(`${API_BASE}${endpoint}`, options);
+    // Try clean endpoint first (/api/auth/login)
+    let response = await fetch(`${API_BASE}${cleanEndpoint}`, options);
     
-    // If .php endpoint returned 404 or 500 error on Vercel, fallback to .js serverless endpoint
-    if (!response.ok && endpoint.endsWith('.php')) {
+    // If clean endpoint failed with 404/403, try original endpoint path as fallback
+    if (!response.ok && endpoint !== cleanEndpoint) {
       try {
-        const altResponse = await fetch(`${API_BASE}${jsEndpoint}`, options);
-        if (altResponse.ok) {
-          response = altResponse;
+        const origResponse = await fetch(`${API_BASE}${endpoint}`, options);
+        if (origResponse.ok) {
+          response = origResponse;
         }
       } catch (e) {}
     }
