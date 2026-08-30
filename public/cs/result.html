@@ -13,24 +13,27 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 h-16 flex items-center justify-between max-w-lg mx-auto w-full">
         <a href="index.html" class="flex items-center gap-2 text-slate-700 hover:text-blue-900 font-semibold text-sm">
             <span class="material-symbols-outlined">arrow_back</span>
-            <span>Kembali</span>
+            <span>Cari Kembali</span>
         </a>
-        <h1 class="font-bold text-blue-950 text-base">Riwayat Service</h1>
+        <h1 class="font-bold text-blue-950 text-base">Riwayat Service Motor</h1>
         <div class="w-6"></div>
     </header>
 
     <main class="flex-grow p-4 w-full max-w-lg mx-auto flex flex-col gap-4">
         <!-- Vehicle Info Card -->
-        <div class="bg-blue-900 text-white rounded-2xl p-5 shadow-sm">
-            <div class="flex items-center justify-between mb-2">
-                <span id="veh-plate" class="text-xl font-extrabold tracking-wider uppercase">B 1234 ABC</span>
-                <span class="material-symbols-outlined text-blue-200">two_wheeler</span>
+        <div class="bg-blue-950 text-white rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-1">
+                <span id="veh-plate" class="text-xl font-extrabold tracking-widest uppercase">B 1234 ABC</span>
+                <span class="material-symbols-outlined text-blue-200 text-2xl">two_wheeler</span>
             </div>
-            <p id="veh-info" class="text-sm font-medium text-blue-100">Honda Beat (2024)</p>
-            <p id="veh-color" class="text-xs text-blue-200 mt-1">Warna: Hitam</p>
+            <p id="veh-info" class="text-sm font-semibold text-blue-100">Honda Beat (2024)</p>
+            <div class="flex items-center justify-between mt-3 border-t border-blue-900 pt-2 text-xs text-blue-200">
+                <span id="veh-owner">Pemilik: Budi Santoso</span>
+                <span id="veh-color">Warna: Hitam</span>
+            </div>
         </div>
 
-        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider px-1">Daftar Riwayat Service</h2>
+        <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Daftar Riwayat Service</h2>
 
         <!-- Services Container -->
         <div id="services-list" class="flex flex-col gap-3">
@@ -48,12 +51,13 @@
             }
 
             const data = JSON.parse(dataRaw);
-            const veh = data.vehicle;
+            const veh = data.vehicle || data;
             const services = data.services || [];
 
-            document.getElementById('veh-plate').textContent = veh.plate_number;
-            document.getElementById('veh-info').textContent = `${veh.brand} ${veh.model}` + (veh.year ? ` (${veh.year})` : '');
-            document.getElementById('veh-color').textContent = `Warna: ${veh.color || '-'}`;
+            document.getElementById('veh-plate').textContent = veh.plate_number || data.plate_number;
+            document.getElementById('veh-info').textContent = `${veh.brand || data.brand} ${veh.model || data.model}` + (veh.year || data.year ? ` (${veh.year || data.year})` : '');
+            document.getElementById('veh-owner').textContent = `Pemilik: ${data.customer_name || 'Umum'}`;
+            document.getElementById('veh-color').textContent = `Warna: ${veh.color || data.color || '-'}`;
 
             const listEl = document.getElementById('services-list');
             if (services.length === 0) {
@@ -61,31 +65,29 @@
                     <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center text-slate-500">
                         <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">build_circle</span>
                         <p class="font-semibold text-sm">Belum Ada Riwayat Service</p>
-                        <p class="text-xs mt-1">Kendaraan ini belum pernah melakukan service di bengkel.</p>
+                        <p class="text-xs mt-1">Kendaraan ini belum memiliki transaksi service tercatat.</p>
                     </div>
                 `;
                 return;
             }
 
             listEl.innerHTML = services.map(s => {
-                let statusColor = 'bg-yellow-100 text-yellow-800';
-                if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800';
-                if (s.status === 'Dikerjakan') statusColor = 'bg-blue-100 text-blue-800';
-                if (s.status === 'Dibatalkan') statusColor = 'bg-red-100 text-red-800';
+                let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
+                if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                if (s.status === 'Proses') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
 
                 return `
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:border-blue-300 transition-colors cursor-pointer" onclick="viewDetail(${s.id})">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:border-blue-300 transition-all cursor-pointer active:scale-[0.99]" onclick="viewDetail(${s.id})">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-slate-400">${s.service_code}</span>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full ${statusColor}">${s.status}</span>
+                            <span class="text-xs font-bold text-slate-400 tracking-wider">${s.service_code}</span>
+                            <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${statusColor}">${s.status}</span>
                         </div>
-                        <h3 class="font-bold text-slate-900 text-base">${s.service_type}</h3>
-                        <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">calendar_today</span>
-                            <span>${s.service_date}</span>
-                            ${s.mechanic ? `<span class="ml-2 font-medium">• Mekanik: ${s.mechanic}</span>` : ''}
-                        </p>
-                        ${s.complaint ? `<p class="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg mt-2 border border-slate-100">Keluhan: ${s.complaint}</p>` : ''}
+                        <h3 class="font-bold text-slate-900 text-base mb-1">${s.service_type}</h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span>${s.service_date}</span>
+                            <span class="font-semibold">Mekanik: ${s.mechanic || '-'}</span>
+                        </div>
+                        ${s.complaint ? `<p class="text-xs text-slate-600 bg-slate-50 p-2 rounded-xl mt-2 border border-slate-100">Keluhan: ${s.complaint}</p>` : ''}
                     </div>
                 `;
             }).join('');

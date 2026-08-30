@@ -7,19 +7,23 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/css/style.css"/>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 h-16 flex items-center justify-between max-w-lg mx-auto w-full">
         <a href="result.html" class="flex items-center gap-2 text-slate-700 hover:text-blue-900 font-semibold text-sm">
             <span class="material-symbols-outlined">arrow_back</span>
-            <span>Kembali</span>
+            <span>Kembali ke Riwayat</span>
         </a>
-        <h1 class="font-bold text-blue-950 text-base">Detail Service</h1>
+        <h1 class="font-bold text-blue-950 text-base">Detail Rincian Service</h1>
         <div class="w-6"></div>
     </header>
 
     <main class="flex-grow p-4 w-full max-w-lg mx-auto flex flex-col gap-4" id="detail-container">
-        <!-- Content inserted dynamically -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center text-slate-500">
+            <span class="material-symbols-outlined text-4xl text-blue-900 animate-spin mb-2">progress_activity</span>
+            <p class="font-semibold text-sm">Memuat Rincian Service...</p>
+        </div>
     </main>
 
     <script src="../assets/js/api.js"></script>
@@ -34,51 +38,48 @@
             }
 
             try {
-                const res = await apiRequest(`/services/detail.php?id=${serviceId}`);
+                const res = await apiRequest(`/services/detail?id=${serviceId}`);
                 if (res.success && res.data) {
                     const s = res.data;
-                    let statusColor = 'bg-yellow-100 text-yellow-800';
-                    if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800';
-                    if (s.status === 'Dikerjakan') statusColor = 'bg-blue-100 text-blue-800';
+                    let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
+                    if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                    if (s.status === 'Proses') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
+
+                    const formattedCost = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(s.total_cost || 0);
 
                     container.innerHTML = `
                         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                                 <div>
-                                    <p class="text-xs font-bold text-slate-400">KODE SERVICE</p>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">KODE SERVICE</p>
                                     <p class="text-base font-extrabold text-blue-950">${s.service_code}</p>
                                 </div>
-                                <span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${s.status}</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full border ${statusColor}">${s.status}</span>
                             </div>
 
                             <div class="grid grid-cols-2 gap-3 text-xs">
                                 <div>
-                                    <p class="text-slate-400 font-medium">Kendaraan</p>
-                                    <p class="font-bold text-slate-800 text-sm mt-0.5">${s.plate_number}</p>
-                                    <p class="text-slate-500">${s.brand} ${s.model}</p>
+                                    <p class="text-slate-400 font-medium">Kendaraan & Pemilik</p>
+                                    <p class="font-bold text-slate-900 text-sm mt-0.5">${s.plate_number}</p>
+                                    <p class="text-slate-500 font-medium">${s.brand} ${s.model}</p>
+                                    <p class="text-slate-400 text-[11px] mt-0.5">Pemilik: ${s.customer_name || 'Umum'}</p>
                                 </div>
                                 <div>
                                     <p class="text-slate-400 font-medium">Tanggal Service</p>
                                     <p class="font-bold text-slate-800 text-sm mt-0.5">${s.service_date}</p>
+                                    <p class="text-slate-500 mt-1 font-medium">Mekanik: ${s.mechanic || '-'}</p>
                                 </div>
                             </div>
 
                             <div>
                                 <p class="text-xs text-slate-400 font-medium">Jenis Service</p>
-                                <p class="font-bold text-slate-800 text-sm mt-0.5">${s.service_type}</p>
+                                <p class="font-bold text-blue-950 text-sm mt-0.5">${s.service_type}</p>
                             </div>
-
-                            ${s.mechanic ? `
-                                <div>
-                                    <p class="text-xs text-slate-400 font-medium">Mekanik</p>
-                                    <p class="font-bold text-slate-800 text-sm mt-0.5">${s.mechanic}</p>
-                                </div>
-                            ` : ''}
 
                             ${s.complaint ? `
                                 <div>
-                                    <p class="text-xs text-slate-400 font-medium">Keluhan / Catatan Awal</p>
-                                    <p class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-1">${s.complaint}</p>
+                                    <p class="text-xs text-slate-400 font-medium">Keluhan / Catatan</p>
+                                    <p class="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 mt-1">${s.complaint}</p>
                                 </div>
                             ` : ''}
                         </div>
@@ -93,8 +94,14 @@
                                             <p class="font-bold text-slate-800">${item.item_name}</p>
                                             <p class="text-slate-400 text-[10px] uppercase">${item.item_type} • Qty: ${item.quantity}</p>
                                         </div>
+                                        <p class="font-bold text-slate-900">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.subtotal || 0)}</p>
                                     </div>
                                 `).join('') : '<p class="text-xs text-slate-400">Tidak ada rincian item tambahan.</p>'}
+                            </div>
+
+                            <div class="mt-4 border-t border-slate-100 pt-3 flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-500 uppercase">Total Estimasi Biaya</span>
+                                <span class="text-base font-extrabold text-emerald-600">${formattedCost}</span>
                             </div>
                         </div>
                     `;
