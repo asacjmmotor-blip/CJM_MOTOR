@@ -7,16 +7,18 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABA
 
 async function supabaseFetch(path, options = {}) {
   const url = `${SUPABASE_URL}/rest/v1/${path}`;
+  const method = options.method || 'GET';
+  
   const headers = {
     'apikey': SUPABASE_KEY,
     'Authorization': `Bearer ${SUPABASE_KEY}`,
     'Content-Type': 'application/json',
-    'Prefer': options.prefer || 'return=representation',
+    'Prefer': options.prefer || (method !== 'GET' ? 'return=representation' : ''),
     ...(options.headers || {})
   };
 
   const config = {
-    method: options.method || 'GET',
+    method,
     headers,
     ...(options.body ? { body: JSON.stringify(options.body) } : {})
   };

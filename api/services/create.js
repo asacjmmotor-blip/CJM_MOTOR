@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
     const rawPlate = (body.plate_number || '').trim();
     const brand = (body.brand || '').trim();
     const model = (body.model || '').trim();
+    const year = body.year ? parseInt(body.year) : null;
     const customerName = (body.customer_name || '').trim();
     const customerPhone = (body.customer_phone || '').trim();
     const serviceType = (body.service_type || 'Service Rutin').trim();
@@ -51,8 +52,9 @@ module.exports = async (req, res) => {
             method: 'POST',
             body: { name: customerName, phone: customerPhone || null }
           });
-          if (newCust.ok && Array.isArray(newCust.data) && newCust.data.length > 0) {
-            customerId = newCust.data[0].id;
+          if (newCust.ok && newCust.data) {
+            if (Array.isArray(newCust.data) && newCust.data.length > 0) customerId = newCust.data[0].id;
+            else if (newCust.data.id) customerId = newCust.data.id;
           }
         }
       }
@@ -66,8 +68,9 @@ module.exports = async (req, res) => {
             method: 'POST',
             body: { name: 'Umum / Non-Member', phone: '-' }
           });
-          if (createDef.ok && Array.isArray(createDef.data) && createDef.data.length > 0) {
-            customerId = createDef.data[0].id;
+          if (createDef.ok && createDef.data) {
+            if (Array.isArray(createDef.data) && createDef.data.length > 0) customerId = createDef.data[0].id;
+            else if (createDef.data.id) customerId = createDef.data.id;
           }
         }
       }
@@ -75,10 +78,20 @@ module.exports = async (req, res) => {
       // Create new Vehicle
       const createVeh = await supabaseFetch('vehicles', {
         method: 'POST',
-        body: { customer_id: customerId, plate_number: plateNumber, brand, model }
+        body: { customer_id: customerId, plate_number: plateNumber, brand, model, year }
       });
-      if (createVeh.ok && Array.isArray(createVeh.data) && createVeh.data.length > 0) {
-        vehicleId = createVeh.data[0].id;
+
+      if (createVeh.ok && createVeh.data) {
+        if (Array.isArray(createVeh.data) && createVeh.data.length > 0) vehicleId = createVeh.data[0].id;
+        else if (createVeh.data.id) vehicleId = createVeh.data.id;
+      }
+
+      // Fallback lookup if vehicle ID was not returned directly in payload
+      if (!vehicleId) {
+        const findCreated = await supabaseFetch(`vehicles?select=id&plate_number=eq.${encodeURIComponent(plateNumber)}&limit=1`);
+        if (findCreated.ok && Array.isArray(findCreated.data) && findCreated.data.length > 0) {
+          vehicleId = findCreated.data[0].id;
+        }
       }
     }
 
@@ -119,15 +132,23 @@ module.exports = async (req, res) => {
       return sendResponse(res, createSvc.status, false, 'Gagal membuat service baru: ' + (createSvc.data.message || ''));
     }
 
-    const service = Array.isArray(createSvc.data) ? createSvc.data[0] : createSvc.data;
+    let service = Array.isArray(createSvc.data) ? createSvc.data[0] : createSvc.data;
+    let serviceId = service ? service.id : null;
+
+    if (!serviceId) {
+      const findSvc = await supabaseFetch(`services?select=id&service_code=eq.${encodeURIComponent(serviceCode)}&limit=1`);
+      if (findSvc.ok && Array.isArray(findSvc.data) && findSvc.data.length > 0) {
+        serviceId = findSvc.data[0].id;
+      }
+    }
 
     // 4. Create Service Items
-    if (items.length > 0) {
+    if (serviceId && items.length > 0) {
       const itemPayloads = items.map(it => {
         const qty = parseInt(it.quantity) || 1;
         const price = parseFloat(it.price) || 0;
         return {
-          service_id: service.id,
+          service_id: serviceId,
           item_name: it.item_name || 'Jasa Service',
           item_type: it.item_type || 'Jasa',
           quantity: qty,
@@ -143,7 +164,7 @@ module.exports = async (req, res) => {
     }
 
     return sendResponse(res, 201, true, 'Service baru berhasil didaftarkan!', {
-      id: service.id,
+      id: serviceId,
       service_code: serviceCode,
       vehicle_id: vehicleId,
       status: 'Menunggu'

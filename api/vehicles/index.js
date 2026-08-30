@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
 
       const { ok, status, data } = await supabaseFetch(endpoint);
       if (!ok) {
-        return sendResponse(res, status, false, 'Gagal mengambil data kendaraan: ' + (data.message || ''));
+        return sendResponse(res, status, false, 'Gagal mengambil data kendaraan: ' + (data ? data.message : ''));
       }
 
       const formatted = (data || []).map(v => ({
@@ -66,24 +66,22 @@ module.exports = async (req, res) => {
       // 2. Resolve Customer ID
       let customerId = null;
       if (customerName) {
-        // Search customer by name
         const custSearch = await supabaseFetch(`customers?name=ilike.*${encodeURIComponent(customerName)}*&limit=1`);
         if (custSearch.ok && Array.isArray(custSearch.data) && custSearch.data.length > 0) {
           customerId = custSearch.data[0].id;
         } else {
-          // Create new customer
           const newCust = await supabaseFetch('customers', {
             method: 'POST',
             body: { name: customerName, phone: customerPhone || null }
           });
-          if (newCust.ok && Array.isArray(newCust.data) && newCust.data.length > 0) {
-            customerId = newCust.data[0].id;
+          if (newCust.ok && newCust.data) {
+            if (Array.isArray(newCust.data) && newCust.data.length > 0) customerId = newCust.data[0].id;
+            else if (newCust.data.id) customerId = newCust.data.id;
           }
         }
       }
 
       if (!customerId) {
-        // Find or create default customer "Umum / Non-Member"
         const defCust = await supabaseFetch(`customers?name=eq.${encodeURIComponent('Umum / Non-Member')}&limit=1`);
         if (defCust.ok && Array.isArray(defCust.data) && defCust.data.length > 0) {
           customerId = defCust.data[0].id;
@@ -92,8 +90,9 @@ module.exports = async (req, res) => {
             method: 'POST',
             body: { name: 'Umum / Non-Member', phone: '-' }
           });
-          if (createDef.ok && Array.isArray(createDef.data) && createDef.data.length > 0) {
-            customerId = createDef.data[0].id;
+          if (createDef.ok && createDef.data) {
+            if (Array.isArray(createDef.data) && createDef.data.length > 0) customerId = createDef.data[0].id;
+            else if (createDef.data.id) customerId = createDef.data.id;
           }
         }
       }
@@ -111,11 +110,23 @@ module.exports = async (req, res) => {
         }
       });
 
-      if (!newVeh.ok) {
-        return sendResponse(res, newVeh.status, false, 'Gagal menambah kendaraan: ' + (newVeh.data.message || ''));
+      let vehicle = null;
+      if (newVeh.ok && newVeh.data) {
+        if (Array.isArray(newVeh.data) && newVeh.data.length > 0) vehicle = newVeh.data[0];
+        else if (newVeh.data.id) vehicle = newVeh.data;
       }
 
-      const vehicle = Array.isArray(newVeh.data) ? newVeh.data[0] : newVeh.data;
+      if (!vehicle) {
+        const findCreated = await supabaseFetch(`vehicles?select=*&plate_number=eq.${encodeURIComponent(plateNumber)}&limit=1`);
+        if (findCreated.ok && Array.isArray(findCreated.data) && findCreated.data.length > 0) {
+          vehicle = findCreated.data[0];
+        }
+      }
+
+      if (!vehicle) {
+        return sendResponse(res, 500, false, 'Gagal menambah kendaraan.');
+      }
+
       return sendResponse(res, 201, true, 'Kendaraan berhasil ditambahkan!', vehicle);
     } catch (err) {
       return sendResponse(res, 500, false, 'Server Error: ' + err.message);
