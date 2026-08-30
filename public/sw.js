@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cjm-motor-v1';
+const CACHE_NAME = 'cjm-motor-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
