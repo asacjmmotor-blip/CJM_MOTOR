@@ -6,15 +6,23 @@
 
 require_once __DIR__ . '/environment.php';
 
+function getEnvVar($key, $default = '') {
+    $val = getenv($key);
+    if ($val !== false && $val !== '') return $val;
+    if (isset($_ENV[$key]) && $_ENV[$key] !== '') return $_ENV[$key];
+    if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') return $_SERVER[$key];
+    return $default;
+}
+
 function getDbConnection() {
     static $pdo = null;
     if ($pdo === null) {
-        $host = getenv('DB_HOST') ?: 'localhost';
-        $port = getenv('DB_PORT') ?: '5432';
-        $dbname = getenv('DB_NAME') ?: 'postgres';
-        $user = getenv('DB_USER') ?: 'postgres';
-        $password = getenv('DB_PASSWORD') ?: '';
-        $sslmode = getenv('DB_SSLMODE') ?: 'require';
+        $host = getEnvVar('DB_HOST', 'localhost');
+        $port = getEnvVar('DB_PORT', '5432');
+        $dbname = getEnvVar('DB_NAME', 'postgres');
+        $user = getEnvVar('DB_USER', 'postgres');
+        $password = getEnvVar('DB_PASSWORD', '');
+        $sslmode = getEnvVar('DB_SSLMODE', 'require');
 
         $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};sslmode={$sslmode}";
         
@@ -30,7 +38,7 @@ function getDbConnection() {
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'Koneksi ke database gagal.'
+                'message' => 'Koneksi ke database gagal: ' . $e->getMessage()
             ]);
             exit;
         }
