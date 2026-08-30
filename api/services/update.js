@@ -68,10 +68,13 @@ module.exports = async (req, res) => {
     }
 
     if (Object.keys(serviceUpdate).length > 0) {
-      await supabaseFetch(`services?id=eq.${serviceId}`, {
+      const updateSvc = await supabaseFetch(`services?id=eq.${serviceId}`, {
         method: 'PATCH',
         body: serviceUpdate
       });
+      if (!updateSvc.ok) {
+        return sendResponse(res, updateSvc.status, false, 'Gagal memperbarui data service: ' + (updateSvc.data ? updateSvc.data.message : ''));
+      }
     }
 
     // 3. Update Vehicle info if provided
@@ -82,10 +85,13 @@ module.exports = async (req, res) => {
     if (body.color !== undefined) vehicleUpdate.color = body.color;
 
     if (vehicleId && Object.keys(vehicleUpdate).length > 0) {
-      await supabaseFetch(`vehicles?id=eq.${vehicleId}`, {
+      const updateVeh = await supabaseFetch(`vehicles?id=eq.${vehicleId}`, {
         method: 'PATCH',
         body: vehicleUpdate
       });
+      if (!updateVeh.ok) {
+        return sendResponse(res, updateVeh.status, false, 'Gagal memperbarui data kendaraan: ' + (updateVeh.data ? updateVeh.data.message : ''));
+      }
     }
 
     // 4. Update Customer info if provided
@@ -94,10 +100,13 @@ module.exports = async (req, res) => {
     if (body.customer_phone !== undefined) customerUpdate.phone = body.customer_phone;
 
     if (customerId && Object.keys(customerUpdate).length > 0) {
-      await supabaseFetch(`customers?id=eq.${customerId}`, {
+      const updateCust = await supabaseFetch(`customers?id=eq.${customerId}`, {
         method: 'PATCH',
         body: customerUpdate
       });
+      if (!updateCust.ok) {
+        return sendResponse(res, updateCust.status, false, 'Gagal memperbarui data customer: ' + (updateCust.data ? updateCust.data.message : ''));
+      }
     }
 
     return sendResponse(res, 200, true, 'Data Service, Kendaraan, dan Customer berhasil diperbarui!');
