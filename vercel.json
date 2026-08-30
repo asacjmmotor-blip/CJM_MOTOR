@@ -8,23 +8,23 @@
     },
     {
       "source": "/cs",
-      "destination": "/public/cs/index.html"
+      "destination": "/cs/index.html"
     },
     {
       "source": "/cs/result",
-      "destination": "/public/cs/result.html"
+      "destination": "/cs/result.html"
     },
     {
       "source": "/cs/detail",
-      "destination": "/public/cs/detail.html"
+      "destination": "/cs/detail.html"
     },
     {
       "source": "/result",
-      "destination": "/public/cs/result.html"
+      "destination": "/cs/result.html"
     },
     {
       "source": "/detail",
-      "destination": "/public/cs/detail.html"
+      "destination": "/cs/detail.html"
     },
     {
       "source": "/(.*)",
