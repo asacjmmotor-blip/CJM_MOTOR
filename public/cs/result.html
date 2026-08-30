@@ -3,7 +3,13 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="theme-color" content="#1e3a8a"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     <title>Hasil Riwayat Service - CJM Motor</title>
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
@@ -27,6 +33,7 @@
     </main>
 
     <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/pwa.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -36,7 +43,6 @@
 
             let item = null;
 
-            // 1. Direct Live API Fetch from Supabase database if query parameter exists
             if (qParam || idParam) {
                 try {
                     const endpoint = idParam ? `/vehicles/detail?id=${idParam}` : `/vehicles/search?q=${encodeURIComponent(qParam)}`;
@@ -49,7 +55,6 @@
                 }
             }
 
-            // 2. Fallback to Session Storage if URL search parameter was missing
             if (!item) {
                 const dataRaw = sessionStorage.getItem('cs_search_result');
                 if (dataRaw) {
