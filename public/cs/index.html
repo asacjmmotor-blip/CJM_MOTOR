@@ -75,7 +75,7 @@
                 const res = await apiRequest(`/vehicles/search?q=${encodeURIComponent(val)}`);
                 if (res.success && res.data && res.data.length > 0) {
                     sessionStorage.setItem('cs_search_result', JSON.stringify(res.data[0]));
-                    window.location.href = 'result.html';
+                    window.location.href = `result.html?q=${encodeURIComponent(val)}`;
                 } else {
                     errorMsg.textContent = `Nomor Polisi "${val}" belum memiliki riwayat di database.`;
                     errorMsg.classList.remove('hidden');
