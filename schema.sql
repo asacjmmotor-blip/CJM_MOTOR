@@ -135,3 +135,9 @@ INSERT INTO vehicles (customer_id, plate_number, brand, model, year, color) VALU
 (1, 'B 1234 ABC', 'Honda', 'Beat', 2024, 'Hitam'),
 (2, 'B 5678 XYZ', 'Yamaha', 'NMAX', 2023, 'Putih')
 ON CONFLICT (plate_number) DO NOTHING;
+
+-- 1. Menambahkan kolom attachment_url ke tabel services
+ALTER TABLE services ADD COLUMN IF NOT EXISTS attachment_url TEXT;
+
+-- 2. Memaksa Supabase me-reload cache schema secara instan
+NOTIFY pgrst, 'reload schema';
