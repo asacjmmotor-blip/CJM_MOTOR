@@ -79,32 +79,13 @@ CREATE TABLE IF NOT EXISTS service_items (
 CREATE INDEX IF NOT EXISTS idx_service_items_service_id ON service_items(service_id);
 
 -- ============================================================
--- 6. ROW LEVEL SECURITY (RLS) POLICIES UNTUK REST API
+-- 6. DISABLE ROW LEVEL SECURITY (RLS) UNTUK SUPABASE REST API
 -- ============================================================
-ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
-ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE vehicles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE services ENABLE ROW LEVEL SECURITY;
-ALTER TABLE service_items ENABLE ROW LEVEL SECURITY;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow All admins') THEN
-        CREATE POLICY "Allow All admins" ON admins FOR ALL USING (true) WITH CHECK (true);
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow All customers') THEN
-        CREATE POLICY "Allow All customers" ON customers FOR ALL USING (true) WITH CHECK (true);
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow All vehicles') THEN
-        CREATE POLICY "Allow All vehicles" ON vehicles FOR ALL USING (true) WITH CHECK (true);
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow All services') THEN
-        CREATE POLICY "Allow All services" ON services FOR ALL USING (true) WITH CHECK (true);
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow All service_items') THEN
-        CREATE POLICY "Allow All service_items" ON service_items FOR ALL USING (true) WITH CHECK (true);
-    END IF;
-END $$;
+ALTER TABLE admins DISABLE ROW LEVEL SECURITY;
+ALTER TABLE customers DISABLE ROW LEVEL SECURITY;
+ALTER TABLE vehicles DISABLE ROW LEVEL SECURITY;
+ALTER TABLE services DISABLE ROW LEVEL SECURITY;
+ALTER TABLE service_items DISABLE ROW LEVEL SECURITY;
 
 -- ============================================================
 -- 7. SUPABASE STORAGE BUCKET: cjm-motor-files
