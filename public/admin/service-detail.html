@@ -40,36 +40,145 @@
         </button>
     </div>
 
-    <!-- Modal Edit Status & Mechanic -->
+    <!-- Modal Ubah Custom (Customer, Kendaraan, Service, Items, & Struk) -->
     <div id="modal-edit" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
-            <div class="flex items-center justify-between mb-4 border-b pb-3">
-                <h3 class="font-bold text-base text-blue-950">Ubah Status & Mekanik</h3>
-                <button type="button" onclick="closeEditModal()" class="text-slate-400"><span class="material-symbols-outlined text-xl">close</span></button>
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-base text-blue-950">Ubah Data Transaksi Service</h3>
+                <button type="button" onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
             </div>
-            <div class="flex flex-col gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Status Service</label>
-                    <select id="edit-status" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs font-bold bg-slate-50 outline-none">
-                        <option value="Menunggu">Menunggu</option>
-                        <option value="Proses">Proses</option>
-                        <option value="Selesai">Selesai</option>
-                        <option value="Diambil">Diambil</option>
-                        <option value="Dibatalkan">Dibatalkan</option>
-                    </select>
+
+            <form id="edit-form" onsubmit="event.preventDefault(); saveEdit();" class="flex flex-col gap-4">
+                <!-- 1. Data Customer -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Data Customer</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Customer</label>
+                            <input type="text" id="edit-cust-name" class="w-full h-10 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-white"/>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">No. HP</label>
+                            <input type="text" id="edit-cust-phone" class="w-full h-10 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-white"/>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Mekanik Penanggung Jawab</label>
-                    <input type="text" id="edit-mechanic" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none bg-slate-50"/>
+
+                <!-- 2. Data Kendaraan -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Data Kendaraan</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Merek</label>
+                            <select id="edit-brand" class="w-full h-10 border border-slate-300 rounded-xl px-2 text-xs outline-none focus:border-blue-900 bg-white font-semibold">
+                                <option value="Honda">Honda</option>
+                                <option value="Yamaha">Yamaha</option>
+                                <option value="Suzuki">Suzuki</option>
+                                <option value="Kawasaki">Kawasaki</option>
+                                <option value="Vespa">Vespa</option>
+                                <option value="TVS">TVS</option>
+                                <option value="Bajaj">Bajaj</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Tipe / Model</label>
+                            <input type="text" id="edit-model" class="w-full h-10 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-white"/>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Tahun</label>
+                            <input type="number" id="edit-year" placeholder="2024" class="w-full h-10 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-white"/>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Warna</label>
+                            <input type="text" id="edit-color" placeholder="Hitam / Merah" class="w-full h-10 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-white"/>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Service</label>
-                    <textarea id="edit-notes" rows="2" class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none bg-slate-50"></textarea>
+
+                <!-- 3. Data Service -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Informasi Service</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Status Service</label>
+                            <select id="edit-status" class="w-full h-10 border border-slate-300 rounded-xl px-2 text-xs font-bold bg-white outline-none">
+                                <option value="Menunggu">Menunggu</option>
+                                <option value="Proses">Proses</option>
+                                <option value="Selesai">Selesai</option>
+                                <option value="Diambil">Diambil</option>
+                                <option value="Dibatalkan">Dibatalkan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Jenis Service</label>
+                            <select id="edit-service-type" class="w-full h-10 border border-slate-300 rounded-xl px-2 text-xs font-semibold bg-white outline-none">
+                                <option value="Service Ringan">Service Ringan</option>
+                                <option value="Service Berat">Service Berat</option>
+                                <option value="Service CVT">Service CVT</option>
+                                <option value="Ganti Oli">Ganti Oli</option>
+                                <option value="Pemeriksaan Rutin">Pemeriksaan Rutin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Mekanik Penanggung Jawab</label>
+                        <input type="text" id="edit-mechanic" class="w-full h-10 border border-slate-300 rounded-xl px-3 text-xs outline-none bg-white"/>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Keluhan Pelanggan</label>
+                        <textarea id="edit-complaint" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs outline-none bg-white"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Catatan Internal</label>
+                        <textarea id="edit-notes" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs outline-none bg-white"></textarea>
+                    </div>
                 </div>
-                <div class="flex justify-end gap-2 mt-2">
-                    <button type="button" onclick="saveEdit()" class="h-11 px-6 bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold rounded-xl">Simpan Perubahan</button>
+
+                <!-- 4. Item Pekerjaan & Sparepart -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Item Pekerjaan & Sparepart</h4>
+                        <button type="button" onclick="addEditItemRow()" class="h-7 px-3 bg-blue-100 text-blue-950 rounded-lg text-xs font-bold flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            <span>Item</span>
+                        </button>
+                    </div>
+                    <div id="edit-items-container" class="flex flex-col gap-2">
+                        <!-- Dynamic items -->
+                    </div>
                 </div>
-            </div>
+
+                <!-- 5. Upload Foto Struk / Nota Service (Opsional) -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Foto Struk / Nota Service (Opsional)</h4>
+                    
+                    <div id="receipt-preview-box" class="hidden flex flex-col items-center gap-2 p-3 bg-white border rounded-xl">
+                        <img id="receipt-preview-img" src="" alt="Struk" class="h-32 object-contain rounded-lg border"/>
+                        <button type="button" onclick="removeReceiptPhoto()" class="text-xs text-red-600 font-bold hover:underline">Hapus Foto Struk</button>
+                    </div>
+
+                    <div class="relative">
+                        <input type="file" id="edit-receipt-input" accept="image/*" onchange="handleReceiptFileSelect(this)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-900 file:text-white hover:file:bg-blue-800 cursor-pointer"/>
+                    </div>
+                    <p class="text-[10px] text-slate-500">Unggah foto nota manual/struk fisik sebagai lampiran bukti service.</p>
+                </div>
+
+                <!-- Submit Action -->
+                <div class="flex justify-end gap-2 mt-2 pt-3 border-t">
+                    <button type="button" onclick="closeEditModal()" class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                    <button type="submit" id="btn-save-edit" class="h-11 px-6 bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold rounded-xl shadow-sm">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal Preview Struk -->
+    <div id="modal-lightbox" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex items-center justify-center p-4" onclick="closeLightbox()">
+        <div class="relative max-w-full max-h-full">
+            <img id="lightbox-img" src="" alt="Foto Struk" class="max-h-[85vh] max-w-full object-contain rounded-2xl shadow-2xl"/>
+            <p class="text-white text-xs text-center mt-2 font-bold">Klik di mana saja untuk menutup</p>
         </div>
     </div>
 
@@ -78,6 +187,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const serviceId = urlParams.get('id');
         let currentServiceData = null;
+        let uploadedReceiptBase64 = null;
 
         async function loadServiceDetail() {
             if (!serviceId) {
@@ -90,6 +200,7 @@
                 if (res.success && res.data) {
                     const s = res.data;
                     currentServiceData = s;
+                    uploadedReceiptBase64 = s.attachment_url || null;
                     
                     let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
                     if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
@@ -109,8 +220,8 @@
                                         <span class="material-symbols-outlined text-xs text-blue-300 cursor-pointer" onclick="navigator.clipboard.writeText('${s.service_code}')">content_copy</span>
                                     </div>
                                     <h2 class="text-xl font-extrabold tracking-widest uppercase mt-1">${s.plate_number}</h2>
-                                    <p class="text-xs font-semibold text-blue-100 mt-0.5">${s.brand} ${s.model}</p>
-                                    <p class="text-xs text-blue-200 mt-0.5">${s.customer_name || 'Umum'}</p>
+                                    <p class="text-xs font-semibold text-blue-100 mt-0.5">${s.brand} ${s.model} ${s.year ? `(${s.year})` : ''}</p>
+                                    <p class="text-xs text-blue-200 mt-0.5">${s.customer_name || 'Umum'} ${s.customer_phone ? `• ${s.customer_phone}` : ''}</p>
                                 </div>
                                 <div class="flex flex-col items-end gap-1">
                                     <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 shadow-sm">${s.status}</span>
@@ -160,6 +271,20 @@
                             </div>
                         </div>
 
+                        <!-- Foto Struk / Nota Service (If Exists) -->
+                        ${s.attachment_url ? `
+                            <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col gap-3">
+                                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Foto Struk / Nota Service</h3>
+                                <div class="relative group cursor-pointer border rounded-2xl overflow-hidden bg-slate-50 p-2 flex justify-center" onclick="openLightbox('${s.attachment_url}')">
+                                    <img src="${s.attachment_url}" alt="Nota Struk" class="h-44 object-contain rounded-xl"/>
+                                    <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-bold text-xs gap-1">
+                                        <span class="material-symbols-outlined text-base">zoom_in</span>
+                                        <span>Lihat Penuh</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+
                         <!-- Total Biaya Blue Container -->
                         <div class="bg-blue-50 border border-blue-100 rounded-3xl p-4 flex items-center justify-between">
                             <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">Total Biaya</span>
@@ -191,9 +316,33 @@
 
         function openEditModal() {
             if (!currentServiceData) return;
-            document.getElementById('edit-status').value = currentServiceData.status;
-            document.getElementById('edit-mechanic').value = currentServiceData.mechanic || '';
-            document.getElementById('edit-notes').value = currentServiceData.notes || '';
+            const s = currentServiceData;
+
+            document.getElementById('edit-cust-name').value = s.customer_name || '';
+            document.getElementById('edit-cust-phone').value = s.customer_phone || '';
+
+            document.getElementById('edit-brand').value = s.brand || 'Honda';
+            document.getElementById('edit-model').value = s.model || '';
+            document.getElementById('edit-year').value = s.year || '';
+            document.getElementById('edit-color').value = s.color || '';
+
+            document.getElementById('edit-status').value = s.status || 'Menunggu';
+            document.getElementById('edit-service-type').value = s.service_type || 'Service Ringan';
+            document.getElementById('edit-mechanic').value = s.mechanic || '';
+            document.getElementById('edit-complaint').value = s.complaint || '';
+            document.getElementById('edit-notes').value = s.notes || '';
+
+            const itemsContainer = document.getElementById('edit-items-container');
+            itemsContainer.innerHTML = '';
+            if (s.items && s.items.length > 0) {
+                s.items.forEach(it => addEditItemRow(it.item_name, it.item_type, it.price));
+            } else {
+                addEditItemRow();
+            }
+
+            uploadedReceiptBase64 = s.attachment_url || null;
+            updateReceiptPreviewView();
+
             document.getElementById('modal-edit').classList.remove('hidden');
         }
 
@@ -201,17 +350,97 @@
             document.getElementById('modal-edit').classList.add('hidden');
         }
 
+        function addEditItemRow(name = '', type = 'Jasa', price = '') {
+            const container = document.getElementById('edit-items-container');
+            const row = document.createElement('div');
+            row.className = 'edit-item-row grid grid-cols-12 gap-2 items-center bg-white p-2 rounded-xl border border-slate-200';
+            row.innerHTML = `
+                <div class="col-span-5"><input type="text" value="${name}" placeholder="Pemeriksaan / Oli" class="item-name w-full h-8 border border-slate-300 rounded-lg text-xs px-2 outline-none"/></div>
+                <div class="col-span-3">
+                    <select class="item-type w-full h-8 border border-slate-300 rounded-lg text-[11px] px-1 outline-none">
+                        <option value="Jasa" ${type === 'Jasa' ? 'selected' : ''}>Jasa</option>
+                        <option value="Sparepart" ${type === 'Sparepart' ? 'selected' : ''}>Sparepart</option>
+                        <option value="Oli" ${type === 'Oli' ? 'selected' : ''}>Oli</option>
+                    </select>
+                </div>
+                <div class="col-span-3"><input type="number" value="${price}" placeholder="Harga Rp" class="item-price w-full h-8 border border-slate-300 rounded-lg text-xs px-2 outline-none"/></div>
+                <div class="col-span-1 flex justify-end"><button type="button" onclick="this.closest('.edit-item-row').remove()" class="text-red-500 hover:text-red-700 p-1"><span class="material-symbols-outlined text-sm">delete</span></button></div>
+            `;
+            container.appendChild(row);
+        }
+
+        function handleReceiptFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedReceiptBase64 = e.target.result;
+                    updateReceiptPreviewView();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeReceiptPhoto() {
+            uploadedReceiptBase64 = null;
+            document.getElementById('edit-receipt-input').value = '';
+            updateReceiptPreviewView();
+        }
+
+        function updateReceiptPreviewView() {
+            const previewBox = document.getElementById('receipt-preview-box');
+            const previewImg = document.getElementById('receipt-preview-img');
+            if (uploadedReceiptBase64) {
+                previewImg.src = uploadedReceiptBase64;
+                previewBox.classList.remove('hidden');
+            } else {
+                previewImg.src = '';
+                previewBox.classList.add('hidden');
+            }
+        }
+
         async function saveEdit() {
+            const custName = document.getElementById('edit-cust-name').value.trim();
+            const custPhone = document.getElementById('edit-cust-phone').value.trim();
+
+            const brand = document.getElementById('edit-brand').value.trim();
+            const model = document.getElementById('edit-model').value.trim();
+            const year = document.getElementById('edit-year').value;
+            const color = document.getElementById('edit-color').value.trim();
+
             const status = document.getElementById('edit-status').value;
+            const serviceType = document.getElementById('edit-service-type').value;
             const mechanic = document.getElementById('edit-mechanic').value.trim();
+            const complaint = document.getElementById('edit-complaint').value.trim();
             const notes = document.getElementById('edit-notes').value.trim();
+
+            const itemRows = document.querySelectorAll('.edit-item-row');
+            const items = [];
+            itemRows.forEach(row => {
+                const name = row.querySelector('.item-name').value.trim();
+                const type = row.querySelector('.item-type').value;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                if (name) {
+                    items.push({ item_name: name, item_type: type, quantity: 1, price: price });
+                }
+            });
 
             try {
                 await apiRequest('/services/update', 'PUT', {
                     id: serviceId,
+                    customer_name: custName,
+                    customer_phone: custPhone,
+                    brand,
+                    model,
+                    year,
+                    color,
                     status,
+                    service_type: serviceType,
                     mechanic,
-                    notes
+                    complaint,
+                    notes,
+                    items,
+                    attachment_url: uploadedReceiptBase64
                 });
                 closeEditModal();
                 loadServiceDetail();
@@ -240,6 +469,15 @@
             } catch (err) {
                 alert(err.message);
             }
+        }
+
+        function openLightbox(url) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('modal-lightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('modal-lightbox').classList.add('hidden');
         }
 
         document.addEventListener('DOMContentLoaded', loadServiceDetail);

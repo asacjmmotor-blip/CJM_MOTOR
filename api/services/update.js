@@ -12,18 +12,28 @@ module.exports = async (req, res) => {
       return sendResponse(res, 400, false, 'ID Service wajib diisi.');
     }
 
-    const status = body.status;
-    const mechanic = body.mechanic;
-    const complaint = body.complaint;
-    const notes = body.notes;
+    // 1. Fetch current service to get vehicle_id & customer_id
+    const curSvc = await supabaseFetch(`services?id=eq.${serviceId}&select=*,vehicles(*)&limit=1`);
+    if (!curSvc.ok || !curSvc.data || curSvc.data.length === 0) {
+      return sendResponse(res, 404, false, 'Data service tidak ditemukan.');
+    }
+
+    const currentSvc = curSvc.data[0];
+    const vehicle = currentSvc.vehicles || {};
+    const vehicleId = currentSvc.vehicle_id;
+    const customerId = vehicle.customer_id;
+
+    // 2. Prepare updates for services table
+    const serviceUpdate = {};
+    if (body.status !== undefined) serviceUpdate.status = body.status;
+    if (body.service_type !== undefined) serviceUpdate.service_type = body.service_type;
+    if (body.mechanic !== undefined) serviceUpdate.mechanic = body.mechanic;
+    if (body.complaint !== undefined) serviceUpdate.complaint = body.complaint;
+    if (body.notes !== undefined) serviceUpdate.notes = body.notes;
+    if (body.attachment_url !== undefined) serviceUpdate.attachment_url = body.attachment_url;
+
+    // Items update & total_cost recalculation
     const items = Array.isArray(body.items) ? body.items : null;
-
-    const updatePayload = {};
-    if (status !== undefined) updatePayload.status = status;
-    if (mechanic !== undefined) updatePayload.mechanic = mechanic;
-    if (complaint !== undefined) updatePayload.complaint = complaint;
-    if (notes !== undefined) updatePayload.notes = notes;
-
     if (items !== null) {
       let totalCost = 0;
       items.forEach(it => {
@@ -31,9 +41,9 @@ module.exports = async (req, res) => {
         const price = parseFloat(it.price) || 0;
         totalCost += qty * price;
       });
-      updatePayload.total_cost = totalCost;
+      serviceUpdate.total_cost = totalCost;
 
-      // Delete existing service items and re-insert
+      // Delete old items and insert new ones
       await supabaseFetch(`service_items?service_id=eq.${serviceId}`, { method: 'DELETE' });
 
       if (items.length > 0) {
@@ -57,18 +67,40 @@ module.exports = async (req, res) => {
       }
     }
 
-    if (Object.keys(updatePayload).length > 0) {
-      const upd = await supabaseFetch(`services?id=eq.${serviceId}`, {
+    if (Object.keys(serviceUpdate).length > 0) {
+      await supabaseFetch(`services?id=eq.${serviceId}`, {
         method: 'PATCH',
-        body: updatePayload
+        body: serviceUpdate
       });
-
-      if (!upd.ok) {
-        return sendResponse(res, upd.status, false, 'Gagal menginstal pembaruan status service.');
-      }
     }
 
-    return sendResponse(res, 200, true, 'Status & Rincian Service berhasil diperbarui!');
+    // 3. Update Vehicle info if provided
+    const vehicleUpdate = {};
+    if (body.brand !== undefined) vehicleUpdate.brand = body.brand;
+    if (body.model !== undefined) vehicleUpdate.model = body.model;
+    if (body.year !== undefined) vehicleUpdate.year = body.year ? parseInt(body.year) : null;
+    if (body.color !== undefined) vehicleUpdate.color = body.color;
+
+    if (vehicleId && Object.keys(vehicleUpdate).length > 0) {
+      await supabaseFetch(`vehicles?id=eq.${vehicleId}`, {
+        method: 'PATCH',
+        body: vehicleUpdate
+      });
+    }
+
+    // 4. Update Customer info if provided
+    const customerUpdate = {};
+    if (body.customer_name !== undefined) customerUpdate.name = body.customer_name;
+    if (body.customer_phone !== undefined) customerUpdate.phone = body.customer_phone;
+
+    if (customerId && Object.keys(customerUpdate).length > 0) {
+      await supabaseFetch(`customers?id=eq.${customerId}`, {
+        method: 'PATCH',
+        body: customerUpdate
+      });
+    }
+
+    return sendResponse(res, 200, true, 'Data Service, Kendaraan, dan Customer berhasil diperbarui!');
   } catch (err) {
     return sendResponse(res, 500, false, 'Server Error: ' + err.message);
   }
