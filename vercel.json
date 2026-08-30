@@ -1,14 +1,34 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "source": "/cs",
+      "destination": "/public/cs/index.html"
+    },
+    {
+      "source": "/cs/result",
+      "destination": "/public/cs/result.html"
+    },
+    {
+      "source": "/cs/detail",
+      "destination": "/public/cs/detail.html"
+    },
+    {
+      "source": "/result",
+      "destination": "/public/cs/result.html"
+    },
+    {
+      "source": "/detail",
+      "destination": "/public/cs/detail.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ]
 }
