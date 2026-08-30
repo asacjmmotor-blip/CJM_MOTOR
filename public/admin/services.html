@@ -16,12 +16,12 @@
             <button id="menuToggle" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <h1 class="font-extrabold text-blue-950 text-lg">Daftar Service</h1>
+            <h1 class="font-extrabold text-blue-950 text-lg">Data Service</h1>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="openCreateModal()" class="h-9 px-3 bg-blue-900 text-white rounded-lg text-xs font-bold flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">add_circle</span>
-                <span>+ Service Baru</span>
+            <button onclick="openCreateModal()" class="h-10 px-4 bg-blue-900 hover:bg-blue-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
+                <span class="material-symbols-outlined text-base">add</span>
+                <span>Tambah Service Baru</span>
             </button>
             <button onclick="logout()" class="text-xs text-red-600 font-bold hover:underline p-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">logout</span>
@@ -52,16 +52,20 @@
 
     <!-- Main Content -->
     <main class="pt-20 px-4 max-w-4xl mx-auto md:ml-[280px] md:pt-24 pb-10">
-        <div class="flex gap-2 mb-4">
-            <input type="text" id="search-input" onkeyup="loadServices()" placeholder="Cari kode service / plat / customer..." class="w-full h-11 bg-white border border-slate-200 rounded-xl px-4 text-xs font-medium focus:border-blue-900 outline-none"/>
-            <select id="status-filter" onchange="loadServices()" class="h-11 border border-slate-200 rounded-xl px-3 text-xs bg-white focus:border-blue-900 outline-none">
-                <option value="">Semua Status</option>
-                <option value="Menunggu">Menunggu</option>
-                <option value="Dikerjakan">Dikerjakan</option>
-                <option value="Selesai">Selesai</option>
-                <option value="Diambil">Diambil</option>
-                <option value="Dibatalkan">Dibatalkan</option>
-            </select>
+        <!-- Search & Status Tabs -->
+        <div class="flex flex-col gap-3 mb-4">
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                <input type="text" id="search-input" onkeyup="loadServices()" placeholder="Cari nomor plat / nama customer / kode service..." class="w-full h-11 bg-white border border-slate-200 rounded-xl pl-10 pr-4 text-xs font-medium focus:border-blue-900 outline-none shadow-sm"/>
+            </div>
+
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                <button onclick="filterStatus('')" class="status-tab active px-3.5 py-2 rounded-xl font-bold bg-blue-900 text-white transition-colors">Semua</button>
+                <button onclick="filterStatus('Menunggu')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Menunggu</button>
+                <button onclick="filterStatus('Proses')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Proses</button>
+                <button onclick="filterStatus('Selesai')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Selesai</button>
+                <button onclick="filterStatus('Diambil')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Diambil</button>
+            </div>
         </div>
 
         <div id="service-list" class="flex flex-col gap-3">
@@ -69,59 +73,122 @@
         </div>
     </main>
 
-    <!-- Modal Form Intake Service & Kendaraan (Unified Flow) -->
+    <!-- Modal Form Intake Tambah Service Baru (4-Step Stepper) -->
     <div id="modal-service" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-4 border-b pb-3">
-                <h3 class="font-bold text-lg text-slate-900">Form Service Bengkel</h3>
-                <span id="step-indicator" class="text-xs font-bold bg-blue-50 text-blue-900 px-3 py-1 rounded-full">Step 1 dari 3</span>
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
+            <!-- Modal Header & Title -->
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-base text-blue-950">Tambah Service Baru</h3>
+                <button type="button" onclick="closeCreateModal()" class="text-slate-400 hover:text-slate-600">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <!-- Stepper Indicators -->
+            <div class="flex items-center justify-between mb-6 px-2">
+                <div class="flex flex-col items-center gap-1">
+                    <div id="step-node-1" class="w-8 h-8 rounded-full bg-blue-900 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">1</div>
+                    <span id="step-text-1" class="text-[10px] font-bold text-blue-900">Customer</span>
+                </div>
+                <div class="flex-1 h-[2px] bg-slate-200 mx-1"></div>
+                <div class="flex flex-col items-center gap-1">
+                    <div id="step-node-2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">2</div>
+                    <span id="step-text-2" class="text-[10px] font-bold text-slate-400">Kendaraan</span>
+                </div>
+                <div class="flex-1 h-[2px] bg-slate-200 mx-1"></div>
+                <div class="flex flex-col items-center gap-1">
+                    <div id="step-node-3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">3</div>
+                    <span id="step-text-3" class="text-[10px] font-bold text-slate-400">Service</span>
+                </div>
+                <div class="flex-1 h-[2px] bg-slate-200 mx-1"></div>
+                <div class="flex flex-col items-center gap-1">
+                    <div id="step-node-4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">4</div>
+                    <span id="step-text-4" class="text-[10px] font-bold text-slate-400">Review</span>
+                </div>
             </div>
 
             <form id="service-form" onsubmit="event.preventDefault();">
-                <!-- Step 1: Input & Cek Nomor Polisi -->
+                <!-- STEP 1: Data Customer & Kendaraan -->
                 <div id="step-1" class="flex flex-col gap-4">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 1: Pengecekan Kendaraan (Nomor Polisi)</h4>
-                    
                     <div>
-                        <label class="block text-xs font-bold text-blue-950 mb-1">Nomor Polisi Kendaraan <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <input type="text" id="srv-plate" oninput="checkPlateLive()" required class="nopol-input w-full h-12 border border-slate-300 rounded-xl px-4 text-base font-extrabold uppercase outline-none focus:border-blue-900 bg-slate-50" placeholder="Contoh: B 1234 ABC"/>
-                            <span id="check-spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 animate-spin">progress_activity</span>
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Data Customer</h4>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Customer</label>
+                                <input type="text" id="srv-cust-name" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Masukkan nama customer"/>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">No. HP</label>
+                                <div class="relative">
+                                    <input type="text" id="srv-cust-phone" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Masukkan nomor HP"/>
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">call</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Dynamic Notification Box for Plate Check -->
-                    <div id="plate-notify-box" class="hidden p-4 rounded-xl border text-xs leading-relaxed">
-                        <!-- Content inserted dynamically -->
-                    </div>
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Data Kendaraan</h4>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Plat <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <input type="text" id="srv-plate" oninput="checkPlateLive()" required class="nopol-input w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs font-extrabold uppercase outline-none focus:border-blue-900 bg-slate-50 tracking-wider" placeholder="Contoh: B 1234 ABC"/>
+                                    <span id="check-spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 animate-spin text-sm">progress_activity</span>
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">crop_free</span>
+                                </div>
+                            </div>
 
-                    <!-- Vehicle details (Auto-filled or manual for new vehicle) -->
-                    <div id="vehicle-fields-group" class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Merek Motor <span class="text-red-500">*</span></label>
-                            <input type="text" id="srv-brand" required class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Honda / Yamaha / Suzuki..."/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Model / Tipe <span class="text-red-500">*</span></label>
-                            <input type="text" id="srv-model" required class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Beat / NMAX / Vario..."/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Pemilik (Opsional)</label>
-                            <input type="text" id="srv-cust-name" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Budi Santoso"/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">No HP Pemilik (Opsional)</label>
-                            <input type="text" id="srv-cust-phone" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="08123456789"/>
+                            <div id="plate-notify-box" class="hidden p-3 rounded-xl border text-xs leading-relaxed"></div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Merek <span class="text-red-500">*</span></label>
+                                    <select id="srv-brand" required class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50">
+                                        <option value="">Pilih merek</option>
+                                        <option value="Honda">Honda</option>
+                                        <option value="Yamaha">Yamaha</option>
+                                        <option value="Suzuki">Suzuki</option>
+                                        <option value="Kawasaki">Kawasaki</option>
+                                        <option value="Vespa">Vespa</option>
+                                        <option value="TVS">TVS</option>
+                                        <option value="Bajaj">Bajaj</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Tipe / Model <span class="text-red-500">*</span></label>
+                                    <input type="text" id="srv-model" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Contoh: Beat, NMAX, Vario"/>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Tahun (Opsional)</label>
+                                <select id="srv-year" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50">
+                                    <option value="">Pilih tahun</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Step 2: Rincian Service & Keluhan -->
+                <!-- STEP 2: Rincian Service -->
                 <div id="step-2" class="hidden flex-col gap-4">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 2: Rincian Service & Mekanik</h4>
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Informasi Service</h4>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Service</label>
-                        <select id="srv-type" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Service <span class="text-red-500">*</span></label>
+                        <select id="srv-type" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50 font-semibold">
                             <option value="Service Ringan">Service Ringan</option>
                             <option value="Service Berat">Service Berat / Turun Mesin</option>
                             <option value="Service CVT">Service CVT</option>
@@ -130,42 +197,62 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Keluhan / Catatan Awal</label>
-                        <textarea id="srv-complaint" rows="2" class="w-full p-3 border border-slate-200 rounded-xl text-xs outline-none focus:border-blue-900" placeholder="Keluhan pelanggan..."></textarea>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Keluhan Pelanggan</label>
+                        <textarea id="srv-complaint" rows="3" class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Motor susah hidup, bunyi bising pada CVT..."></textarea>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Mekanik Penanggung Jawab</label>
-                            <input type="text" id="srv-mechanic" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Nama mekanik"/>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Status Awal</label>
-                            <select id="srv-status" class="w-full h-11 border border-slate-200 rounded-xl px-3 text-xs outline-none focus:border-blue-900">
-                                <option value="Menunggu">Menunggu</option>
-                                <option value="Dikerjakan">Dikerjakan</option>
-                            </select>
-                        </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Mekanik Penanggung Jawab</label>
+                        <input type="text" id="srv-mechanic" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Andi Setiawan"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan</label>
+                        <textarea id="srv-notes" rows="2" class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Catatan internal mekanik..."></textarea>
                     </div>
                 </div>
 
-                <!-- Step 3: Item Sparepart / Pekerjaan -->
+                <!-- STEP 3: Sparepart / Item Pekerjaan -->
                 <div id="step-3" class="hidden flex-col gap-4">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Step 3: Item Pekerjaan / Sparepart</h4>
-                    <div id="items-container" class="flex flex-col gap-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Item Pekerjaan & Sparepart</h4>
+                        <button type="button" onclick="addItemRow()" class="h-8 px-3 bg-blue-50 text-blue-900 hover:bg-blue-100 rounded-xl text-xs font-bold flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            <span>Item</span>
+                        </button>
+                    </div>
+                    <div id="items-container" class="flex flex-col gap-2">
                         <!-- Dynamic items -->
                     </div>
-                    <button type="button" onclick="addItemRow()" class="h-9 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1 self-start">
-                        <span class="material-symbols-outlined text-sm">add</span>
-                        <span>Tambah Item</span>
-                    </button>
                 </div>
 
-                <div class="flex justify-between items-center mt-6 border-t pt-4">
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="closeCreateModal()" class="h-10 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
-                        <button type="button" id="btn-back" onclick="prevStep()" class="h-10 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl hidden">Kembali</button>
+                <!-- STEP 4: Review & Simpan -->
+                <div id="step-4" class="hidden flex-col gap-4">
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Review & Konfirmasi Service</h4>
+                    
+                    <div class="bg-blue-950 text-white rounded-2xl p-4 text-xs flex flex-col gap-2">
+                        <div class="flex items-center justify-between border-b border-blue-900 pb-2">
+                            <span id="rev-plate" class="font-extrabold text-base tracking-wider uppercase">B 1234 ABC</span>
+                            <span id="rev-customer" class="font-semibold text-blue-200">Budi Santoso</span>
+                        </div>
+                        <p id="rev-vehicle" class="text-blue-100 font-medium">Honda Beat</p>
+                        <p id="rev-type" class="text-blue-200">Jenis Service: Service Ringan</p>
                     </div>
-                    <button type="button" id="btn-next" onclick="nextStep()" class="h-10 px-6 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-xl">Lanjut</button>
+
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-xs flex flex-col gap-2">
+                        <span class="font-bold text-slate-700">Rincian Item & Biaya:</span>
+                        <div id="rev-items-list" class="flex flex-col gap-1 text-slate-600"></div>
+                        <div class="border-t border-slate-200 pt-2 mt-1 flex justify-between font-extrabold text-sm text-slate-900">
+                            <span>Total Estimasi:</span>
+                            <span id="rev-total-cost" class="text-emerald-600">Rp0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Nav Buttons -->
+                <div class="flex justify-between items-center mt-6 border-t border-slate-100 pt-4">
+                    <button type="button" id="btn-back" onclick="prevStep()" class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
+                    <button type="button" id="btn-next" onclick="nextStep()" class="h-11 px-6 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-xl transition-colors shadow-sm active:scale-[0.98]">
+                        Lanjut: Data Service
+                    </button>
                 </div>
             </form>
         </div>
@@ -188,11 +275,27 @@
             drawerOverlay.classList.add('hidden');
         });
 
-        formatPlateInput(document.getElementById('srv-plate'));
+        if (typeof formatPlateInput === 'function') {
+            formatPlateInput(document.getElementById('srv-plate'));
+        }
 
         let currentStep = 1;
         let selectedVehicleId = null;
+        let selectedStatusFilter = '';
         let plateCheckDebounce = null;
+
+        function filterStatus(status) {
+            selectedStatusFilter = status;
+            document.querySelectorAll('.status-tab').forEach(btn => {
+                const text = btn.textContent.trim();
+                if ((status === '' && text === 'Semua') || text === status) {
+                    btn.className = 'status-tab px-3.5 py-2 rounded-xl font-bold bg-blue-900 text-white transition-colors';
+                } else {
+                    btn.className = 'status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors';
+                }
+            });
+            loadServices();
+        }
 
         async function checkPlateLive() {
             const plateInput = document.getElementById('srv-plate');
@@ -212,29 +315,33 @@
 
             plateCheckDebounce = setTimeout(async () => {
                 try {
-                    const res = await apiRequest(`/vehicles/search.php?nopol=${encodeURIComponent(val)}`);
+                    const res = await apiRequest(`/vehicles/search?q=${encodeURIComponent(val)}`);
                     spinner.classList.add('hidden');
 
-                    if (res.success && res.data && res.data.vehicle) {
-                        const veh = res.data.vehicle;
-                        const servicesCount = (res.data.services || []).length;
+                    if (res.success && res.data && res.data.length > 0) {
+                        const item = res.data[0];
+                        const veh = item.vehicle || item;
                         selectedVehicleId = veh.id;
 
                         // Auto fill fields
-                        document.getElementById('srv-brand').value = veh.brand || '';
-                        document.getElementById('srv-model').value = veh.model || '';
-                        document.getElementById('srv-cust-name').value = veh.customer_name || '';
-                        document.getElementById('srv-cust-phone').value = veh.customer_phone || '';
+                        if (veh.brand) document.getElementById('srv-brand').value = veh.brand;
+                        if (veh.model) document.getElementById('srv-model').value = veh.model;
+                        if (veh.year) document.getElementById('srv-year').value = veh.year;
+                        if (item.customer_name && item.customer_name !== 'Umum / Non-Member') {
+                            document.getElementById('srv-cust-name').value = item.customer_name;
+                        }
+                        if (item.customer_phone && item.customer_phone !== '-') {
+                            document.getElementById('srv-cust-phone').value = item.customer_phone;
+                        }
 
-                        notifyBox.className = 'p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-950 text-xs leading-relaxed';
+                        notifyBox.className = 'p-3 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-950 text-xs leading-relaxed';
                         notifyBox.innerHTML = `
                             <div class="flex items-start gap-2">
                                 <span class="material-symbols-outlined text-emerald-700 text-base font-bold">check_circle</span>
                                 <div>
-                                    <p class="font-bold text-emerald-900 text-xs uppercase">DATA KENDARAAN DITEMUKAN! (Pelanggan Lama)</p>
+                                    <p class="font-bold text-emerald-900 text-xs uppercase">KENDARAAN TERDAFTAR! (Pelanggan Lama)</p>
                                     <p class="mt-0.5 font-semibold text-emerald-800">${veh.plate_number} • ${veh.brand} ${veh.model}</p>
-                                    <p class="text-[11px] text-emerald-700 mt-0.5">Pemilik: ${veh.customer_name || 'Umum'} • Telah service <strong>${servicesCount} kali</strong> sebelumnya.</p>
-                                    <p class="text-[10px] text-emerald-600 mt-1">✓ Penambahan service ini akan otomatis dicatat sebagai service baru di hari berbeda.</p>
+                                    <p class="text-[11px] text-emerald-700 mt-0.5">Pemilik: ${item.customer_name || 'Umum'} • Riwayat: <strong>${item.history_count || 0} service</strong></p>
                                 </div>
                             </div>
                         `;
@@ -242,19 +349,13 @@
                     }
                 } catch (err) {
                     spinner.classList.add('hidden');
-                    // Vehicle not found -> new vehicle notification
-                    document.getElementById('srv-brand').value = '';
-                    document.getElementById('srv-model').value = '';
-                    document.getElementById('srv-cust-name').value = '';
-                    document.getElementById('srv-cust-phone').value = '';
-
-                    notifyBox.className = 'p-4 rounded-xl border border-blue-200 bg-blue-50 text-blue-950 text-xs leading-relaxed';
+                    notifyBox.className = 'p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-950 text-xs leading-relaxed';
                     notifyBox.innerHTML = `
                         <div class="flex items-start gap-2">
                             <span class="material-symbols-outlined text-blue-700 text-base font-bold">info</span>
                             <div>
-                                <p class="font-bold text-blue-900 text-xs uppercase">KENDARAAN BARU (Belum Terdaftar)</p>
-                                <p class="mt-0.5 text-blue-800">Plat nomor belum ada di sistem. Data kendaraan & service baru akan otomatis terdaftar bersamaan.</p>
+                                <p class="font-bold text-blue-900 text-xs uppercase">KENDARAAN BARU</p>
+                                <p class="mt-0.5 text-blue-800 text-[11px]">Plat nomor belum ada di database. Silakan lengkapi Merek & Model kendaraan.</p>
                             </div>
                         </div>
                     `;
@@ -265,34 +366,35 @@
 
         async function loadServices() {
             const q = document.getElementById('search-input').value.trim();
-            const status = document.getElementById('status-filter').value;
             try {
-                const res = await apiRequest(`/services/index.php?q=${encodeURIComponent(q)}&status=${encodeURIComponent(status)}`);
+                const res = await apiRequest(`/services/index?q=${encodeURIComponent(q)}&status=${encodeURIComponent(selectedStatusFilter)}`);
                 if (res.success) {
                     const list = document.getElementById('service-list');
                     if (res.data.length === 0) {
-                        list.innerHTML = '<div class="p-6 bg-white rounded-xl text-center text-xs text-slate-500 border">Tidak ada data service.</div>';
+                        list.innerHTML = '<div class="p-8 bg-white rounded-2xl text-center text-xs text-slate-500 border border-slate-200 font-semibold">Belum ada data service tercatat.</div>';
                         return;
                     }
                     list.innerHTML = res.data.map(s => {
-                        let statusColor = 'bg-yellow-100 text-yellow-800';
-                        if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800';
-                        if (s.status === 'Dikerjakan') statusColor = 'bg-blue-100 text-blue-800';
-                        if (s.status === 'Dibatalkan') statusColor = 'bg-red-100 text-red-800';
+                        let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
+                        if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                        if (s.status === 'Proses') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
+                        if (s.status === 'Dibatalkan') statusColor = 'bg-red-100 text-red-800 border-red-200';
+
+                        const formattedCost = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(s.total_cost || 0);
 
                         return `
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between hover:border-blue-300 transition-colors">
-                                <div>
+                            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-blue-300 transition-all cursor-pointer active:scale-[0.99]" onclick="window.location.href='service-detail.html?id=${s.id}'">
+                                <div class="flex flex-col gap-1">
                                     <div class="flex items-center gap-2">
-                                        <span class="font-extrabold text-blue-950 text-sm uppercase">${s.plate_number}</span>
-                                        <span class="text-xs font-mono text-slate-400">${s.service_code}</span>
+                                        <span class="font-extrabold text-blue-950 text-sm tracking-wider uppercase">${s.plate_number}</span>
+                                        <span class="text-[11px] font-bold text-slate-400">${s.service_code}</span>
                                     </div>
-                                    <p class="text-xs font-semibold text-slate-800 mt-1">${s.service_type} • ${s.brand} ${s.model}</p>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">${s.customer_name || 'Umum'} • ${s.service_date} ${s.mechanic ? `• Mekanik: ${s.mechanic}` : ''}</p>
+                                    <p class="text-xs font-bold text-slate-800">${s.service_type} • ${s.brand} ${s.model}</p>
+                                    <p class="text-[11px] text-slate-500">${s.customer_name || 'Umum'} • <span class="text-slate-400">${s.service_date}</span></p>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-bold px-2.5 py-1 rounded-full ${statusColor}">${s.status}</span>
-                                    <a href="service-detail.html?id=${s.id}" class="p-2 text-blue-900 hover:bg-blue-50 rounded-lg"><span class="material-symbols-outlined text-sm">visibility</span></a>
+                                <div class="flex flex-col items-end gap-1.5">
+                                    <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${statusColor}">${s.status}</span>
+                                    <span class="text-xs font-extrabold text-blue-900">${formattedCost} &gt;</span>
                                 </div>
                             </div>
                         `;
@@ -309,8 +411,12 @@
             document.getElementById('srv-plate').value = '';
             document.getElementById('srv-brand').value = '';
             document.getElementById('srv-model').value = '';
+            document.getElementById('srv-year').value = '';
             document.getElementById('srv-cust-name').value = '';
             document.getElementById('srv-cust-phone').value = '';
+            document.getElementById('srv-complaint').value = '';
+            document.getElementById('srv-mechanic').value = '';
+            document.getElementById('srv-notes').value = '';
             document.getElementById('plate-notify-box').classList.add('hidden');
             updateStepView();
             document.getElementById('items-container').innerHTML = '';
@@ -326,13 +432,29 @@
             document.getElementById('step-1').classList.toggle('hidden', currentStep !== 1);
             document.getElementById('step-2').classList.toggle('hidden', currentStep !== 2);
             document.getElementById('step-3').classList.toggle('hidden', currentStep !== 3);
-            document.getElementById('step-indicator').textContent = `Step ${currentStep} dari 3`;
+            document.getElementById('step-4').classList.toggle('hidden', currentStep !== 4);
+
+            for (let i = 1; i <= 4; i++) {
+                const node = document.getElementById(`step-node-${i}`);
+                const text = document.getElementById(`step-text-${i}`);
+                if (i <= currentStep) {
+                    node.className = 'w-8 h-8 rounded-full bg-blue-900 text-white font-extrabold text-xs flex items-center justify-center shadow-sm';
+                    text.className = 'text-[10px] font-bold text-blue-900';
+                } else {
+                    node.className = 'w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center';
+                    text.className = 'text-[10px] font-bold text-slate-400';
+                }
+            }
 
             const btnBack = document.getElementById('btn-back');
             const btnNext = document.getElementById('btn-next');
 
-            btnBack.classList.toggle('hidden', currentStep === 1);
-            btnNext.textContent = currentStep === 3 ? 'Simpan Service' : 'Lanjut';
+            btnBack.textContent = currentStep === 1 ? 'Batal' : 'Kembali';
+
+            if (currentStep === 1) btnNext.textContent = 'Lanjut: Data Service';
+            else if (currentStep === 2) btnNext.textContent = 'Lanjut: Sparepart / Pekerjaan';
+            else if (currentStep === 3) btnNext.textContent = 'Lanjut: Review';
+            else if (currentStep === 4) btnNext.textContent = 'Simpan Service Baru';
         }
 
         function nextStep() {
@@ -346,13 +468,16 @@
                     return;
                 }
                 if (!brand || !model) {
-                    alert('Merek dan Model motor wajib diisi.');
+                    alert('Merek dan Tipe / Model motor wajib diisi.');
                     return;
                 }
                 currentStep = 2;
             } else if (currentStep === 2) {
                 currentStep = 3;
             } else if (currentStep === 3) {
+                renderReview();
+                currentStep = 4;
+            } else if (currentStep === 4) {
                 saveService();
                 return;
             }
@@ -360,7 +485,9 @@
         }
 
         function prevStep() {
-            if (currentStep > 1) {
+            if (currentStep === 1) {
+                closeCreateModal();
+            } else {
                 currentStep--;
                 updateStepView();
             }
@@ -369,57 +496,89 @@
         function addItemRow() {
             const container = document.getElementById('items-container');
             const row = document.createElement('div');
-            row.className = 'item-row grid grid-cols-12 gap-2 items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100';
+            row.className = 'item-row grid grid-cols-12 gap-2 items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200';
             row.innerHTML = `
-                <div class="col-span-5"><input type="text" placeholder="Nama Sparepart/Jasa" class="item-name w-full h-9 border border-slate-200 rounded-lg text-xs px-2 outline-none"/></div>
+                <div class="col-span-5"><input type="text" placeholder="Pemeriksaan / Oli / Busi" class="item-name w-full h-9 border border-slate-300 rounded-lg text-xs px-2 outline-none focus:border-blue-900"/></div>
                 <div class="col-span-3">
-                    <select class="item-type w-full h-9 border border-slate-200 rounded-lg text-xs px-1 outline-none">
+                    <select class="item-type w-full h-9 border border-slate-300 rounded-lg text-xs px-1 outline-none">
                         <option value="Jasa">Jasa</option>
                         <option value="Sparepart">Sparepart</option>
                         <option value="Oli">Oli</option>
                     </select>
                 </div>
-                <div class="col-span-2"><input type="number" value="1" placeholder="Qty" class="item-qty w-full h-9 border border-slate-200 rounded-lg text-xs px-2 outline-none"/></div>
-                <div class="col-span-2 flex justify-end"><button type="button" onclick="this.closest('.item-row').remove()" class="text-red-500 hover:text-red-700"><span class="material-symbols-outlined text-sm">delete</span></button></div>
+                <div class="col-span-3"><input type="number" placeholder="Harga Rp" class="item-price w-full h-9 border border-slate-300 rounded-lg text-xs px-2 outline-none focus:border-blue-900"/></div>
+                <div class="col-span-1 flex justify-end"><button type="button" onclick="this.closest('.item-row').remove()" class="text-red-500 hover:text-red-700 p-1"><span class="material-symbols-outlined text-sm">delete</span></button></div>
             `;
             container.appendChild(row);
+        }
+
+        function renderReview() {
+            const plate = document.getElementById('srv-plate').value.trim();
+            const brand = document.getElementById('srv-brand').value.trim();
+            const model = document.getElementById('srv-model').value.trim();
+            const custName = document.getElementById('srv-cust-name').value.trim();
+            const serviceType = document.getElementById('srv-type').value;
+
+            document.getElementById('rev-plate').textContent = plate.toUpperCase();
+            document.getElementById('rev-customer').textContent = custName || 'Umum / Non-Member';
+            document.getElementById('rev-vehicle').textContent = `${brand} ${model}`;
+            document.getElementById('rev-type').textContent = `Jenis Service: ${serviceType}`;
+
+            const itemRows = document.querySelectorAll('.item-row');
+            let total = 0;
+            const itemsHtml = [];
+
+            itemRows.forEach(row => {
+                const name = row.querySelector('.item-name').value.trim();
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                if (name) {
+                    total += price;
+                    const priceFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(price);
+                    itemsHtml.push(`<div class="flex justify-between"><span>• ${name}</span><span class="font-bold text-slate-800">${priceFormatted}</span></div>`);
+                }
+            });
+
+            document.getElementById('rev-items-list').innerHTML = itemsHtml.length > 0 ? itemsHtml.join('') : '<span>- Tidak ada item tambahan</span>';
+            document.getElementById('rev-total-cost').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total);
         }
 
         async function saveService() {
             const plateNumber = document.getElementById('srv-plate').value.trim();
             const brand = document.getElementById('srv-brand').value.trim();
             const model = document.getElementById('srv-model').value.trim();
+            const year = document.getElementById('srv-year').value;
             const custName = document.getElementById('srv-cust-name').value.trim();
             const custPhone = document.getElementById('srv-cust-phone').value.trim();
 
             const serviceType = document.getElementById('srv-type').value;
             const complaint = document.getElementById('srv-complaint').value;
             const mechanic = document.getElementById('srv-mechanic').value;
-            const status = document.getElementById('srv-status').value;
+            const notes = document.getElementById('srv-notes').value;
 
             const itemRows = document.querySelectorAll('.item-row');
             const items = [];
             itemRows.forEach(row => {
                 const name = row.querySelector('.item-name').value.trim();
                 const type = row.querySelector('.item-type').value;
-                const qty = parseInt(row.querySelector('.item-qty').value) || 1;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
                 if (name) {
-                    items.push({ item_name: name, item_type: type, quantity: qty, price: 0 });
+                    items.push({ item_name: name, item_type: type, quantity: 1, price: price });
                 }
             });
 
             try {
-                await apiRequest('/services/create.php', 'POST', {
+                await apiRequest('/services/create', 'POST', {
                     vehicle_id: selectedVehicleId,
                     plate_number: plateNumber,
                     brand: brand,
                     model: model,
+                    year: year,
                     customer_name: custName,
                     customer_phone: custPhone,
                     service_type: serviceType,
                     complaint: complaint,
                     mechanic: mechanic,
-                    status: status,
+                    notes: notes,
                     items: items
                 });
                 closeCreateModal();
@@ -431,7 +590,7 @@
 
         async function logout() {
             try {
-                await apiRequest('/auth/logout.php', 'POST');
+                await apiRequest('/auth/logout', 'POST');
             } finally {
                 window.location.href = 'login.html';
             }
