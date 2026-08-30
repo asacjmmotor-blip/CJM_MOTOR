@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cjm-motor-v2';
+const CACHE_NAME = 'cjm-motor-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -36,33 +36,27 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event (Network First for API requests, Cache First / Network Fallback for static assets)
+// Fetch event (Network First for everything to prevent cached redirect loops)
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Network First for API calls
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(event.request);
-      })
-    );
+  // Exclude non-GET requests and Chrome Extensions/external assets from cache storage
+  if (event.request.method !== 'GET' || !url.origin.includes(self.location.origin)) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
-  // Stale While Revalidate / Cache First for Static Assets
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Fetch background update
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-          }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-      return fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const cacheCopy = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });

@@ -4,9 +4,19 @@
 
 let deferredPrompt = null;
 
-// Register Service Worker
+// Register Service Worker & Clean Old Caches
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    if (window.caches) {
+      caches.keys().then(keys => {
+        keys.forEach(key => {
+          if (key !== 'cjm-motor-v3') {
+            caches.delete(key).then(() => console.log('Deleted old cache:', key));
+          }
+        });
+      });
+    }
+
     navigator.serviceWorker.register('/sw.js')
       .then(reg => console.log('SW Registered:', reg.scope))
       .catch(err => console.warn('SW Reg Failed:', err));
