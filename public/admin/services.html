@@ -40,10 +40,12 @@
     <nav id="navigationDrawer"
         class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl h-full w-[280px] -translate-x-full transition-transform duration-300 flex flex-col py-6 px-4">
         <div class="mb-6 flex items-center gap-3 px-2">
-            <div class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold">A
+            <div id="drawer-avatar-box" class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold overflow-hidden shrink-0">
+                <span id="drawer-avatar-icon" class="material-symbols-outlined text-xl">person</span>
+                <img id="drawer-avatar-img" class="w-full h-full object-cover hidden"/>
             </div>
             <div>
-                <h2 class="font-bold text-slate-900 text-sm">Admin Bengkel</h2>
+                <h2 id="drawer-admin-name" class="font-bold text-slate-900 text-sm">Admin Bengkel</h2>
                 <p class="text-xs text-slate-500">System Operator</p>
             </div>
         </div>

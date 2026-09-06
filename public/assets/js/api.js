@@ -207,3 +207,39 @@ async function apiRequest(endpoint, method = 'GET', data = null, options = {}) {
     throw error;
   }
 }
+
+/**
+ * Automatically sync admin name & avatar image across all sidebar/drawers
+ */
+function syncAdminProfileUi() {
+  const savedName = localStorage.getItem('admin_name');
+  const savedPhoto = localStorage.getItem('admin_profile_photo');
+
+  if (savedName) {
+    const drawerNameEls = document.querySelectorAll('#drawer-admin-name, .drawer-admin-name');
+    drawerNameEls.forEach(el => {
+      el.textContent = savedName;
+    });
+  }
+
+  if (savedPhoto) {
+    const drawerImgEls = document.querySelectorAll('#drawer-avatar-img, .drawer-avatar-img');
+    const drawerIconEls = document.querySelectorAll('#drawer-avatar-icon, .drawer-avatar-icon');
+    
+    drawerImgEls.forEach(img => {
+      img.src = savedPhoto;
+      img.classList.remove('hidden');
+    });
+    drawerIconEls.forEach(icon => {
+      icon.classList.add('hidden');
+    });
+  }
+}
+
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncAdminProfileUi);
+  } else {
+    syncAdminProfileUi();
+  }
+}
