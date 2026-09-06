@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Profil & Ubah Password Admin - CJM Motor</title>
+    <title>Profil Admin - CJM Motor</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
     <link rel="stylesheet" href="../assets/css/style.css"/>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
+<body class="bg-slate-50 text-slate-900 min-h-screen font-sans">
     <!-- Top AppBar -->
     <header class="fixed top-0 w-full z-40 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4">
         <div class="flex items-center gap-3">
             <button id="menuToggle" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <h1 class="font-extrabold text-blue-950 text-lg">Profil & Keamanan Admin</h1>
+            <h1 class="font-extrabold text-blue-950 text-lg">PROFIL ADMIN</h1>
         </div>
         <button onclick="logout()" class="text-xs text-red-600 font-bold hover:underline p-2 flex items-center gap-1">
             <span class="material-symbols-outlined text-sm">logout</span>
@@ -47,59 +47,195 @@
         </ul>
     </nav>
 
-    <!-- Main Content -->
-    <main class="pt-20 px-4 max-w-xl mx-auto md:ml-[280px] md:pt-24 pb-10">
+    <!-- Main Content Stack -->
+    <main class="pt-20 px-4 max-w-xl mx-auto md:ml-[280px] md:pt-24 pb-12 flex flex-col gap-6">
         
-        <!-- Admin Profile Info Card -->
-        <div class="bg-blue-950 text-white rounded-2xl p-6 shadow-sm mb-6 flex items-center gap-4">
-            <div onclick="document.getElementById('profile-photo-input').click()" class="relative group w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center font-extrabold text-2xl shadow-inner cursor-pointer overflow-hidden border-2 border-blue-400/35">
-                <span id="prof-avatar-icon" class="material-symbols-outlined text-3xl">manage_accounts</span>
+        <!-- HEADER PROFIL ADMIN CARD -->
+        <div class="bg-blue-950 text-white rounded-3xl p-6 shadow-sm flex items-center gap-5">
+            <div onclick="document.getElementById('profile-photo-input').click()" class="relative group w-20 h-20 rounded-2xl bg-blue-800 text-white flex items-center justify-center font-extrabold text-3xl shadow-inner cursor-pointer overflow-hidden border-2 border-blue-400/40 shrink-0">
+                <span id="prof-avatar-icon" class="material-symbols-outlined text-4xl">person</span>
                 <img id="prof-avatar-img" class="w-full h-full object-cover hidden"/>
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                    <span class="material-symbols-outlined text-white text-base">photo_camera</span>
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <span class="material-symbols-outlined text-white text-lg">photo_camera</span>
                 </div>
             </div>
-            <div>
-                <h2 id="prof-name" class="text-lg font-bold">Admin Bengkel</h2>
-                <p id="prof-username" class="text-xs text-blue-200 mt-0.5">Username: admin</p>
-                <span class="inline-block mt-2 px-2.5 py-0.5 bg-blue-800 text-blue-100 text-[10px] font-bold rounded-full uppercase">System Administrator</span>
+            <div class="flex-1">
+                <h2 id="prof-name" class="text-xl font-bold">Admin Bengkel</h2>
+                <p id="prof-username" class="text-xs text-blue-200 font-medium mt-0.5">Username: admin</p>
+                <div class="mt-2">
+                    <span class="inline-block px-3 py-1 bg-blue-800/90 text-blue-100 text-[10px] font-extrabold rounded-full uppercase tracking-wider border border-blue-700">SYSTEM ADMINISTRATOR</span>
+                </div>
+                <p class="text-[11px] text-blue-300/90 mt-2.5 flex items-center gap-1.5 font-medium">
+                    <span class="material-symbols-outlined text-sm text-blue-400">schedule</span>
+                    <span id="prof-last-login">Terakhir Login: -</span>
+                </p>
             </div>
             <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="uploadProfilePhoto(this)"/>
         </div>
 
-        <!-- Form Ubah Password Card -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div class="flex items-center gap-2 mb-4 border-b pb-3">
-                <span class="material-symbols-outlined text-blue-900 font-bold">lock_reset</span>
-                <h3 class="font-bold text-slate-900 text-base">Ubah Password Admin</h3>
+        <!-- MENU PILIHAN PROFIL (LIST TEXT MENU) -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
+            <div class="p-4 bg-slate-50 border-b border-slate-100">
+                <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Pengaturan Profil & Sistem</h3>
+            </div>
+
+            <!-- Item 1: Informasi Bengkel -->
+            <button onclick="openModal('modal-workshop')" class="w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-900 flex items-center justify-center group-hover:bg-blue-900 group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-xl">storefront</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Informasi Bengkel</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Nama bengkel & nomor telepon operasional</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
+            </button>
+
+            <!-- Item 2: Ubah Password -->
+            <button onclick="openModal('modal-password')" class="w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-xl">lock</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Ubah Password</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Kelola kata sandi akun admin</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
+            </button>
+
+            <!-- Item 3: Edit Profil Admin -->
+            <button onclick="openModal('modal-profile-info')" class="w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-700 group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-xl">badge</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Edit Informasi Admin</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Nama lengkap & kontak administrator</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- MODAL 1: INFORMASI BENGKEL -->
+    <div id="modal-workshop" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-900">storefront</span>
+                    <h3 class="font-extrabold text-slate-900 text-base">Informasi Bengkel</h3>
+                </div>
+                <button type="button" onclick="closeModal('modal-workshop')" class="text-slate-400 hover:text-slate-600">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <div id="workshop-notify-msg" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
+
+            <form id="form-workshop-info" onsubmit="event.preventDefault(); handleWorkshopInfoSave();" class="flex flex-col gap-4">
+                <div>
+                    <label for="workshop-name" class="block text-xs font-bold text-slate-700 mb-1.5">Nama Bengkel <span class="text-red-500">*</span></label>
+                    <input type="text" id="workshop-name" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 font-semibold" placeholder="Bengkel CJM Motor"/>
+                </div>
+
+                <div>
+                    <label for="workshop-phone" class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Telepon</label>
+                    <input type="tel" id="workshop-phone" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="08xxxxxxxx"/>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-2">
+                    <button type="button" onclick="closeModal('modal-workshop')" class="h-11 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                    <button type="submit" id="btn-save-workshop" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98]">
+                        Simpan Informasi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: UBAH PASSWORD -->
+    <div id="modal-password" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-600">lock</span>
+                    <h3 class="font-extrabold text-slate-900 text-base">Ubah Password</h3>
+                </div>
+                <button type="button" onclick="closeModal('modal-password')" class="text-slate-400 hover:text-slate-600">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
             </div>
 
             <div id="notify-msg" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
 
             <form id="form-change-password" onsubmit="event.preventDefault(); handlePasswordChange();" class="flex flex-col gap-4">
                 <div>
-                    <label for="curr-pass" class="block text-xs font-bold text-slate-700 mb-1">Password Saat Ini <span class="text-red-500">*</span></label>
-                    <input type="password" id="curr-pass" required class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Masukkan password lama"/>
+                    <label for="curr-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Password Saat Ini <span class="text-red-500">*</span></label>
+                    <input type="password" id="curr-pass" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="••••••••••••••••"/>
                 </div>
 
                 <div>
-                    <label for="new-pass" class="block text-xs font-bold text-slate-700 mb-1">Password Baru <span class="text-red-500">*</span></label>
-                    <input type="password" id="new-pass" required minlength="6" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Minimal 6 karakter"/>
+                    <label for="new-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Password Baru <span class="text-red-500">*</span></label>
+                    <input type="password" id="new-pass" required minlength="6" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="••••••••••••••••"/>
                 </div>
 
                 <div>
-                    <label for="conf-pass" class="block text-xs font-bold text-slate-700 mb-1">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
-                    <input type="password" id="conf-pass" required minlength="6" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900" placeholder="Ketik ulang password baru"/>
+                    <label for="conf-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
+                    <input type="password" id="conf-pass" required minlength="6" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="••••••••••••••••"/>
                 </div>
 
                 <div class="flex justify-end gap-2 mt-2">
-                    <button type="submit" id="btn-save-pass" class="h-11 px-6 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-xl transition-colors active:scale-[0.98]">
-                        Simpan Password Baru
+                    <button type="button" onclick="closeModal('modal-password')" class="h-11 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                    <button type="submit" id="btn-save-pass" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98]">
+                        Simpan Password
                     </button>
                 </div>
             </form>
         </div>
-    </main>
+    </div>
+
+    <!-- MODAL 3: EDIT PROFIL ADMIN -->
+    <div id="modal-profile-info" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-700">badge</span>
+                    <h3 class="font-extrabold text-slate-900 text-base">Edit Informasi Admin</h3>
+                </div>
+                <button type="button" onclick="closeModal('modal-profile-info')" class="text-slate-400 hover:text-slate-600">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <div id="admin-notify-msg" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
+
+            <form id="form-admin-info" onsubmit="event.preventDefault(); handleAdminInfoSave();" class="flex flex-col gap-4">
+                <div>
+                    <label for="edit-name" class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap Admin <span class="text-red-500">*</span></label>
+                    <input type="text" id="edit-name" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 font-semibold" placeholder="Admin Bengkel"/>
+                </div>
+
+                <div>
+                    <label for="edit-phone" class="block text-xs font-bold text-slate-700 mb-1.5">No. HP Admin</label>
+                    <input type="tel" id="edit-phone" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="0812-xxxx-xxxx"/>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-2">
+                    <button type="button" onclick="closeModal('modal-profile-info')" class="h-11 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                    <button type="submit" id="btn-save-admin" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98]">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="../assets/js/api.js"></script>
     <script>
@@ -117,8 +253,16 @@
             drawerOverlay.classList.add('hidden');
         });
 
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
         async function loadProfile() {
-            // Load and render profile photo from localStorage
+            // Load saved avatar
             const savedPhoto = localStorage.getItem('admin_profile_photo');
             if (savedPhoto) {
                 document.getElementById('prof-avatar-img').src = savedPhoto;
@@ -130,12 +274,23 @@
                 document.getElementById('drawer-avatar-icon').classList.add('hidden');
             }
 
+            // Load saved workshop info
+            const savedWName = localStorage.getItem('workshop_name') || 'CJM Motor';
+            const savedWPhone = localStorage.getItem('workshop_phone') || '0812-3456-7890';
+            document.getElementById('workshop-name').value = savedWName;
+            document.getElementById('workshop-phone').value = savedWPhone;
+
             try {
-                const res = await apiRequest('/auth/profile.php');
+                const res = await apiRequest('/auth/profile');
                 if (res.success && res.data) {
-                    document.getElementById('prof-name').textContent = res.data.name || 'Admin Bengkel';
-                    document.getElementById('prof-username').textContent = `Username: ${res.data.username}`;
-                    document.getElementById('drawer-admin-name').textContent = res.data.name || 'Admin Bengkel';
+                    const d = res.data;
+                    document.getElementById('prof-name').textContent = d.name || 'Admin Bengkel';
+                    document.getElementById('prof-username').textContent = `Username: ${d.username}`;
+                    document.getElementById('drawer-admin-name').textContent = d.name || 'Admin Bengkel';
+                    document.getElementById('prof-last-login').textContent = `Terakhir Login: ${d.last_login || 'Hari ini'}`;
+
+                    document.getElementById('edit-name').value = d.name || 'Admin Bengkel';
+                    document.getElementById('edit-phone').value = d.phone || '0812-3456-7890';
                 }
             } catch (err) {
                 if (err.message.includes('Akses ditolak') || err.message.includes('Sesi')) {
@@ -151,7 +306,7 @@
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        const maxDim = 300; // Small profile avatar size
+                        const maxDim = 300;
                         let width = img.width;
                         let height = img.height;
 
@@ -174,7 +329,6 @@
                         const compressed = canvas.toDataURL('image/jpeg', 0.8);
                         localStorage.setItem('admin_profile_photo', compressed);
 
-                        // Update view immediately
                         document.getElementById('prof-avatar-img').src = compressed;
                         document.getElementById('prof-avatar-img').classList.remove('hidden');
                         document.getElementById('prof-avatar-icon').classList.add('hidden');
@@ -209,7 +363,7 @@
             btn.textContent = 'Memproses...';
 
             try {
-                const res = await apiRequest('/auth/profile.php', 'POST', {
+                const res = await apiRequest('/auth/profile', 'POST', {
                     action: 'change_password',
                     current_password: currPass,
                     new_password: newPass,
@@ -221,19 +375,90 @@
                 notify.classList.remove('hidden');
 
                 document.getElementById('form-change-password').reset();
+                setTimeout(() => closeModal('modal-password'), 1500);
             } catch (err) {
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
                 notify.textContent = err.message || 'Gagal mengubah password.';
                 notify.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Simpan Password Baru';
+                btn.textContent = 'Simpan Password';
+            }
+        }
+
+        async function handleWorkshopInfoSave() {
+            const wName = document.getElementById('workshop-name').value.trim();
+            const wPhone = document.getElementById('workshop-phone').value.trim();
+            const notify = document.getElementById('workshop-notify-msg');
+            const btn = document.getElementById('btn-save-workshop');
+
+            notify.classList.add('hidden');
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            try {
+                const res = await apiRequest('/auth/profile', 'POST', {
+                    action: 'update_workshop_info',
+                    workshop_name: wName,
+                    workshop_phone: wPhone
+                });
+
+                localStorage.setItem('workshop_name', wName);
+                localStorage.setItem('workshop_phone', wPhone);
+
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+                notify.textContent = res.message || 'Informasi bengkel berhasil disimpan!';
+                notify.classList.remove('hidden');
+
+                setTimeout(() => closeModal('modal-workshop'), 1500);
+            } catch (err) {
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
+                notify.textContent = err.message || 'Gagal menyimpan informasi bengkel.';
+                notify.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Simpan Informasi';
+            }
+        }
+
+        async function handleAdminInfoSave() {
+            const name = document.getElementById('edit-name').value.trim();
+            const phone = document.getElementById('edit-phone').value.trim();
+            const notify = document.getElementById('admin-notify-msg');
+            const btn = document.getElementById('btn-save-admin');
+
+            notify.classList.add('hidden');
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            try {
+                const res = await apiRequest('/auth/profile', 'POST', {
+                    action: 'update_admin_info',
+                    name: name,
+                    phone: phone
+                });
+
+                document.getElementById('prof-name').textContent = name;
+                document.getElementById('drawer-admin-name').textContent = name;
+
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+                notify.textContent = res.message || 'Data admin berhasil diperbarui!';
+                notify.classList.remove('hidden');
+
+                setTimeout(() => closeModal('modal-profile-info'), 1500);
+            } catch (err) {
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
+                notify.textContent = err.message || 'Gagal memperbarui data admin.';
+                notify.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Simpan Perubahan';
             }
         }
 
         async function logout() {
             try {
-                await apiRequest('/auth/logout.php', 'POST');
+                await apiRequest('/auth/logout', 'POST');
             } finally {
                 window.location.href = 'login.html';
             }

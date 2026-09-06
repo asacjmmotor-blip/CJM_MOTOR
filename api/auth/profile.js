@@ -1,13 +1,18 @@
-const { supabaseFetch, parseReqBody, sendResponse } = require('../_supabase');
+const { parseReqBody, sendResponse } = require('../_supabase');
 
 module.exports = async (req, res) => {
   const method = req.method;
 
   if (method === 'GET') {
+    const now = new Date();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+    const dateStr = `${String(now.getDate()).padStart(2, '0')} ${monthNames[now.getMonth()]} ${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
     return sendResponse(res, 200, true, 'Data profil admin.', {
       id: 1,
       username: 'admin',
-      name: 'Admin Bengkel'
+      name: 'Admin Bengkel',
+      last_login: dateStr
     });
   }
 
@@ -15,6 +20,20 @@ module.exports = async (req, res) => {
     try {
       const body = parseReqBody(req);
       const action = body.action || 'change_password';
+
+      if (action === 'update_workshop_info') {
+        const workshopName = (body.workshop_name || '').trim();
+        const workshopPhone = (body.workshop_phone || '').trim();
+
+        if (!workshopName) {
+          return sendResponse(res, 400, false, 'Nama bengkel wajib diisi.');
+        }
+
+        return sendResponse(res, 200, true, 'Informasi bengkel berhasil diperbarui!', {
+          workshop_name: workshopName,
+          workshop_phone: workshopPhone
+        });
+      }
 
       if (action === 'change_password') {
         const currentPassword = (body.current_password || '').trim();
