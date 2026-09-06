@@ -248,7 +248,13 @@ async function syncWorkshopInfoUi() {
 
   if (!wNameEl && !wAddrEl && !wPhoneEl) return;
 
-  // 1. Read from localStorage first (0ms instant render)
+  const hasCustomName = !!localStorage.getItem('workshop_name');
+  const hasCustomPhone = !!localStorage.getItem('workshop_phone');
+  const hasCustomAddress = !!localStorage.getItem('workshop_address');
+  const hasCustomOpen = !!localStorage.getItem('workshop_open_time');
+  const hasCustomClose = !!localStorage.getItem('workshop_close_time');
+  const hasCustomDays = !!localStorage.getItem('workshop_operating_days');
+
   let wName = localStorage.getItem('workshop_name') || 'CJM Motor';
   let wPhone = localStorage.getItem('workshop_phone') || '0812-3456-7890';
   let wAddress = localStorage.getItem('workshop_address') || 'Jl. Contoh No. 123 Jakarta';
@@ -270,24 +276,35 @@ async function syncWorkshopInfoUi() {
 
   applyData();
 
-  // 2. Fetch fresh profile from API in background if online
+  // Fetch from API only for missing keys
   try {
     const res = await apiRequest('/auth/profile', 'GET', null, { useCache: true });
     if (res && res.success && res.data) {
       const d = res.data;
-      if (d.workshop_name) wName = d.workshop_name;
-      if (d.workshop_phone) wPhone = d.workshop_phone;
-      if (d.workshop_address) wAddress = d.workshop_address;
-      if (d.workshop_open_time) wOpenTime = d.workshop_open_time;
-      if (d.workshop_close_time) wCloseTime = d.workshop_close_time;
-      if (d.workshop_operating_days) wDays = d.workshop_operating_days;
-
-      localStorage.setItem('workshop_name', wName);
-      localStorage.setItem('workshop_phone', wPhone);
-      localStorage.setItem('workshop_address', wAddress);
-      localStorage.setItem('workshop_open_time', wOpenTime);
-      localStorage.setItem('workshop_close_time', wCloseTime);
-      localStorage.setItem('workshop_operating_days', wDays);
+      if (!hasCustomName && d.workshop_name) {
+        wName = d.workshop_name;
+        localStorage.setItem('workshop_name', wName);
+      }
+      if (!hasCustomPhone && d.workshop_phone) {
+        wPhone = d.workshop_phone;
+        localStorage.setItem('workshop_phone', wPhone);
+      }
+      if (!hasCustomAddress && d.workshop_address) {
+        wAddress = d.workshop_address;
+        localStorage.setItem('workshop_address', wAddress);
+      }
+      if (!hasCustomOpen && d.workshop_open_time) {
+        wOpenTime = d.workshop_open_time;
+        localStorage.setItem('workshop_open_time', wOpenTime);
+      }
+      if (!hasCustomClose && d.workshop_close_time) {
+        wCloseTime = d.workshop_close_time;
+        localStorage.setItem('workshop_close_time', wCloseTime);
+      }
+      if (!hasCustomDays && d.workshop_operating_days) {
+        wDays = d.workshop_operating_days;
+        localStorage.setItem('workshop_operating_days', wDays);
+      }
 
       applyData();
     }

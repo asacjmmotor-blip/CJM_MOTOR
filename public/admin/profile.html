@@ -586,6 +586,10 @@
                 localStorage.setItem('workshop_close_time', wCloseTime);
                 localStorage.setItem('workshop_operating_days', wDays);
 
+                if (typeof syncWorkshopInfoUi === 'function') {
+                    syncWorkshopInfoUi();
+                }
+
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
                 notify.textContent = res.message || 'Informasi bengkel berhasil disimpan!';
                 notify.classList.remove('hidden');
