@@ -346,6 +346,14 @@
                 document.getElementById('drawer-avatar-icon').classList.add('hidden');
             }
 
+            // Load saved admin name & phone from localStorage first
+            const savedAdminName = localStorage.getItem('admin_name') || 'Admin Bengkel';
+            const savedAdminPhone = localStorage.getItem('admin_phone') || '0812-3456-7890';
+            document.getElementById('prof-name').textContent = savedAdminName;
+            document.getElementById('drawer-admin-name').textContent = savedAdminName;
+            document.getElementById('edit-name').value = savedAdminName;
+            document.getElementById('edit-phone').value = savedAdminPhone;
+
             // Load saved workshop info
             const savedWName = localStorage.getItem('workshop_name') || 'CJM Motor';
             const savedWPhone = localStorage.getItem('workshop_phone') || '0812-3456-7890';
@@ -365,35 +373,38 @@
                 const res = await apiRequest('/auth/profile');
                 if (res.success && res.data) {
                     const d = res.data;
-                    document.getElementById('prof-name').textContent = d.name || 'Admin Bengkel';
+                    const activeAdminName = localStorage.getItem('admin_name') || d.name || 'Admin Bengkel';
+                    const activeAdminPhone = localStorage.getItem('admin_phone') || d.phone || '0812-3456-7890';
+
+                    document.getElementById('prof-name').textContent = activeAdminName;
                     document.getElementById('prof-username').textContent = `Username: ${d.username}`;
-                    document.getElementById('drawer-admin-name').textContent = d.name || 'Admin Bengkel';
+                    document.getElementById('drawer-admin-name').textContent = activeAdminName;
                     document.getElementById('prof-last-login').textContent = `Terakhir Login: ${d.last_login || 'Hari ini'}`;
 
-                    document.getElementById('edit-name').value = d.name || 'Admin Bengkel';
-                    document.getElementById('edit-phone').value = d.phone || '0812-3456-7890';
+                    document.getElementById('edit-name').value = activeAdminName;
+                    document.getElementById('edit-phone').value = activeAdminPhone;
 
-                    if (d.workshop_name) {
+                    if (d.workshop_name && !localStorage.getItem('workshop_name')) {
                         document.getElementById('workshop-name').value = d.workshop_name;
                         localStorage.setItem('workshop_name', d.workshop_name);
                     }
-                    if (d.workshop_phone) {
+                    if (d.workshop_phone && !localStorage.getItem('workshop_phone')) {
                         document.getElementById('workshop-phone').value = d.workshop_phone;
                         localStorage.setItem('workshop_phone', d.workshop_phone);
                     }
-                    if (d.workshop_address) {
+                    if (d.workshop_address && !localStorage.getItem('workshop_address')) {
                         document.getElementById('workshop-address').value = d.workshop_address;
                         localStorage.setItem('workshop_address', d.workshop_address);
                     }
-                    if (d.workshop_open_time) {
+                    if (d.workshop_open_time && !localStorage.getItem('workshop_open_time')) {
                         document.getElementById('workshop-open-time').value = d.workshop_open_time;
                         localStorage.setItem('workshop_open_time', d.workshop_open_time);
                     }
-                    if (d.workshop_close_time) {
+                    if (d.workshop_close_time && !localStorage.getItem('workshop_close_time')) {
                         document.getElementById('workshop-close-time').value = d.workshop_close_time;
                         localStorage.setItem('workshop_close_time', d.workshop_close_time);
                     }
-                    if (d.workshop_operating_days) {
+                    if (d.workshop_operating_days && !localStorage.getItem('workshop_operating_days')) {
                         document.getElementById('workshop-days').value = d.workshop_operating_days;
                         localStorage.setItem('workshop_operating_days', d.workshop_operating_days);
                     }
@@ -608,6 +619,9 @@
                     name: name,
                     phone: phone
                 });
+
+                localStorage.setItem('admin_name', name);
+                localStorage.setItem('admin_phone', phone);
 
                 document.getElementById('prof-name').textContent = name;
                 document.getElementById('drawer-admin-name').textContent = name;
