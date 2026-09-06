@@ -38,7 +38,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. Pop Bar PIN (Tersembunyi Awalnya, Pop Up Ketika Nopol Diisi) -->
+                    <!-- 2. Pop Bar PIN (Tersembunyi Awalnya, Pop Up Ketika Klik Cari Nopol) -->
                     <div id="pin-container" class="hidden flex flex-col gap-1.5 transition-all duration-300 transform translate-y-[-10px] opacity-0">
                         <div class="p-3 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center gap-2 text-amber-900 text-xs font-semibold">
                             <span class="material-symbols-outlined text-amber-600 text-base shrink-0">key</span>
@@ -55,8 +55,8 @@
                 </div>
 
                 <button class="h-12 bg-blue-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-800 transition-colors active:scale-[0.98]" id="search-btn" type="submit">
-                    <span class="material-symbols-outlined" id="search-btn-icon">arrow_forward</span>
-                    <span id="search-btn-text">MASUKKAN NOMOR POLISI</span>
+                    <span class="material-symbols-outlined" id="search-btn-icon">search</span>
+                    <span id="search-btn-text">CARI RIWAYAT SERVICE</span>
                 </button>
             </form>
         </div>
@@ -79,51 +79,27 @@
         function checkNopolLive() {
             const nopolInput = document.getElementById('nopol');
             const pinContainer = document.getElementById('pin-container');
+            const errorMsg = document.getElementById('error-message');
             const btnText = document.getElementById('search-btn-text');
             const btnIcon = document.getElementById('search-btn-icon');
-            const errorMsg = document.getElementById('error-message');
             
             errorMsg.classList.add('hidden');
             const val = nopolInput.value.trim().replace(/\s+/g, '');
 
-            if (val.length >= 3) {
-                if (pinContainer.classList.contains('hidden')) {
-                    pinContainer.classList.remove('hidden');
-                    requestAnimationFrame(() => {
-                        pinContainer.classList.remove('translate-y-[-10px]', 'opacity-0');
-                        pinContainer.classList.add('translate-y-0', 'opacity-100');
-                    });
-                }
-                const pinVal = document.getElementById('pin').value.trim();
-                if (pinVal.length === 4) {
-                    btnText.textContent = 'CEK RIWAYAT SERVICE';
-                    btnIcon.textContent = 'search';
-                } else {
-                    btnText.textContent = 'MASUKKAN PIN 4 DIGIT';
-                    btnIcon.textContent = 'lock';
-                }
-            } else {
+            // Reset PIN container if Nopol becomes too short or cleared
+            if (val.length < 3 && !pinContainer.classList.contains('hidden')) {
                 pinContainer.classList.remove('translate-y-0', 'opacity-100');
                 pinContainer.classList.add('translate-y-[-10px]', 'opacity-0');
                 setTimeout(() => pinContainer.classList.add('hidden'), 200);
 
-                btnText.textContent = 'MASUKKAN NOMOR POLISI';
-                btnIcon.textContent = 'arrow_forward';
+                btnText.textContent = 'CARI RIWAYAT SERVICE';
+                btnIcon.textContent = 'search';
             }
         }
 
         function checkPinLive() {
-            const pinVal = document.getElementById('pin').value.trim();
-            const btnText = document.getElementById('search-btn-text');
-            const btnIcon = document.getElementById('search-btn-icon');
-
-            if (pinVal.length === 4) {
-                btnText.textContent = 'CEK RIWAYAT SERVICE';
-                btnIcon.textContent = 'search';
-            } else {
-                btnText.textContent = 'MASUKKAN PIN 4 DIGIT';
-                btnIcon.textContent = 'lock';
-            }
+            const errorMsg = document.getElementById('error-message');
+            errorMsg.classList.add('hidden');
         }
 
         async function handleSearch() {
@@ -132,23 +108,34 @@
             const pinContainer = document.getElementById('pin-container');
             const errorMsg = document.getElementById('error-message');
             const btn = document.getElementById('search-btn');
+            const btnText = document.getElementById('search-btn-text');
+            const btnIcon = document.getElementById('search-btn-icon');
             
             errorMsg.classList.add('hidden');
-            const val = nopolInput.value.trim();
+            const val = nopolInput.value.trim().replace(/\s+/g, '');
             const pinVal = pinInput.value.trim();
 
-            if (!val) {
-                errorMsg.textContent = 'Nomor Polisi wajib diisi.';
+            if (!val || val.length < 3) {
+                errorMsg.textContent = 'Masukkan nomor polisi yang valid (minimal 3 karakter).';
                 errorMsg.classList.remove('hidden');
+                nopolInput.focus();
                 return;
             }
 
-            if (pinContainer.classList.contains('hidden') || val.length < 3) {
-                errorMsg.textContent = 'Silakan masukkan nomor polisi yang valid terlebih dahulu.';
-                errorMsg.classList.remove('hidden');
-                return;
+            // LANGKAH 1: Jika container PIN belum muncul, tampilkan container PIN saat pencarian diklik
+            if (pinContainer.classList.contains('hidden')) {
+                pinContainer.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    pinContainer.classList.remove('translate-y-[-10px]', 'opacity-0');
+                    pinContainer.classList.add('translate-y-0', 'opacity-100');
+                });
+                pinInput.focus();
+                btnText.textContent = 'CEK RIWAYAT SERVICE';
+                btnIcon.textContent = 'key';
+                return; // Tunggu user memasukkan PIN 4 digit
             }
 
+            // LANGKAH 2: Jika container PIN sudah muncul, validasi 4-digit PIN
             if (!pinVal || pinVal.length < 4) {
                 errorMsg.textContent = 'PIN Akses 4-digit wajib diisi.';
                 errorMsg.classList.remove('hidden');
@@ -156,6 +143,7 @@
                 return;
             }
 
+            // LANGKAH 3: Jalankan pencarian ke API
             const originalContent = btn.innerHTML;
             btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Mencari...</span>`;
             btn.disabled = true;
