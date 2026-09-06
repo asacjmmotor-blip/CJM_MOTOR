@@ -27,27 +27,14 @@
 
         <!-- Search Card -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 w-full p-6 md:p-8">
-            <form id="search-form" class="flex flex-col gap-5" onsubmit="event.preventDefault(); handleSearch();">
+            <form id="search-form" class="flex flex-col gap-5" onsubmit="event.preventDefault(); openPinModal();">
                 <div class="flex flex-col gap-4">
                     <!-- 1. Nomor Polisi Kendaraan -->
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-xs font-bold text-slate-600 tracking-wider uppercase" for="nopol">1. NOMOR POLISI KENDARAAN</label>
+                        <label class="text-xs font-bold text-slate-600 tracking-wider uppercase" for="nopol">NOMOR POLISI KENDARAAN</label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">pin_drop</span>
-                            <input autocomplete="off" class="nopol-input w-full h-12 border border-slate-300 rounded-xl px-12 bg-slate-50 text-base font-extrabold text-blue-950 uppercase tracking-widest focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition-colors" id="nopol" name="nopol" placeholder="B 1234 ABC" required type="text" oninput="checkNopolLive()"/>
-                        </div>
-                    </div>
-
-                    <!-- 2. Pop Bar PIN (Tersembunyi Awalnya, Pop Up Ketika Klik Cari Nopol) -->
-                    <div id="pin-container" class="hidden flex flex-col gap-1.5 transition-all duration-300 transform translate-y-[-10px] opacity-0">
-                        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center gap-2 text-amber-900 text-xs font-semibold">
-                            <span class="material-symbols-outlined text-amber-600 text-base shrink-0">key</span>
-                            <span>Plat terdeteksi! Masukkan PIN 4-digit yang diberikan Admin:</span>
-                        </div>
-                        <label class="text-xs font-bold text-slate-600 tracking-wider uppercase mt-1" for="pin">2. PIN AKSES 4 DIGIT</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 font-bold">lock</span>
-                            <input autocomplete="off" class="w-full h-12 border border-amber-300 rounded-xl px-12 bg-amber-50/50 text-base font-extrabold text-blue-950 tracking-widest focus:border-blue-900 focus:ring-2 focus:ring-blue-900/20 outline-none transition-all" id="pin" name="pin" placeholder="1234" maxlength="4" pattern="[0-9]*" type="text" oninput="checkPinLive()"/>
+                            <input autocomplete="off" class="nopol-input w-full h-12 border border-slate-300 rounded-xl px-12 bg-slate-50 text-base font-extrabold text-blue-950 uppercase tracking-widest focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition-colors" id="nopol" name="nopol" placeholder="B 1234 ABC" required type="text" oninput="document.getElementById('error-message').classList.add('hidden')"/>
                         </div>
                     </div>
 
@@ -68,6 +55,63 @@
         </div>
     </main>
 
+    <!-- Modal Popup PIN Akses -->
+    <div id="pin-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0" onclick="if(event.target === this) closePinModal();">
+        <div id="pin-modal-card" class="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 relative transform transition-all duration-300 scale-95 opacity-0 flex flex-col items-center text-center">
+            
+            <!-- Close Button -->
+            <button onclick="closePinModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors outline-none" title="Tutup">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+
+            <!-- Modal Header Icon -->
+            <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-3 text-amber-600 shadow-sm">
+                <span class="material-symbols-outlined text-3xl font-bold">lock</span>
+            </div>
+
+            <!-- Title & Badge -->
+            <h3 class="text-lg font-extrabold text-blue-950">Masukkan PIN Akses</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Plat Kendaraan:</p>
+            <div class="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200/80 text-blue-950 font-black tracking-widest px-3 py-1 rounded-lg text-sm mt-1 mb-2 uppercase" id="modal-nopol-badge">
+                <span class="material-symbols-outlined text-sm text-blue-700">directions_car</span>
+                <span id="badge-nopol-text">B 1234 ABC</span>
+            </div>
+
+            <p class="text-xs text-slate-600 mb-4 px-2 leading-relaxed">
+                Masukkan 4-digit PIN unik yang diberikan oleh Admin Bengkel untuk melihat riwayat service.
+            </p>
+
+            <!-- PIN Form inside Modal -->
+            <form class="w-full flex flex-col gap-4" onsubmit="event.preventDefault(); submitSearchWithPin();">
+                <div class="relative">
+                    <input 
+                        autocomplete="off" 
+                        class="w-full h-14 border-2 border-amber-300 rounded-2xl bg-amber-50/50 text-center font-extrabold text-2xl tracking-[0.5em] text-blue-950 focus:border-blue-900 focus:ring-4 focus:ring-blue-900/10 outline-none transition-all placeholder:tracking-normal placeholder:text-slate-400 placeholder:text-sm" 
+                        id="modal-pin" 
+                        name="pin" 
+                        placeholder="----" 
+                        maxlength="4" 
+                        pattern="[0-9]*" 
+                        inputmode="numeric"
+                        type="password" 
+                        oninput="onModalPinInput()"
+                    />
+                </div>
+
+                <p class="text-xs text-red-600 hidden text-center font-semibold" id="modal-error-message"></p>
+
+                <button class="h-12 bg-blue-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-800 transition-all active:scale-[0.98] shadow-md shadow-blue-900/20" id="modal-submit-btn" type="submit">
+                    <span class="material-symbols-outlined">key</span>
+                    <span>VERIFIKASI & CARI</span>
+                </button>
+            </form>
+
+            <button onclick="closePinModal()" class="mt-3 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">
+                Batal / Ganti Plat Nomor
+            </button>
+        </div>
+    </div>
+
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/cs.js"></script>
     <script src="../assets/js/pwa.js"></script>
@@ -76,45 +120,17 @@
             formatPlateInput(document.getElementById('nopol'));
         }
 
-        function checkNopolLive() {
+        function openPinModal() {
             const nopolInput = document.getElementById('nopol');
-            const pinContainer = document.getElementById('pin-container');
             const errorMsg = document.getElementById('error-message');
-            const btnText = document.getElementById('search-btn-text');
-            const btnIcon = document.getElementById('search-btn-icon');
+            const modalErrorMsg = document.getElementById('modal-error-message');
+            const modalPinInput = document.getElementById('modal-pin');
             
             errorMsg.classList.add('hidden');
+            modalErrorMsg.classList.add('hidden');
+            modalPinInput.value = '';
+
             const val = nopolInput.value.trim().replace(/\s+/g, '');
-
-            // Reset PIN container if Nopol becomes too short or cleared
-            if (val.length < 3 && !pinContainer.classList.contains('hidden')) {
-                pinContainer.classList.remove('translate-y-0', 'opacity-100');
-                pinContainer.classList.add('translate-y-[-10px]', 'opacity-0');
-                setTimeout(() => pinContainer.classList.add('hidden'), 200);
-
-                btnText.textContent = 'CARI RIWAYAT SERVICE';
-                btnIcon.textContent = 'search';
-            }
-        }
-
-        function checkPinLive() {
-            const errorMsg = document.getElementById('error-message');
-            errorMsg.classList.add('hidden');
-        }
-
-        async function handleSearch() {
-            const nopolInput = document.getElementById('nopol');
-            const pinInput = document.getElementById('pin');
-            const pinContainer = document.getElementById('pin-container');
-            const errorMsg = document.getElementById('error-message');
-            const btn = document.getElementById('search-btn');
-            const btnText = document.getElementById('search-btn-text');
-            const btnIcon = document.getElementById('search-btn-icon');
-            
-            errorMsg.classList.add('hidden');
-            const val = nopolInput.value.trim().replace(/\s+/g, '');
-            const pinVal = pinInput.value.trim();
-
             if (!val || val.length < 3) {
                 errorMsg.textContent = 'Masukkan nomor polisi yang valid (minimal 3 karakter).';
                 errorMsg.classList.remove('hidden');
@@ -122,30 +138,62 @@
                 return;
             }
 
-            // LANGKAH 1: Jika container PIN belum muncul, tampilkan container PIN saat pencarian diklik
-            if (pinContainer.classList.contains('hidden')) {
-                pinContainer.classList.remove('hidden');
-                requestAnimationFrame(() => {
-                    pinContainer.classList.remove('translate-y-[-10px]', 'opacity-0');
-                    pinContainer.classList.add('translate-y-0', 'opacity-100');
-                });
-                pinInput.focus();
-                btnText.textContent = 'CEK RIWAYAT SERVICE';
-                btnIcon.textContent = 'key';
-                return; // Tunggu user memasukkan PIN 4 digit
-            }
+            document.getElementById('badge-nopol-text').textContent = nopolInput.value.toUpperCase().trim();
+            
+            const modal = document.getElementById('pin-modal');
+            const card = document.getElementById('pin-modal-card');
 
-            // LANGKAH 2: Jika container PIN sudah muncul, validasi 4-digit PIN
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            });
+
+            setTimeout(() => {
+                modalPinInput.focus();
+            }, 150);
+        }
+
+        function closePinModal() {
+            const modal = document.getElementById('pin-modal');
+            const card = document.getElementById('pin-modal-card');
+
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function onModalPinInput() {
+            const modalErrorMsg = document.getElementById('modal-error-message');
+            modalErrorMsg.classList.add('hidden');
+        }
+
+        async function submitSearchWithPin() {
+            const nopolInput = document.getElementById('nopol');
+            const modalPinInput = document.getElementById('modal-pin');
+            const modalErrorMsg = document.getElementById('modal-error-message');
+            const btn = document.getElementById('modal-submit-btn');
+
+            modalErrorMsg.classList.add('hidden');
+            const val = nopolInput.value.trim().replace(/\s+/g, '');
+            const pinVal = modalPinInput.value.trim();
+
             if (!pinVal || pinVal.length < 4) {
-                errorMsg.textContent = 'PIN Akses 4-digit wajib diisi.';
-                errorMsg.classList.remove('hidden');
-                pinInput.focus();
+                modalErrorMsg.textContent = 'PIN Akses 4-digit wajib diisi.';
+                modalErrorMsg.classList.remove('hidden');
+                modalPinInput.focus();
                 return;
             }
 
-            // LANGKAH 3: Jalankan pencarian ke API
             const originalContent = btn.innerHTML;
-            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Mencari...</span>`;
+            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span><span>Memverifikasi...</span>`;
             btn.disabled = true;
 
             try {
@@ -154,17 +202,26 @@
                     sessionStorage.setItem('cs_search_result', JSON.stringify(res.data[0]));
                     window.location.href = `/cs/result.html?q=${encodeURIComponent(val)}&pin=${encodeURIComponent(pinVal)}`;
                 } else {
-                    errorMsg.textContent = `Nomor Polisi "${val}" atau PIN Akses 4-digit tidak sesuai. Silakan minta PIN ke Admin.`;
-                    errorMsg.classList.remove('hidden');
+                    modalErrorMsg.textContent = `Nomor Polisi "${val}" atau PIN Akses 4-digit tidak sesuai. Silakan minta PIN ke Admin.`;
+                    modalErrorMsg.classList.remove('hidden');
                 }
             } catch (err) {
-                errorMsg.textContent = err.message || 'Nomor Polisi atau PIN Akses 4-digit tidak sesuai.';
-                errorMsg.classList.remove('hidden');
+                modalErrorMsg.textContent = err.message || 'Nomor Polisi atau PIN Akses 4-digit tidak sesuai.';
+                modalErrorMsg.classList.remove('hidden');
             } finally {
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
             }
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('pin-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    closePinModal();
+                }
+            }
+        });
     </script>
 </body>
 </html>
