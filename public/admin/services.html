@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Kelola Service - CJM Motor Admin</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-    <link rel="stylesheet" href="../assets/css/style.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
+
 <body class="bg-slate-50 text-slate-900 min-h-screen">
     <!-- Top AppBar -->
-    <header class="fixed top-0 w-full z-40 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4">
+    <header
+        class="fixed top-0 w-full z-40 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4">
         <div class="flex items-center gap-3">
             <button id="menuToggle" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
                 <span class="material-symbols-outlined">menu</span>
@@ -19,11 +23,13 @@
             <h1 class="font-extrabold text-blue-950 text-lg">Data Service</h1>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="openCreateModal()" class="h-10 px-4 bg-blue-900 hover:bg-blue-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
+            <button onclick="openCreateModal()"
+                class="h-10 px-4 bg-blue-900 hover:bg-blue-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
                 <span class="material-symbols-outlined text-base">add</span>
                 <span>Tambah Service Baru</span>
             </button>
-            <button onclick="logout()" class="text-xs text-red-600 font-bold hover:underline p-2 flex items-center gap-1">
+            <button onclick="logout()"
+                class="text-xs text-red-600 font-bold hover:underline p-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">logout</span>
             </button>
         </div>
@@ -31,9 +37,11 @@
 
     <!-- Sidebar / Offcanvas Drawer -->
     <div id="drawerOverlay" class="fixed inset-0 bg-slate-900/50 z-50 hidden"></div>
-    <nav id="navigationDrawer" class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl h-full w-[280px] -translate-x-full transition-transform duration-300 flex flex-col py-6 px-4">
+    <nav id="navigationDrawer"
+        class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl h-full w-[280px] -translate-x-full transition-transform duration-300 flex flex-col py-6 px-4">
         <div class="mb-6 flex items-center gap-3 px-2">
-            <div class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold">A</div>
+            <div class="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold">A
+            </div>
             <div>
                 <h2 class="font-bold text-slate-900 text-sm">Admin Bengkel</h2>
                 <p class="text-xs text-slate-500">System Operator</p>
@@ -41,12 +49,21 @@
         </div>
 
         <ul class="flex flex-col gap-1">
-            <li><a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-            <li><a href="vehicles.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">two_wheeler</span>Kendaraan</a></li>
-            <li><a href="services.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-900 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">build</span>Service</a></li>
-            <li><a href="reports.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">assessment</span>Laporan</a></li>
-            <li><a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">account_circle</span>Profil Admin</a></li>
-            <li class="mt-4 border-t pt-4"><button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">logout</span>Logout</button></li>
+            <li><a href="dashboard.html"
+                    class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span
+                        class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+            <li><a href="services.html"
+                    class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-900 font-bold rounded-xl text-sm"><span
+                        class="material-symbols-outlined">build</span>Service</a></li>
+            <li><a href="reports.html"
+                    class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span
+                        class="material-symbols-outlined">assessment</span>Laporan</a></li>
+            <li><a href="profile.html"
+                    class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span
+                        class="material-symbols-outlined">account_circle</span>Profil Admin</a></li>
+            <li class="mt-4 border-t pt-4"><button onclick="logout()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm"><span
+                        class="material-symbols-outlined">logout</span>Logout</button></li>
         </ul>
     </nav>
 
@@ -55,16 +72,22 @@
         <!-- Search & Status Tabs -->
         <div class="flex flex-col gap-3 mb-4">
             <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-                <input type="text" id="search-input" onkeyup="loadServices()" placeholder="Cari nomor plat / nama customer / kode service..." class="w-full h-11 bg-white border border-slate-200 rounded-xl pl-10 pr-4 text-xs font-medium focus:border-blue-900 outline-none shadow-sm"/>
+                <span
+                    class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                <input type="text" id="search-input" onkeyup="loadServices()"
+                    placeholder="Cari nomor plat / nama customer / kode service..."
+                    class="w-full h-11 bg-white border border-slate-200 rounded-xl pl-10 pr-4 text-xs font-medium focus:border-blue-900 outline-none shadow-sm" />
             </div>
 
             <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-                <button onclick="filterStatus('')" class="status-tab active px-3.5 py-2 rounded-xl font-bold bg-blue-900 text-white transition-colors">Semua</button>
-                <button onclick="filterStatus('Menunggu')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Menunggu</button>
-                <button onclick="filterStatus('Proses')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Proses</button>
-                <button onclick="filterStatus('Selesai')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Selesai</button>
-                <button onclick="filterStatus('Diambil')" class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Diambil</button>
+                <button onclick="filterStatus('')"
+                    class="status-tab active px-3.5 py-2 rounded-xl font-bold bg-blue-900 text-white transition-colors">Semua</button>
+                <button onclick="filterStatus('Menunggu')"
+                    class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Menunggu</button>
+                <button onclick="filterStatus('Proses')"
+                    class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Proses</button>
+                <button onclick="filterStatus('Selesai')"
+                    class="status-tab px-3.5 py-2 rounded-xl font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors">Selesai</button>
             </div>
         </div>
 
@@ -87,22 +110,30 @@
             <!-- Stepper Indicators -->
             <div class="flex items-center justify-between mb-6 px-2">
                 <div class="flex flex-col items-center gap-1">
-                    <div id="step-node-1" class="w-8 h-8 rounded-full bg-blue-900 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">1</div>
+                    <div id="step-node-1"
+                        class="w-8 h-8 rounded-full bg-blue-900 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                        1</div>
                     <span id="step-text-1" class="text-[10px] font-bold text-blue-900">Customer</span>
                 </div>
                 <div class="flex-1 h-[2px] bg-slate-200 mx-1"></div>
                 <div class="flex flex-col items-center gap-1">
-                    <div id="step-node-2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">2</div>
+                    <div id="step-node-2"
+                        class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">
+                        2</div>
                     <span id="step-text-2" class="text-[10px] font-bold text-slate-400">Kendaraan</span>
                 </div>
                 <div class="flex-1 h-[2px] bg-slate-200 mx-1"></div>
                 <div class="flex flex-col items-center gap-1">
-                    <div id="step-node-3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">3</div>
+                    <div id="step-node-3"
+                        class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">
+                        3</div>
                     <span id="step-text-3" class="text-[10px] font-bold text-slate-400">Service</span>
                 </div>
                 <div class="flex-1 h-[2px] bg-slate-200 mx-1"></div>
                 <div class="flex flex-col items-center gap-1">
-                    <div id="step-node-4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">4</div>
+                    <div id="step-node-4"
+                        class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">
+                        4</div>
                     <span id="step-text-4" class="text-[10px] font-bold text-slate-400">Review</span>
                 </div>
             </div>
@@ -111,40 +142,55 @@
                 <!-- STEP 1: Data Customer & Kendaraan -->
                 <div id="step-1" class="flex flex-col gap-4">
                     <div>
-                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Data Customer</h4>
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Data Customer
+                        </h4>
                         <div class="flex flex-col gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Nama Customer</label>
-                                <input type="text" id="srv-cust-name" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Masukkan nama customer"/>
+                                <input type="text" id="srv-cust-name"
+                                    class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50"
+                                    placeholder="Masukkan nama customer" />
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">No. HP</label>
                                 <div class="relative">
-                                    <input type="text" id="srv-cust-phone" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Masukkan nomor HP"/>
-                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">call</span>
+                                    <input type="text" id="srv-cust-phone"
+                                        class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50"
+                                        placeholder="Masukkan nomor HP" />
+                                    <span
+                                        class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">call</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="border-t border-slate-100 pt-3">
-                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Data Kendaraan</h4>
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Data Kendaraan
+                        </h4>
                         <div class="flex flex-col gap-3">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Plat <span class="text-red-500">*</span></label>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Plat <span
+                                        class="text-red-500">*</span></label>
                                 <div class="relative">
-                                    <input type="text" id="srv-plate" oninput="checkPlateLive()" required class="nopol-input w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs font-extrabold uppercase outline-none focus:border-blue-900 bg-slate-50 tracking-wider" placeholder="Contoh: B 1234 ABC"/>
-                                    <span id="check-spinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 animate-spin text-sm">progress_activity</span>
-                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">crop_free</span>
+                                    <input type="text" id="srv-plate" oninput="checkPlateLive()" required
+                                        class="nopol-input w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs font-extrabold uppercase outline-none focus:border-blue-900 bg-slate-50 tracking-wider"
+                                        placeholder="Contoh: B 1234 ABC" />
+                                    <span id="check-spinner"
+                                        class="hidden absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 animate-spin text-sm">progress_activity</span>
+                                    <span
+                                        class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">crop_free</span>
                                 </div>
                             </div>
 
-                            <div id="plate-notify-box" class="hidden p-3 rounded-xl border text-xs leading-relaxed"></div>
+                            <div id="plate-notify-box" class="hidden p-3 rounded-xl border text-xs leading-relaxed">
+                            </div>
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">Merek <span class="text-red-500">*</span></label>
-                                    <select id="srv-brand" required class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50">
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Merek <span
+                                            class="text-red-500">*</span></label>
+                                    <select id="srv-brand" required
+                                        class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50">
                                         <option value="">Pilih merek</option>
                                         <option value="Honda">Honda</option>
                                         <option value="Yamaha">Yamaha</option>
@@ -156,14 +202,18 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">Tipe / Model <span class="text-red-500">*</span></label>
-                                    <input type="text" id="srv-model" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Contoh: Beat, NMAX, Vario"/>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Tipe / Model <span
+                                            class="text-red-500">*</span></label>
+                                    <input type="text" id="srv-model" required
+                                        class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50"
+                                        placeholder="Contoh: Beat, NMAX, Vario" />
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Tahun (Opsional)</label>
-                                <select id="srv-year" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50">
+                                <select id="srv-year"
+                                    class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50">
                                     <option value="">Pilih tahun</option>
                                     <option value="2026">2026</option>
                                     <option value="2025">2025</option>
@@ -177,6 +227,9 @@
                                     <option value="2017">2017</option>
                                     <option value="2016">2016</option>
                                     <option value="2015">2015</option>
+                                    <option value="2014">2014</option>
+                                    <option value="2013">2013</option>
+                                    <option value="2012">2012</option>
                                 </select>
                             </div>
                         </div>
@@ -185,10 +238,13 @@
 
                 <!-- STEP 2: Rincian Service -->
                 <div id="step-2" class="hidden flex-col gap-4">
-                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Informasi Service</h4>
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Informasi Service
+                    </h4>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Service <span class="text-red-500">*</span></label>
-                        <select id="srv-type" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50 font-semibold">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Service <span
+                                class="text-red-500">*</span></label>
+                        <select id="srv-type"
+                            class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 bg-slate-50 font-semibold">
                             <option value="Service Ringan">Service Ringan</option>
                             <option value="Service Berat">Service Berat / Turun Mesin</option>
                             <option value="Service CVT">Service CVT</option>
@@ -198,23 +254,51 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Keluhan Pelanggan</label>
-                        <textarea id="srv-complaint" rows="3" class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Motor susah hidup, bunyi bising pada CVT..."></textarea>
+                        <textarea id="srv-complaint" rows="3"
+                            class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none focus:border-blue-900 bg-slate-50"
+                            placeholder="Motor susah hidup, bunyi bising pada CVT..."></textarea>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Mekanik Penanggung Jawab</label>
-                        <input type="text" id="srv-mechanic" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Andi Setiawan"/>
+                        <input type="text" id="srv-mechanic"
+                            class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 bg-slate-50"
+                            placeholder="Andi Setiawan" />
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan</label>
-                        <textarea id="srv-notes" rows="2" class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none focus:border-blue-900 bg-slate-50" placeholder="Catatan internal mekanik..."></textarea>
+                        <textarea id="srv-notes" rows="2"
+                            class="w-full p-3 border border-slate-300 rounded-xl text-xs outline-none focus:border-blue-900 bg-slate-50"
+                            placeholder="Catatan internal mekanik..."></textarea>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-bold text-slate-700">PIN Akses CS (4 Digit) <span
+                                    class="text-red-500">*</span></label>
+                            <button type="button" onclick="generateNewPin()"
+                                class="text-[10px] text-blue-900 font-bold hover:underline flex items-center gap-0.5">
+                                <span class="material-symbols-outlined text-xs">autorenew</span>
+                                <span>Acak PIN</span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="srv-pin" maxlength="4" pattern="[0-9]*"
+                                class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-sm font-extrabold text-blue-950 tracking-widest outline-none focus:border-blue-900 bg-amber-50/50"
+                                placeholder="1234" />
+                            <span
+                                class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">lock</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-1">PIN unik 4 digit ini berguna bagi pelanggan untuk
+                            mengecek status service secara mandiri di portal CS.</p>
                     </div>
                 </div>
 
                 <!-- STEP 3: Sparepart / Item Pekerjaan -->
                 <div id="step-3" class="hidden flex-col gap-4">
                     <div class="flex items-center justify-between mb-2">
-                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Item Pekerjaan & Sparepart</h4>
-                        <button type="button" onclick="addItemRow()" class="h-8 px-3 bg-blue-50 text-blue-900 hover:bg-blue-100 rounded-xl text-xs font-bold flex items-center gap-1">
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Item Pekerjaan &
+                            Sparepart</h4>
+                        <button type="button" onclick="addItemRow()"
+                            class="h-8 px-3 bg-blue-50 text-blue-900 hover:bg-blue-100 rounded-xl text-xs font-bold flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">add</span>
                             <span>Item</span>
                         </button>
@@ -226,31 +310,112 @@
 
                 <!-- STEP 4: Review & Simpan -->
                 <div id="step-4" class="hidden flex-col gap-4">
-                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Review & Konfirmasi Service</h4>
-                    
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Review & Konfirmasi
+                        Service</h4>
+
                     <div class="bg-blue-950 text-white rounded-2xl p-4 text-xs flex flex-col gap-2">
                         <div class="flex items-center justify-between border-b border-blue-900 pb-2">
-                            <span id="rev-plate" class="font-extrabold text-base tracking-wider uppercase">B 1234 ABC</span>
+                            <span id="rev-plate" class="font-extrabold text-base tracking-wider uppercase">B 1234
+                                ABC</span>
                             <span id="rev-customer" class="font-semibold text-blue-200">Budi Santoso</span>
                         </div>
                         <p id="rev-vehicle" class="text-blue-100 font-medium">Honda Beat</p>
                         <p id="rev-type" class="text-blue-200">Jenis Service: Service Ringan</p>
                     </div>
 
+                    <!-- PIN Akses CS Display -->
+                    <div
+                        class="bg-amber-50 rounded-2xl p-3.5 border border-amber-200 text-xs flex items-center justify-between shadow-xs">
+                        <div class="flex items-center gap-2.5">
+                            <div
+                                class="w-8 h-8 rounded-full bg-amber-200/70 text-amber-950 flex items-center justify-center font-bold">
+                                <span class="material-symbols-outlined text-base">pin</span>
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-amber-950 text-xs uppercase tracking-wider">PIN AKSES
+                                    PELANGGAN</p>
+                                <p class="text-[10px] text-amber-800">Tunjukkan PIN ini ke CS / Pelanggan</p>
+                            </div>
+                        </div>
+                        <span id="rev-pin-code"
+                            class="text-sm font-extrabold tracking-widest text-amber-950 bg-white px-3 py-1 rounded-xl border border-amber-300 shadow-2xs">----</span>
+                    </div>
+
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-xs flex flex-col gap-2">
                         <span class="font-bold text-slate-700">Rincian Item & Biaya:</span>
                         <div id="rev-items-list" class="flex flex-col gap-1 text-slate-600"></div>
-                        <div class="border-t border-slate-200 pt-2 mt-1 flex justify-between font-extrabold text-sm text-slate-900">
+                        <div
+                            class="border-t border-slate-200 pt-2 mt-1 flex justify-between font-extrabold text-sm text-slate-900">
                             <span>Total Estimasi:</span>
                             <span id="rev-total-cost" class="text-emerald-600">Rp0</span>
+                        </div>
+                    </div>
+
+                    <!-- Lampiran Foto (2 Opsi: Upload Berkas / Take Foto Kamera) -->
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-xs flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 flex items-center gap-1.5 text-xs">
+                                <span class="material-symbols-outlined text-base text-blue-900">photo_camera</span>
+                                <span>Foto Struk / Lampiran Service (Opsional)</span>
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-medium">Nota / Kondisi Motor</span>
+                        </div>
+
+                        <!-- Preview Box Jika Foto Dipilih -->
+                        <div id="rev-photo-preview-box"
+                            class="hidden flex flex-col items-center gap-2 p-3 bg-white border border-slate-200 rounded-xl shadow-xs">
+                            <img id="rev-photo-preview-img" src="" alt="Preview Foto"
+                                class="h-36 object-contain rounded-lg border border-slate-200 shadow-sm" />
+                            <div class="flex items-center justify-between w-full pt-1 border-t border-slate-100">
+                                <span class="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">verified</span>
+                                    <span>Foto Siap Diunggah</span>
+                                </span>
+                                <button type="button" onclick="removeReviewPhoto()"
+                                    class="text-xs text-red-600 font-bold hover:underline flex items-center gap-0.5">
+                                    <span class="material-symbols-outlined text-xs">delete</span>
+                                    <span>Hapus Foto</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2 Opsi Pilihan Input Foto -->
+                        <div class="grid grid-cols-2 gap-2.5" id="rev-photo-options">
+                            <!-- Opsi 1: Upload Berkas Foto -->
+                            <label
+                                class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 hover:border-blue-900 hover:bg-blue-50/50 rounded-xl cursor-pointer transition-all text-center group active:scale-[0.98]">
+                                <input type="file" id="rev-photo-file" accept="image/*"
+                                    onchange="handleReviewPhotoSelect(this)" class="hidden" />
+                                <div
+                                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center mb-1.5 group-hover:bg-blue-900 group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-lg">upload_file</span>
+                                </div>
+                                <span class="font-bold text-slate-800 text-xs">Unggah Berkas</span>
+                                <span class="text-[10px] text-slate-400 mt-0.5">Pilih dari HP / Galeri</span>
+                            </label>
+
+                            <!-- Opsi 2: Ambil Foto Kamera Langsung -->
+                            <label
+                                class="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 hover:border-emerald-700 hover:bg-emerald-50/50 rounded-xl cursor-pointer transition-all text-center group active:scale-[0.98]">
+                                <input type="file" id="rev-photo-camera" accept="image/*" capture="environment"
+                                    onchange="handleReviewPhotoSelect(this)" class="hidden" />
+                                <div
+                                    class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mb-1.5 group-hover:bg-emerald-800 group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-lg">photo_camera</span>
+                                </div>
+                                <span class="font-bold text-slate-800 text-xs">Ambil Foto Kamera</span>
+                                <span class="text-[10px] text-slate-400 mt-0.5">Kamera Langsung</span>
+                            </label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Footer Nav Buttons -->
                 <div class="flex justify-between items-center mt-6 border-t border-slate-100 pt-4">
-                    <button type="button" id="btn-back" onclick="prevStep()" class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
-                    <button type="button" id="btn-next" onclick="nextStep()" class="h-11 px-6 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-xl transition-colors shadow-sm active:scale-[0.98]">
+                    <button type="button" id="btn-back" onclick="prevStep()"
+                        class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
+                    <button type="button" id="btn-next" onclick="nextStep()"
+                        class="h-11 px-6 text-xs font-bold text-white bg-blue-900 hover:bg-blue-800 rounded-xl transition-colors shadow-sm active:scale-[0.98]">
                         Lanjut: Data Service
                     </button>
                 </div>
@@ -283,6 +448,66 @@
         let selectedVehicleId = null;
         let selectedStatusFilter = '';
         let plateCheckDebounce = null;
+        let uploadedReviewPhotoBase64 = null;
+
+        function handleReviewPhotoSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        const maxDim = 1024;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxDim || height > maxDim) {
+                            if (width > height) {
+                                height = Math.round((height * maxDim) / width);
+                                width = maxDim;
+                            } else {
+                                width = Math.round((width * maxDim) / height);
+                                height = maxDim;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        uploadedReviewPhotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        updateReviewPhotoPreview();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeReviewPhoto() {
+            uploadedReviewPhotoBase64 = null;
+            const fileEl = document.getElementById('rev-photo-file');
+            const camEl = document.getElementById('rev-photo-camera');
+            if (fileEl) fileEl.value = '';
+            if (camEl) camEl.value = '';
+            updateReviewPhotoPreview();
+        }
+
+        function updateReviewPhotoPreview() {
+            const previewBox = document.getElementById('rev-photo-preview-box');
+            const previewImg = document.getElementById('rev-photo-preview-img');
+            if (!previewBox || !previewImg) return;
+
+            if (uploadedReviewPhotoBase64) {
+                previewImg.src = uploadedReviewPhotoBase64;
+                previewBox.classList.remove('hidden');
+            } else {
+                previewImg.src = '';
+                previewBox.classList.add('hidden');
+            }
+        }
 
         function filterStatus(status) {
             selectedStatusFilter = status;
@@ -376,7 +601,7 @@
                     }
                     list.innerHTML = res.data.map(s => {
                         let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
-                        if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                        if (s.status === 'Selesai') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
                         if (s.status === 'Proses') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
                         if (s.status === 'Dibatalkan') statusColor = 'bg-red-100 text-red-800 border-red-200';
 
@@ -388,6 +613,8 @@
                                     <div class="flex items-center gap-2">
                                         <span class="font-extrabold text-blue-950 text-sm tracking-wider uppercase">${s.plate_number}</span>
                                         <span class="text-[11px] font-bold text-slate-400">${s.service_code}</span>
+                                        <span class="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200" title="PIN Akses Pelanggan"><span class="material-symbols-outlined text-xs">key</span> PIN: ${s.pin_code || '-'}</span>
+                                        ${s.attachment_url ? '<span class="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-blue-900 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200" title="Ada Lampiran Foto"><span class="material-symbols-outlined text-xs">photo_camera</span> Foto</span>' : ''}
                                     </div>
                                     <p class="text-xs font-bold text-slate-800">${s.service_type} • ${s.brand} ${s.model}</p>
                                     <p class="text-[11px] text-slate-500">${s.customer_name || 'Umum'} • <span class="text-slate-400">${s.service_date}</span></p>
@@ -405,6 +632,13 @@
             }
         }
 
+        function generateNewPin() {
+            const pin = Math.floor(1000 + Math.random() * 9000).toString();
+            const pinEl = document.getElementById('srv-pin');
+            if (pinEl) pinEl.value = pin;
+            return pin;
+        }
+
         function openCreateModal() {
             currentStep = 1;
             selectedVehicleId = null;
@@ -418,6 +652,8 @@
             document.getElementById('srv-mechanic').value = '';
             document.getElementById('srv-notes').value = '';
             document.getElementById('plate-notify-box').classList.add('hidden');
+            generateNewPin();
+            removeReviewPhoto();
             updateStepView();
             document.getElementById('items-container').innerHTML = '';
             addItemRow();
@@ -518,11 +754,13 @@
             const model = document.getElementById('srv-model').value.trim();
             const custName = document.getElementById('srv-cust-name').value.trim();
             const serviceType = document.getElementById('srv-type').value;
+            const pinCode = document.getElementById('srv-pin').value.trim();
 
             document.getElementById('rev-plate').textContent = plate.toUpperCase();
             document.getElementById('rev-customer').textContent = custName || 'Umum / Non-Member';
             document.getElementById('rev-vehicle').textContent = `${brand} ${model}`;
             document.getElementById('rev-type').textContent = `Jenis Service: ${serviceType}`;
+            document.getElementById('rev-pin-code').textContent = pinCode || '----';
 
             const itemRows = document.querySelectorAll('.item-row');
             let total = 0;
@@ -554,6 +792,7 @@
             const complaint = document.getElementById('srv-complaint').value;
             const mechanic = document.getElementById('srv-mechanic').value;
             const notes = document.getElementById('srv-notes').value;
+            const pinCode = document.getElementById('srv-pin').value.trim();
 
             const itemRows = document.querySelectorAll('.item-row');
             const items = [];
@@ -579,7 +818,9 @@
                     complaint: complaint,
                     mechanic: mechanic,
                     notes: notes,
-                    items: items
+                    items: items,
+                    attachment_url: uploadedReviewPhotoBase64,
+                    pin_code: pinCode
                 });
                 closeCreateModal();
                 loadServices();
@@ -599,4 +840,5 @@
         document.addEventListener('DOMContentLoaded', loadServices);
     </script>
 </body>
+
 </html>

@@ -44,7 +44,7 @@
                 if (res.success && res.data) {
                     const s = res.data;
                     let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
-                    if (s.status === 'Selesai' || s.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                    if (s.status === 'Selesai') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
                     if (s.status === 'Proses') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
                     if (s.status === 'Dibatalkan') statusColor = 'bg-red-100 text-red-800 border-red-200';
 

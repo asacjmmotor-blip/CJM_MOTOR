@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     allServices.forEach(s => {
       if (s.service_date === todayStr) todayCount++;
       if (s.status === 'Menunggu' || s.status === 'Proses') activeCount++;
-      if (s.status === 'Selesai' || s.status === 'Diambil') completedCount++;
+      if (s.status === 'Selesai') completedCount++;
     });
 
     // 3. Filter services by period
@@ -99,6 +99,40 @@ module.exports = async (req, res) => {
       };
     });
 
+    // 4. Calculate monthly revenue timeline (past 12 months)
+    const monthlyMap = {};
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+
+    allServices.forEach(s => {
+      const dateStr = s.service_date || (s.created_at ? s.created_at.slice(0, 10) : null);
+      if (!dateStr) return;
+      const ym = dateStr.slice(0, 7);
+      const items = s.service_items || [];
+      const cost = items.length > 0
+        ? items.reduce((acc, it) => acc + (parseFloat(it.subtotal) || 0), 0)
+        : (parseFloat(s.total_cost) || 0);
+
+      if (!monthlyMap[ym]) {
+        monthlyMap[ym] = { revenue: 0, count: 0 };
+      }
+      monthlyMap[ym].revenue += cost;
+      monthlyMap[ym].count += 1;
+    });
+
+    const monthlyRevenue = [];
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+      const dataForMonth = monthlyMap[ym] || { revenue: 0, count: 0 };
+      monthlyRevenue.push({
+        year_month: ym,
+        label: label,
+        revenue: dataForMonth.revenue,
+        count: dataForMonth.count
+      });
+    }
+
     return sendResponse(res, 200, true, 'Data laporan berhasil dimuat.', {
       total_customers: totalCustomers,
       total_vehicles: totalVehicles,
@@ -108,7 +142,8 @@ module.exports = async (req, res) => {
       period_revenue: periodRevenue,
       period: period,
       recent_services: recentServices,
-      report_items: reportItems
+      report_items: reportItems,
+      monthly_revenue: monthlyRevenue
     });
   } catch (err) {
     return sendResponse(res, 500, false, 'Server Error: ' + err.message);

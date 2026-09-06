@@ -17,6 +17,7 @@ module.exports = async (req, res) => {
     const complaint = (body.complaint || '').trim();
     const mechanic = (body.mechanic || '-').trim();
     const notes = (body.notes || '').trim();
+    const pinCode = (body.pin_code || Math.floor(1000 + Math.random() * 9000).toString()).trim();
     const items = Array.isArray(body.items) ? body.items : [];
 
     if (!rawPlate) {
@@ -124,7 +125,9 @@ module.exports = async (req, res) => {
         mechanic,
         status: 'Menunggu',
         notes,
-        total_cost: totalCost
+        total_cost: totalCost,
+        attachment_url: (body.attachment_url || '').trim() || null,
+        pin_code: pinCode
       }
     });
 
@@ -167,7 +170,8 @@ module.exports = async (req, res) => {
       id: serviceId,
       service_code: serviceCode,
       vehicle_id: vehicleId,
-      status: 'Menunggu'
+      status: 'Menunggu',
+      pin_code: pinCode
     });
   } catch (err) {
     return sendResponse(res, 500, false, 'Server Error: ' + err.message);

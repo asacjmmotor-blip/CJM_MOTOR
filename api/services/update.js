@@ -31,6 +31,7 @@ module.exports = async (req, res) => {
     if (body.complaint !== undefined) serviceUpdate.complaint = body.complaint;
     if (body.notes !== undefined) serviceUpdate.notes = body.notes;
     if (body.attachment_url !== undefined) serviceUpdate.attachment_url = body.attachment_url;
+    if (body.pin_code !== undefined) serviceUpdate.pin_code = body.pin_code;
 
     // Items update & total_cost recalculation
     const items = Array.isArray(body.items) ? body.items : null;

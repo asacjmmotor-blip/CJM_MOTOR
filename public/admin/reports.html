@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Laporan Operasional - CJM Motor Admin</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
     <link rel="stylesheet" href="../assets/css/style.css"/>
@@ -42,7 +43,6 @@
 
         <ul class="flex flex-col gap-1">
             <li><a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-            <li><a href="vehicles.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">two_wheeler</span>Kendaraan</a></li>
             <li><a href="services.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">build</span>Service</a></li>
             <li><a href="reports.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-900 font-bold rounded-xl text-sm"><span class="material-symbols-outlined">assessment</span>Laporan</a></li>
             <li><a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl text-sm"><span class="material-symbols-outlined">account_circle</span>Profil Admin</a></li>
@@ -80,6 +80,28 @@
             </div>
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-blue-300 text-4xl">payments</span>
+            </div>
+        </div>
+
+        <!-- Monthly Revenue Chart Section -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                <div>
+                    <h3 class="font-extrabold text-blue-950 text-base flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-700">query_stats</span>
+                        Grafik Pendapatan Bulanan
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Tren histori pendapatan per bulan (12 bulan terakhir)</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-bold text-slate-600">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span>Pendapatan (Rp)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="relative w-full h-64 sm:h-72">
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
@@ -154,6 +176,96 @@
         });
 
         let currentReportData = null;
+        let revenueChartInstance = null;
+
+        function renderRevenueChart(monthlyData) {
+            const ctx = document.getElementById('revenueChart');
+            if (!ctx) return;
+
+            if (revenueChartInstance) {
+                revenueChartInstance.destroy();
+            }
+
+            const labels = monthlyData.map(m => m.label);
+            const revenues = monthlyData.map(m => m.revenue);
+
+            const canvasCtx = ctx.getContext('2d');
+            const gradient = canvasCtx.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
+            gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+            revenueChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pendapatan (Rp)',
+                        data: revenues,
+                        borderColor: '#10b981',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#047857',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Inter', size: 12, weight: 'bold' },
+                            bodyFont: { family: 'Inter', size: 13 },
+                            padding: 12,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.parsed.y || 0;
+                                    const formatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+                                    return ` Pendapatan: ${formatted}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 11, weight: '600' },
+                                color: '#64748b'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#f1f5f9'
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 11, weight: '600' },
+                                color: '#64748b',
+                                callback: function(value) {
+                                    if (value >= 1000000) {
+                                        return 'Rp' + (value / 1000000).toFixed(1) + ' Jt';
+                                    } else if (value >= 1000) {
+                                        return 'Rp' + (value / 1000).toFixed(0) + ' Rb';
+                                    }
+                                    return 'Rp' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
         async function loadReports() {
             const period = document.getElementById('filter-period').value;
@@ -176,6 +288,10 @@
                     document.getElementById('rep-revenue').textContent = formattedRevenue;
                     document.getElementById('trans-count').textContent = `${d.report_items ? d.report_items.length : 0} Transaksi`;
 
+                    if (d.monthly_revenue && Array.isArray(d.monthly_revenue)) {
+                        renderRevenueChart(d.monthly_revenue);
+                    }
+
                     const items = d.report_items || [];
                     if (items.length === 0) {
                         tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400 font-semibold">Tidak ada data transaksi service pada periode ini.</td></tr>`;
@@ -184,7 +300,7 @@
 
                     tbody.innerHTML = items.map(it => {
                         let statusColor = 'bg-amber-100 text-amber-800 border-amber-200';
-                        if (it.status === 'Selesai' || it.status === 'Diambil') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                        if (it.status === 'Selesai') statusColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
                         if (it.status === 'Proses') statusColor = 'bg-blue-100 text-blue-800 border-blue-200';
                         if (it.status === 'Dibatalkan') statusColor = 'bg-red-100 text-red-800 border-red-200';
 

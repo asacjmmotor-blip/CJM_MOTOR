@@ -38,6 +38,7 @@ module.exports = async (req, res) => {
         notes: s.notes || '',
         total_cost: totalCost,
         attachment_url: s.attachment_url,
+        pin_code: s.pin_code || '-',
         vehicle_id: s.vehicle_id,
         plate_number: v.plate_number || '-',
         brand: v.brand || '-',

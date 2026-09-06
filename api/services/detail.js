@@ -1,7 +1,28 @@
-const { supabaseFetch, sendResponse } = require('../_supabase');
+const { supabaseFetch, parseReqBody, sendResponse } = require('../_supabase');
 
 module.exports = async (req, res) => {
-  if (req.method !== 'GET') {
+  const method = req.method;
+
+  if (method === 'DELETE') {
+    try {
+      const body = parseReqBody(req);
+      const id = req.query.id || (body ? body.id : null);
+      if (!id) {
+        return sendResponse(res, 400, false, 'ID Service wajib diisi.');
+      }
+
+      const del = await supabaseFetch(`services?id=eq.${id}`, { method: 'DELETE' });
+      if (!del.ok) {
+        return sendResponse(res, del.status, false, 'Gagal menghapus data service: ' + (del.data ? del.data.message : ''));
+      }
+
+      return sendResponse(res, 200, true, 'Data service berhasil dihapus!');
+    } catch (err) {
+      return sendResponse(res, 500, false, 'Server Error: ' + err.message);
+    }
+  }
+
+  if (method !== 'GET') {
     return sendResponse(res, 405, false, 'Metode request tidak diizinkan.');
   }
 
@@ -44,6 +65,7 @@ module.exports = async (req, res) => {
       notes: s.notes || '',
       total_cost: totalCost,
       attachment_url: s.attachment_url,
+      pin_code: s.pin_code || '-',
       vehicle_id: s.vehicle_id,
       plate_number: v.plate_number || '-',
       brand: v.brand || '-',

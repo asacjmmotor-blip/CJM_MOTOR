@@ -19,17 +19,31 @@ module.exports = async (req, res) => {
       return sendResponse(res, status, false, 'Gagal melakukan pencarian kendaraan: ' + (vehicles ? vehicles.message : ''));
     }
 
-    const results = (vehicles || []).filter(v => {
+    const reqPin = (req.query.pin || '').trim();
+
+    const filteredVehicles = (vehicles || []).filter(v => {
       const vCleanPlate = (v.plate_number || '').toUpperCase().replace(/\s+/g, '');
       const vBrand = (v.brand || '').toLowerCase();
       const vModel = (v.model || '').toLowerCase();
       const vCustName = v.customers ? (v.customers.name || '').toLowerCase() : '';
 
-      return vCleanPlate.includes(cleanQ) ||
-             vBrand.includes(q.toLowerCase()) ||
-             vModel.includes(q.toLowerCase()) ||
-             vCustName.includes(q.toLowerCase());
-    }).map(v => {
+      const matchQuery = vCleanPlate.includes(cleanQ) ||
+                         vBrand.includes(q.toLowerCase()) ||
+                         vModel.includes(q.toLowerCase()) ||
+                         vCustName.includes(q.toLowerCase());
+
+      if (!matchQuery) return false;
+
+      // PIN verification if PIN is supplied in request
+      if (reqPin) {
+        const hasMatchingPin = (v.services || []).some(s => s.pin_code && String(s.pin_code).trim() === reqPin);
+        if (!hasMatchingPin) return false;
+      }
+
+      return true;
+    });
+
+    const results = filteredVehicles.map(v => {
       const sortedServices = (v.services || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       return {
         id: v.id,

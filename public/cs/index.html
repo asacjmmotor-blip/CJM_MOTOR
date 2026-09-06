@@ -28,14 +28,26 @@
         <!-- Search Card -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 w-full p-6 md:p-8">
             <form id="search-form" class="flex flex-col gap-5" onsubmit="event.preventDefault(); handleSearch();">
-                <div class="flex flex-col gap-2">
-                    <label class="text-xs font-bold text-slate-500 tracking-wider text-center uppercase" for="nopol">MASUKKAN NOMOR POLISI</label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">pin_drop</span>
-                        <input autocomplete="off" class="nopol-input w-full h-12 border border-slate-300 rounded-xl px-12 bg-slate-50 text-lg font-extrabold text-blue-950 uppercase tracking-widest focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition-colors" id="nopol" name="nopol" placeholder="B 1234 ABC" required type="text"/>
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-600 tracking-wider uppercase" for="nopol">1. NOMOR POLISI KENDARAAN</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">pin_drop</span>
+                            <input autocomplete="off" class="nopol-input w-full h-12 border border-slate-300 rounded-xl px-12 bg-slate-50 text-base font-extrabold text-blue-950 uppercase tracking-widest focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition-colors" id="nopol" name="nopol" placeholder="B 1234 ABC" required type="text"/>
+                        </div>
                     </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-600 tracking-wider uppercase" for="pin">2. PIN AKSES 4 DIGIT</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                            <input autocomplete="off" class="w-full h-12 border border-slate-300 rounded-xl px-12 bg-amber-50/50 text-base font-extrabold text-blue-950 tracking-widest focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition-colors" id="pin" name="pin" placeholder="1234" maxlength="4" pattern="[0-9]*" required type="text"/>
+                        </div>
+                    </div>
+
                     <p class="text-xs text-red-600 hidden text-center mt-1 font-semibold" id="error-message"></p>
                 </div>
+
                 <button class="h-12 bg-blue-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-800 transition-colors active:scale-[0.98]" id="search-btn" type="submit">
                     <span class="material-symbols-outlined">search</span>
                     <span>CEK RIWAYAT SERVICE</span>
@@ -60,14 +72,22 @@
 
         async function handleSearch() {
             const nopolInput = document.getElementById('nopol');
+            const pinInput = document.getElementById('pin');
             const errorMsg = document.getElementById('error-message');
             const btn = document.getElementById('search-btn');
             
             errorMsg.classList.add('hidden');
             const val = nopolInput.value.trim();
+            const pinVal = pinInput.value.trim();
 
             if (!val) {
-                errorMsg.textContent = 'Nomor polisi wajib diisi.';
+                errorMsg.textContent = 'Nomor Polisi wajib diisi.';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            if (!pinVal || pinVal.length < 4) {
+                errorMsg.textContent = 'PIN Akses 4 digit wajib diisi.';
                 errorMsg.classList.remove('hidden');
                 return;
             }
@@ -77,16 +97,16 @@
             btn.disabled = true;
 
             try {
-                const res = await apiRequest(`/vehicles/search?q=${encodeURIComponent(val)}`);
+                const res = await apiRequest(`/vehicles/search?q=${encodeURIComponent(val)}&pin=${encodeURIComponent(pinVal)}`);
                 if (res.success && res.data && res.data.length > 0) {
                     sessionStorage.setItem('cs_search_result', JSON.stringify(res.data[0]));
-                    window.location.href = `/cs/result.html?q=${encodeURIComponent(val)}`;
+                    window.location.href = `/cs/result.html?q=${encodeURIComponent(val)}&pin=${encodeURIComponent(pinVal)}`;
                 } else {
-                    errorMsg.textContent = `Nomor Polisi "${val}" belum memiliki riwayat di database.`;
+                    errorMsg.textContent = `Nomor Polisi "${val}" atau PIN Akses 4-digit tidak sesuai. Silakan minta PIN ke Admin.`;
                     errorMsg.classList.remove('hidden');
                 }
             } catch (err) {
-                errorMsg.textContent = err.message || 'Nomor Polisi tidak ditemukan.';
+                errorMsg.textContent = err.message || 'Nomor Polisi atau PIN Akses 4-digit tidak sesuai.';
                 errorMsg.classList.remove('hidden');
             } finally {
                 btn.innerHTML = originalContent;

@@ -136,8 +136,9 @@ INSERT INTO vehicles (customer_id, plate_number, brand, model, year, color) VALU
 (2, 'B 5678 XYZ', 'Yamaha', 'NMAX', 2023, 'Putih')
 ON CONFLICT (plate_number) DO NOTHING;
 
--- 1. Menambahkan kolom attachment_url ke tabel services
+-- 1. Menambahkan kolom attachment_url dan pin_code ke tabel services
 ALTER TABLE services ADD COLUMN IF NOT EXISTS attachment_url TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS pin_code VARCHAR(10);
 
 -- 2. Memaksa Supabase me-reload cache schema secara instan
 NOTIFY pgrst, 'reload schema';
