@@ -69,10 +69,24 @@ module.exports = async (req, res) => {
     }
 
     if (Object.keys(serviceUpdate).length > 0) {
-      const updateSvc = await supabaseFetch(`services?id=eq.${serviceId}`, {
+      let updateSvc = await supabaseFetch(`services?id=eq.${serviceId}`, {
         method: 'PATCH',
         body: serviceUpdate
       });
+
+      // Fallback: If Supabase schema cache doesn't have 'pin_code' column yet, retry without pin_code
+      if (!updateSvc.ok && updateSvc.data && updateSvc.data.message && updateSvc.data.message.includes('pin_code') && serviceUpdate.pin_code !== undefined) {
+        delete serviceUpdate.pin_code;
+        if (Object.keys(serviceUpdate).length > 0) {
+          updateSvc = await supabaseFetch(`services?id=eq.${serviceId}`, {
+            method: 'PATCH',
+            body: serviceUpdate
+          });
+        } else {
+          updateSvc = { ok: true };
+        }
+      }
+
       if (!updateSvc.ok) {
         return sendResponse(res, updateSvc.status, false, 'Gagal memperbarui data service: ' + (updateSvc.data ? updateSvc.data.message : ''));
       }

@@ -114,7 +114,7 @@ module.exports = async (req, res) => {
     });
 
     // 3. Create Service Entry
-    const createSvc = await supabaseFetch('services', {
+    let createSvc = await supabaseFetch('services', {
       method: 'POST',
       body: {
         vehicle_id: vehicleId,
@@ -131,8 +131,26 @@ module.exports = async (req, res) => {
       }
     });
 
+    if (!createSvc.ok && createSvc.data && createSvc.data.message && createSvc.data.message.includes('pin_code')) {
+      createSvc = await supabaseFetch('services', {
+        method: 'POST',
+        body: {
+          vehicle_id: vehicleId,
+          service_code: serviceCode,
+          service_date: new Date().toISOString().slice(0, 10),
+          service_type: serviceType,
+          complaint,
+          mechanic,
+          status: 'Menunggu',
+          notes,
+          total_cost: totalCost,
+          attachment_url: (body.attachment_url || '').trim() || null
+        }
+      });
+    }
+
     if (!createSvc.ok) {
-      return sendResponse(res, createSvc.status, false, 'Gagal membuat service baru: ' + (createSvc.data.message || ''));
+      return sendResponse(res, createSvc.status, false, 'Gagal membuat service baru: ' + (createSvc.data ? createSvc.data.message : ''));
     }
 
     let service = Array.isArray(createSvc.data) ? createSvc.data[0] : createSvc.data;
