@@ -1,5 +1,8 @@
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).json({ success: true, message: 'OK' });
+  }
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Metode request tidak diizinkan.' });
   }

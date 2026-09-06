@@ -3,6 +3,10 @@ const { parseReqBody, sendResponse } = require('../_supabase');
 module.exports = async (req, res) => {
   const method = req.method;
 
+  if (method === 'OPTIONS') {
+    return sendResponse(res, 200, true, 'OK');
+  }
+
   if (method === 'GET') {
     const now = new Date();
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
@@ -26,6 +30,20 @@ module.exports = async (req, res) => {
     try {
       const body = parseReqBody(req);
       const action = body.action || 'change_password';
+
+      if (action === 'update_admin_info') {
+        const name = (body.name || '').trim();
+        const phone = (body.phone || '').trim();
+
+        if (!name) {
+          return sendResponse(res, 400, false, 'Nama admin wajib diisi.');
+        }
+
+        return sendResponse(res, 200, true, 'Data admin berhasil diperbarui!', {
+          name: name,
+          phone: phone
+        });
+      }
 
       if (action === 'update_workshop_info') {
         const workshopName = (body.workshop_name || '').trim();
@@ -68,6 +86,8 @@ module.exports = async (req, res) => {
 
         return sendResponse(res, 200, true, 'Password admin berhasil diperbarui.');
       }
+
+      return sendResponse(res, 400, false, `Aksi "${action}" tidak valid.`);
     } catch (err) {
       return sendResponse(res, 500, false, 'Server Error: ' + err.message);
     }

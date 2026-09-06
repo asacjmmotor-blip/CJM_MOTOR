@@ -2,6 +2,11 @@ const { supabaseFetch, parseReqBody, sendResponse } = require('../_supabase');
 
 module.exports = async (req, res) => {
   const method = req.method;
+
+  if (method === 'OPTIONS') {
+    return sendResponse(res, 200, true, 'OK');
+  }
+
   const id = req.query.id || (req.body ? req.body.id : null);
 
   if (method === 'GET') {

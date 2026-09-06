@@ -1,6 +1,9 @@
 const { supabaseFetch, sendResponse } = require('../_supabase');
 
 module.exports = async (req, res) => {
+  if (req.method === 'OPTIONS') {
+    return sendResponse(res, 200, true, 'OK');
+  }
   if (req.method !== 'GET') {
     return sendResponse(res, 405, false, 'Metode request tidak diizinkan.');
   }
