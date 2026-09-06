@@ -805,6 +805,7 @@
                 }
             });
 
+            showLoading('Mendaftarkan Service Baru...');
             try {
                 await apiRequest('/services/create', 'POST', {
                     vehicle_id: selectedVehicleId,
@@ -822,10 +823,13 @@
                     attachment_url: uploadedReviewPhotoBase64,
                     pin_code: pinCode
                 });
+                hideLoading();
                 closeCreateModal();
+                showToast('Service baru berhasil didaftarkan!', 'success');
                 loadServices();
             } catch (err) {
-                alert(err.message);
+                hideLoading();
+                showToast(err.message || 'Gagal mendaftarkan service baru.', 'error');
             }
         }
 

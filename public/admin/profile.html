@@ -370,16 +370,14 @@
                     confirm_password: confPass
                 });
 
-                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
-                notify.textContent = res.message || 'Password berhasil diubah!';
-                notify.classList.remove('hidden');
-
+                showToast(res.message || 'Password berhasil diubah!', 'success');
                 document.getElementById('form-change-password').reset();
-                setTimeout(() => closeModal('modal-password'), 1500);
+                setTimeout(() => closeModal('modal-password'), 1200);
             } catch (err) {
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
                 notify.textContent = err.message || 'Gagal mengubah password.';
                 notify.classList.remove('hidden');
+                showToast(err.message || 'Gagal mengubah password.', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Simpan Password';
@@ -410,11 +408,13 @@
                 notify.textContent = res.message || 'Informasi bengkel berhasil disimpan!';
                 notify.classList.remove('hidden');
 
-                setTimeout(() => closeModal('modal-workshop'), 1500);
+                showToast(res.message || 'Informasi bengkel berhasil disimpan!', 'success');
+                setTimeout(() => closeModal('modal-workshop'), 1200);
             } catch (err) {
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
                 notify.textContent = err.message || 'Gagal menyimpan informasi bengkel.';
                 notify.classList.remove('hidden');
+                showToast(err.message || 'Gagal menyimpan informasi bengkel.', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Simpan Informasi';
@@ -445,11 +445,13 @@
                 notify.textContent = res.message || 'Data admin berhasil diperbarui!';
                 notify.classList.remove('hidden');
 
-                setTimeout(() => closeModal('modal-profile-info'), 1500);
+                showToast(res.message || 'Data admin berhasil diperbarui!', 'success');
+                setTimeout(() => closeModal('modal-profile-info'), 1200);
             } catch (err) {
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
                 notify.textContent = err.message || 'Gagal memperbarui data admin.';
                 notify.classList.remove('hidden');
+                showToast(err.message || 'Gagal memperbarui data admin.', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Simpan Perubahan';

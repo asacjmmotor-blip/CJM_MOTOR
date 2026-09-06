@@ -475,6 +475,7 @@
                 }
             });
 
+            showLoading('Menyimpan Perubahan Service...');
             try {
                 await apiRequest('/services/update', 'PUT', {
                     id: serviceId,
@@ -493,32 +494,43 @@
                     attachment_url: uploadedReceiptBase64,
                     pin_code: pinCode
                 });
+                hideLoading();
                 closeEditModal();
+                showToast('Perubahan data service berhasil disimpan!', 'success');
                 loadServiceDetail();
             } catch (err) {
-                alert(err.message);
+                hideLoading();
+                showToast(err.message || 'Gagal menyimpan perubahan.', 'error');
             }
         }
 
         async function changeStatus(newStatus) {
+            showLoading(`Memperbarui status ke "${newStatus}"...`);
             try {
                 await apiRequest('/services/update', 'PUT', {
                     id: serviceId,
                     status: newStatus
                 });
+                hideLoading();
+                showToast(`Status service berhasil diperbarui ke "${newStatus}"!`, 'success');
                 loadServiceDetail();
             } catch (err) {
-                alert(err.message);
+                hideLoading();
+                showToast(err.message || 'Gagal memperbarui status.', 'error');
             }
         }
 
         async function deleteCurrentService() {
             if (!confirm('Apakah Anda yakin ingin menghapus data service ini?')) return;
+            showLoading('Menghapus data service...');
             try {
                 await apiRequest(`/services/detail?id=${serviceId}`, 'DELETE');
-                window.location.href = 'services.html';
+                hideLoading();
+                showToast('Data service berhasil dihapus!', 'success');
+                setTimeout(() => { window.location.href = 'services.html'; }, 800);
             } catch (err) {
-                alert(err.message);
+                hideLoading();
+                showToast(err.message || 'Gagal menghapus data service.', 'error');
             }
         }
 
