@@ -48,6 +48,7 @@ module.exports = async (req, res) => {
 
     const results = filteredVehicles.map(v => {
       const sortedServices = (v.services || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const existingPin = sortedServices.find(s => s.pin_code && String(s.pin_code).trim() !== '')?.pin_code || null;
       return {
         id: v.id,
         plate_number: v.plate_number,
@@ -59,6 +60,7 @@ module.exports = async (req, res) => {
         customer_name: v.customers ? v.customers.name : 'Umum / Non-Member',
         customer_phone: v.customers ? v.customers.phone : '-',
         history_count: sortedServices.length,
+        pin_code: existingPin,
         vehicle: {
           id: v.id,
           plate_number: v.plate_number,

@@ -561,6 +561,12 @@
                             document.getElementById('srv-cust-phone').value = item.customer_phone;
                         }
 
+                        // Retain existing PIN if customer/vehicle already has one
+                        const existingPin = item.pin_code || (item.services && item.services.length > 0 ? item.services.find(s => s.pin_code && String(s.pin_code).trim() !== '')?.pin_code : null);
+                        if (existingPin) {
+                            document.getElementById('srv-pin').value = existingPin;
+                        }
+
                         notifyBox.className = 'p-3 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-950 text-xs leading-relaxed';
                         notifyBox.innerHTML = `
                             <div class="flex items-start gap-2">
@@ -568,7 +574,7 @@
                                 <div>
                                     <p class="font-bold text-emerald-900 text-xs uppercase">KENDARAAN TERDAFTAR! (Pelanggan Lama)</p>
                                     <p class="mt-0.5 font-semibold text-emerald-800">${veh.plate_number} • ${veh.brand} ${veh.model}</p>
-                                    <p class="text-[11px] text-emerald-700 mt-0.5">Pemilik: ${item.customer_name || 'Umum'} • Riwayat: <strong>${item.history_count || 0} service</strong></p>
+                                    <p class="text-[11px] text-emerald-700 mt-0.5">Pemilik: ${item.customer_name || 'Umum'} • Riwayat: <strong>${item.history_count || 0} service</strong> ${existingPin ? `• PIN Akses CS: <strong class="text-amber-950 bg-amber-200/80 px-1.5 py-0.5 rounded font-mono border border-amber-300 font-black">${existingPin}</strong>` : ''}</p>
                                 </div>
                             </div>
                         `;
@@ -576,13 +582,14 @@
                     }
                 } catch (err) {
                     spinner.classList.add('hidden');
+                    generateNewPin();
                     notifyBox.className = 'p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-950 text-xs leading-relaxed';
                     notifyBox.innerHTML = `
                         <div class="flex items-start gap-2">
                             <span class="material-symbols-outlined text-blue-700 text-base font-bold">info</span>
                             <div>
                                 <p class="font-bold text-blue-900 text-xs uppercase">KENDARAAN BARU</p>
-                                <p class="mt-0.5 text-blue-800 text-[11px]">Plat nomor belum ada di database. Silakan lengkapi Merek & Model kendaraan.</p>
+                                <p class="mt-0.5 text-blue-800 text-[11px]">Plat nomor belum ada di database. Silakan lengkapi Merek & Model kendaraan (PIN acak telah dibuatkan).</p>
                             </div>
                         </div>
                     `;

@@ -236,10 +236,72 @@ function syncAdminProfileUi() {
   }
 }
 
+/**
+ * Automatically render/update Workshop Info on CS pages
+ */
+async function syncWorkshopInfoUi() {
+  const wNameEl = document.getElementById('cs-workshop-name');
+  const wAddrEl = document.getElementById('cs-workshop-address');
+  const wPhoneEl = document.getElementById('cs-workshop-phone');
+  const wPhoneLinkEl = document.getElementById('cs-workshop-phone-link');
+  const wHoursEl = document.getElementById('cs-workshop-hours');
+
+  if (!wNameEl && !wAddrEl && !wPhoneEl) return;
+
+  // 1. Read from localStorage first (0ms instant render)
+  let wName = localStorage.getItem('workshop_name') || 'CJM Motor';
+  let wPhone = localStorage.getItem('workshop_phone') || '0812-3456-7890';
+  let wAddress = localStorage.getItem('workshop_address') || 'Jl. Contoh No. 123 Jakarta';
+  let wOpenTime = localStorage.getItem('workshop_open_time') || '08:00';
+  let wCloseTime = localStorage.getItem('workshop_close_time') || '20:00';
+  let wDays = localStorage.getItem('workshop_operating_days') || 'Senin - Sabtu';
+
+  function applyData() {
+    if (wNameEl) wNameEl.textContent = wName;
+    if (wAddrEl) wAddrEl.textContent = wAddress;
+    if (wPhoneEl) wPhoneEl.textContent = wPhone;
+    if (wHoursEl) wHoursEl.textContent = `${wDays} (${wOpenTime} - ${wCloseTime} WIB)`;
+    if (wPhoneLinkEl) {
+      const cleanPhone = wPhone.replace(/[^0-9]/g, '');
+      const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.substring(1) : cleanPhone;
+      wPhoneLinkEl.href = `https://wa.me/${waNumber}`;
+    }
+  }
+
+  applyData();
+
+  // 2. Fetch fresh profile from API in background if online
+  try {
+    const res = await apiRequest('/auth/profile', 'GET', null, { useCache: true });
+    if (res && res.success && res.data) {
+      const d = res.data;
+      if (d.workshop_name) wName = d.workshop_name;
+      if (d.workshop_phone) wPhone = d.workshop_phone;
+      if (d.workshop_address) wAddress = d.workshop_address;
+      if (d.workshop_open_time) wOpenTime = d.workshop_open_time;
+      if (d.workshop_close_time) wCloseTime = d.workshop_close_time;
+      if (d.workshop_operating_days) wDays = d.workshop_operating_days;
+
+      localStorage.setItem('workshop_name', wName);
+      localStorage.setItem('workshop_phone', wPhone);
+      localStorage.setItem('workshop_address', wAddress);
+      localStorage.setItem('workshop_open_time', wOpenTime);
+      localStorage.setItem('workshop_close_time', wCloseTime);
+      localStorage.setItem('workshop_operating_days', wDays);
+
+      applyData();
+    }
+  } catch (e) {}
+}
+
 if (typeof window !== 'undefined') {
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncAdminProfileUi);
+    document.addEventListener('DOMContentLoaded', () => {
+      syncAdminProfileUi();
+      syncWorkshopInfoUi();
+    });
   } else {
     syncAdminProfileUi();
+    syncWorkshopInfoUi();
   }
 }

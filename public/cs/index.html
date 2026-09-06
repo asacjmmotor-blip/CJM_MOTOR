@@ -48,7 +48,45 @@
             </form>
         </div>
 
-        <div class="mt-8 text-center px-4">
+        <!-- Card Informasi Bengkel Terhubung -->
+        <div id="workshop-info-card" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm w-full mt-4">
+            <div class="flex items-center gap-2.5 mb-3 border-b border-slate-100 pb-2.5">
+                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-lg">storefront</span>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-blue-950 text-sm" id="cs-workshop-name">CJM Motor</h3>
+                    <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Informasi Kontak & Jam Operasional Bengkel</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2.5 text-xs text-slate-600">
+                <!-- Alamat -->
+                <div class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-blue-900 text-base shrink-0 mt-0.5">location_on</span>
+                    <span id="cs-workshop-address" class="leading-relaxed">Jl. Contoh No. 123 Jakarta</span>
+                </div>
+
+                <!-- Telepon / WhatsApp -->
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-emerald-600 text-base shrink-0">call</span>
+                    <a id="cs-workshop-phone-link" href="#" target="_blank" class="font-extrabold text-blue-900 hover:underline flex items-center gap-1.5">
+                        <span id="cs-workshop-phone">0812-3456-7890</span>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">chat</span>Hubungi Bengkel
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Jam & Hari Operasional -->
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-amber-600 text-base shrink-0">schedule</span>
+                    <span class="font-semibold text-slate-700" id="cs-workshop-hours">Senin - Sabtu (08:00 - 20:00 WIB)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center px-4">
             <p class="text-xs text-slate-500">
                 Akses Internal Bengkel: <a class="text-blue-900 font-bold hover:underline" href="../admin/login.html">Login Portal Admin</a>
             </p>
