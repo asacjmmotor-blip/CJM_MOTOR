@@ -125,35 +125,69 @@
     </main>
 
     <!-- MODAL 1: INFORMASI BENGKEL -->
-    <div id="modal-workshop" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+    <div id="modal-workshop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-blue-900">storefront</span>
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-blue-900 text-2xl">storefront</span>
                     <h3 class="font-extrabold text-slate-900 text-base">Informasi Bengkel</h3>
                 </div>
-                <button type="button" onclick="closeModal('modal-workshop')" class="text-slate-400 hover:text-slate-600">
-                    <span class="material-symbols-outlined text-xl">close</span>
+                <button type="button" onclick="closeModal('modal-workshop')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-lg">close</span>
                 </button>
             </div>
 
             <div id="workshop-notify-msg" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
 
             <form id="form-workshop-info" onsubmit="event.preventDefault(); handleWorkshopInfoSave();" class="flex flex-col gap-4">
+                <!-- Nama Bengkel -->
                 <div>
                     <label for="workshop-name" class="block text-xs font-bold text-slate-700 mb-1.5">Nama Bengkel <span class="text-red-500">*</span></label>
-                    <input type="text" id="workshop-name" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 font-semibold" placeholder="Bengkel CJM Motor"/>
+                    <input type="text" id="workshop-name" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 font-semibold" placeholder="CJM Motor"/>
                 </div>
 
+                <!-- Nomor Telepon -->
                 <div>
-                    <label for="workshop-phone" class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Telepon</label>
-                    <input type="tel" id="workshop-phone" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="08xxxxxxxx"/>
+                    <label for="workshop-phone" class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Telepon <span class="text-red-500">*</span></label>
+                    <input type="tel" id="workshop-phone" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 font-medium" placeholder="0812-3456-7890"/>
                 </div>
 
-                <div class="flex justify-end gap-2 mt-2">
-                    <button type="button" onclick="closeModal('modal-workshop')" class="h-11 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
-                    <button type="submit" id="btn-save-workshop" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98]">
-                        Simpan Informasi
+                <!-- Alamat Bengkel -->
+                <div>
+                    <label for="workshop-address" class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Bengkel <span class="text-red-500">*</span></label>
+                    <textarea id="workshop-address" rows="2" required class="w-full border border-slate-300 rounded-xl p-3 text-xs outline-none focus:border-blue-900 resize-none" placeholder="Jl. Contoh No. 123 Jakarta"></textarea>
+                </div>
+
+                <!-- Jam Operasional -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Jam Operasional</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="block text-[10px] font-semibold text-slate-500 mb-1">Jam Buka</span>
+                            <input type="time" id="workshop-open-time" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 font-semibold" value="08:00"/>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] font-semibold text-slate-500 mb-1">Jam Tutup</span>
+                            <input type="time" id="workshop-close-time" class="w-full h-11 border border-slate-300 rounded-xl px-3 text-xs outline-none focus:border-blue-900 font-semibold" value="20:00"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hari Operasional -->
+                <div>
+                    <label for="workshop-days" class="block text-xs font-bold text-slate-700 mb-1.5">Hari Operasional</label>
+                    <select id="workshop-days" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900 font-semibold bg-white">
+                        <option value="Senin - Sabtu">Senin - Sabtu</option>
+                        <option value="Setiap Hari (Senin - Minggu)">Setiap Hari (Senin - Minggu)</option>
+                        <option value="Senin - Jumat">Senin - Jumat</option>
+                        <option value="Selasa - Minggu">Selasa - Minggu</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-2.5 mt-3 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('modal-workshop')" class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
+                    <button type="submit" id="btn-save-workshop" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98] transition-all">
+                        Simpan
                     </button>
                 </div>
             </form>
@@ -161,39 +195,77 @@
     </div>
 
     <!-- MODAL 2: UBAH PASSWORD -->
-    <div id="modal-password" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+    <div id="modal-password" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-amber-600">lock</span>
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-amber-600 text-2xl">lock</span>
                     <h3 class="font-extrabold text-slate-900 text-base">Ubah Password</h3>
                 </div>
-                <button type="button" onclick="closeModal('modal-password')" class="text-slate-400 hover:text-slate-600">
-                    <span class="material-symbols-outlined text-xl">close</span>
+                <button type="button" onclick="closeModal('modal-password')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-lg">close</span>
                 </button>
             </div>
 
             <div id="notify-msg" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
 
             <form id="form-change-password" onsubmit="event.preventDefault(); handlePasswordChange();" class="flex flex-col gap-4">
+                <!-- Password Saat Ini -->
                 <div>
                     <label for="curr-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Password Saat Ini <span class="text-red-500">*</span></label>
-                    <input type="password" id="curr-pass" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="••••••••••••••••"/>
+                    <div class="relative">
+                        <input type="password" id="curr-pass" required class="w-full h-11 border border-slate-300 rounded-xl pl-3.5 pr-10 text-xs outline-none focus:border-blue-900 font-medium" placeholder="••••••••••••••••"/>
+                        <button type="button" onclick="togglePassVisibility('curr-pass', 'curr-pass-eye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none">
+                            <span id="curr-pass-eye" class="material-symbols-outlined text-lg">visibility</span>
+                        </button>
+                    </div>
                 </div>
 
+                <!-- Password Baru -->
                 <div>
                     <label for="new-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Password Baru <span class="text-red-500">*</span></label>
-                    <input type="password" id="new-pass" required minlength="6" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="••••••••••••••••"/>
+                    <div class="relative">
+                        <input type="password" id="new-pass" required minlength="8" oninput="checkPasswordRequirements(this.value)" class="w-full h-11 border border-slate-300 rounded-xl pl-3.5 pr-10 text-xs outline-none focus:border-blue-900 font-medium" placeholder="••••••••••••••••"/>
+                        <button type="button" onclick="togglePassVisibility('new-pass', 'new-pass-eye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none">
+                            <span id="new-pass-eye" class="material-symbols-outlined text-lg">visibility</span>
+                        </button>
+                    </div>
+
+                    <!-- Interactive Password Requirements Checklist -->
+                    <div class="mt-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col gap-1.5">
+                        <span class="text-[11px] font-bold text-slate-600 mb-0.5">Persyaratan:</span>
+                        
+                        <div id="req-length" class="flex items-center gap-2 text-xs font-medium text-slate-400 transition-colors">
+                            <span class="material-symbols-outlined text-sm shrink-0" id="req-length-icon">radio_button_unchecked</span>
+                            <span>Minimal 8 karakter</span>
+                        </div>
+                        
+                        <div id="req-letter" class="flex items-center gap-2 text-xs font-medium text-slate-400 transition-colors">
+                            <span class="material-symbols-outlined text-sm shrink-0" id="req-letter-icon">radio_button_unchecked</span>
+                            <span>Mengandung huruf</span>
+                        </div>
+                        
+                        <div id="req-number" class="flex items-center gap-2 text-xs font-medium text-slate-400 transition-colors">
+                            <span class="material-symbols-outlined text-sm shrink-0" id="req-number-icon">radio_button_unchecked</span>
+                            <span>Mengandung angka</span>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Konfirmasi Password Baru -->
                 <div>
                     <label for="conf-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
-                    <input type="password" id="conf-pass" required minlength="6" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-blue-900" placeholder="••••••••••••••••"/>
+                    <div class="relative">
+                        <input type="password" id="conf-pass" required minlength="8" class="w-full h-11 border border-slate-300 rounded-xl pl-3.5 pr-10 text-xs outline-none focus:border-blue-900 font-medium" placeholder="••••••••••••••••"/>
+                        <button type="button" onclick="togglePassVisibility('conf-pass', 'conf-pass-eye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none">
+                            <span id="conf-pass-eye" class="material-symbols-outlined text-lg">visibility</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex justify-end gap-2 mt-2">
-                    <button type="button" onclick="closeModal('modal-password')" class="h-11 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
-                    <button type="submit" id="btn-save-pass" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98]">
+                <div class="flex justify-end gap-2.5 mt-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('modal-password')" class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
+                    <button type="submit" id="btn-save-pass" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98] transition-all">
                         Simpan Password
                     </button>
                 </div>
@@ -277,8 +349,17 @@
             // Load saved workshop info
             const savedWName = localStorage.getItem('workshop_name') || 'CJM Motor';
             const savedWPhone = localStorage.getItem('workshop_phone') || '0812-3456-7890';
+            const savedWAddress = localStorage.getItem('workshop_address') || 'Jl. Contoh No. 123 Jakarta';
+            const savedWOpenTime = localStorage.getItem('workshop_open_time') || '08:00';
+            const savedWCloseTime = localStorage.getItem('workshop_close_time') || '20:00';
+            const savedWDays = localStorage.getItem('workshop_operating_days') || 'Senin - Sabtu';
+
             document.getElementById('workshop-name').value = savedWName;
             document.getElementById('workshop-phone').value = savedWPhone;
+            document.getElementById('workshop-address').value = savedWAddress;
+            document.getElementById('workshop-open-time').value = savedWOpenTime;
+            document.getElementById('workshop-close-time').value = savedWCloseTime;
+            document.getElementById('workshop-days').value = savedWDays;
 
             try {
                 const res = await apiRequest('/auth/profile');
@@ -291,6 +372,31 @@
 
                     document.getElementById('edit-name').value = d.name || 'Admin Bengkel';
                     document.getElementById('edit-phone').value = d.phone || '0812-3456-7890';
+
+                    if (d.workshop_name) {
+                        document.getElementById('workshop-name').value = d.workshop_name;
+                        localStorage.setItem('workshop_name', d.workshop_name);
+                    }
+                    if (d.workshop_phone) {
+                        document.getElementById('workshop-phone').value = d.workshop_phone;
+                        localStorage.setItem('workshop_phone', d.workshop_phone);
+                    }
+                    if (d.workshop_address) {
+                        document.getElementById('workshop-address').value = d.workshop_address;
+                        localStorage.setItem('workshop_address', d.workshop_address);
+                    }
+                    if (d.workshop_open_time) {
+                        document.getElementById('workshop-open-time').value = d.workshop_open_time;
+                        localStorage.setItem('workshop_open_time', d.workshop_open_time);
+                    }
+                    if (d.workshop_close_time) {
+                        document.getElementById('workshop-close-time').value = d.workshop_close_time;
+                        localStorage.setItem('workshop_close_time', d.workshop_close_time);
+                    }
+                    if (d.workshop_operating_days) {
+                        document.getElementById('workshop-days').value = d.workshop_operating_days;
+                        localStorage.setItem('workshop_operating_days', d.workshop_operating_days);
+                    }
                 }
             } catch (err) {
                 if (err.message.includes('Akses ditolak') || err.message.includes('Sesi')) {
@@ -343,6 +449,46 @@
             }
         }
 
+        function togglePassVisibility(inputId, eyeId) {
+            const input = document.getElementById(inputId);
+            const eye = document.getElementById(eyeId);
+            if (!input || !eye) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.textContent = 'visibility_off';
+                eye.classList.add('text-blue-900');
+            } else {
+                input.type = 'password';
+                eye.textContent = 'visibility';
+                eye.classList.remove('text-blue-900');
+            }
+        }
+
+        function checkPasswordRequirements(val) {
+            const isLengthOk = val.length >= 8;
+            const isLetterOk = /[a-zA-Z]/.test(val);
+            const isNumberOk = /[0-9]/.test(val);
+
+            updateReqItem('req-length', 'req-length-icon', isLengthOk);
+            updateReqItem('req-letter', 'req-letter-icon', isLetterOk);
+            updateReqItem('req-number', 'req-number-icon', isNumberOk);
+        }
+
+        function updateReqItem(containerId, iconId, isOk) {
+            const container = document.getElementById(containerId);
+            const icon = document.getElementById(iconId);
+            if (!container || !icon) return;
+
+            if (isOk) {
+                container.className = 'flex items-center gap-2 text-xs font-bold text-emerald-600 transition-colors';
+                icon.textContent = 'check_circle';
+            } else {
+                container.className = 'flex items-center gap-2 text-xs font-medium text-slate-400 transition-colors';
+                icon.textContent = 'radio_button_unchecked';
+            }
+        }
+
         async function handlePasswordChange() {
             const currPass = document.getElementById('curr-pass').value.trim();
             const newPass = document.getElementById('new-pass').value.trim();
@@ -351,6 +497,17 @@
             const btn = document.getElementById('btn-save-pass');
 
             notify.classList.add('hidden');
+
+            const isLengthOk = newPass.length >= 8;
+            const isLetterOk = /[a-zA-Z]/.test(newPass);
+            const isNumberOk = /[0-9]/.test(newPass);
+
+            if (!isLengthOk || !isLetterOk || !isNumberOk) {
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
+                notify.textContent = 'Password baru harus memenuhi semua persyaratan (min. 8 karakter, ada huruf & angka).';
+                notify.classList.remove('hidden');
+                return;
+            }
 
             if (newPass !== confPass) {
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
@@ -372,6 +529,7 @@
 
                 showToast(res.message || 'Password berhasil diubah!', 'success');
                 document.getElementById('form-change-password').reset();
+                checkPasswordRequirements('');
                 setTimeout(() => closeModal('modal-password'), 1200);
             } catch (err) {
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
@@ -387,6 +545,11 @@
         async function handleWorkshopInfoSave() {
             const wName = document.getElementById('workshop-name').value.trim();
             const wPhone = document.getElementById('workshop-phone').value.trim();
+            const wAddress = document.getElementById('workshop-address').value.trim();
+            const wOpenTime = document.getElementById('workshop-open-time').value;
+            const wCloseTime = document.getElementById('workshop-close-time').value;
+            const wDays = document.getElementById('workshop-days').value;
+
             const notify = document.getElementById('workshop-notify-msg');
             const btn = document.getElementById('btn-save-workshop');
 
@@ -398,11 +561,19 @@
                 const res = await apiRequest('/auth/profile', 'POST', {
                     action: 'update_workshop_info',
                     workshop_name: wName,
-                    workshop_phone: wPhone
+                    workshop_phone: wPhone,
+                    workshop_address: wAddress,
+                    workshop_open_time: wOpenTime,
+                    workshop_close_time: wCloseTime,
+                    workshop_operating_days: wDays
                 });
 
                 localStorage.setItem('workshop_name', wName);
                 localStorage.setItem('workshop_phone', wPhone);
+                localStorage.setItem('workshop_address', wAddress);
+                localStorage.setItem('workshop_open_time', wOpenTime);
+                localStorage.setItem('workshop_close_time', wCloseTime);
+                localStorage.setItem('workshop_operating_days', wDays);
 
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
                 notify.textContent = res.message || 'Informasi bengkel berhasil disimpan!';
@@ -417,7 +588,7 @@
                 showToast(err.message || 'Gagal menyimpan informasi bengkel.', 'error');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Simpan Informasi';
+                btn.textContent = 'Simpan';
             }
         }
 
