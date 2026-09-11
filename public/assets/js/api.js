@@ -248,13 +248,6 @@ async function syncWorkshopInfoUi() {
 
   if (!wNameEl && !wAddrEl && !wPhoneEl) return;
 
-  const hasCustomName = !!localStorage.getItem('workshop_name');
-  const hasCustomPhone = !!localStorage.getItem('workshop_phone');
-  const hasCustomAddress = !!localStorage.getItem('workshop_address');
-  const hasCustomOpen = !!localStorage.getItem('workshop_open_time');
-  const hasCustomClose = !!localStorage.getItem('workshop_close_time');
-  const hasCustomDays = !!localStorage.getItem('workshop_operating_days');
-
   let wName = localStorage.getItem('workshop_name') || 'CJM Motor';
   let wPhone = localStorage.getItem('workshop_phone') || '0812-3456-7890';
   let wAddress = localStorage.getItem('workshop_address') || 'Jl. Contoh No. 123 Jakarta';
@@ -274,34 +267,35 @@ async function syncWorkshopInfoUi() {
     }
   }
 
+  // Render fast initial cached data
   applyData();
 
-  // Fetch from API only for missing keys
+  // Fetch real-time up-to-date info from server API
   try {
-    const res = await apiRequest('/auth/profile', 'GET', null, { useCache: true });
+    const res = await apiRequest('/auth/profile', 'GET', null, { useCache: false });
     if (res && res.success && res.data) {
       const d = res.data;
-      if (!hasCustomName && d.workshop_name) {
+      if (d.workshop_name) {
         wName = d.workshop_name;
         localStorage.setItem('workshop_name', wName);
       }
-      if (!hasCustomPhone && d.workshop_phone) {
+      if (d.workshop_phone) {
         wPhone = d.workshop_phone;
         localStorage.setItem('workshop_phone', wPhone);
       }
-      if (!hasCustomAddress && d.workshop_address) {
+      if (d.workshop_address) {
         wAddress = d.workshop_address;
         localStorage.setItem('workshop_address', wAddress);
       }
-      if (!hasCustomOpen && d.workshop_open_time) {
+      if (d.workshop_open_time) {
         wOpenTime = d.workshop_open_time;
         localStorage.setItem('workshop_open_time', wOpenTime);
       }
-      if (!hasCustomClose && d.workshop_close_time) {
+      if (d.workshop_close_time) {
         wCloseTime = d.workshop_close_time;
         localStorage.setItem('workshop_close_time', wCloseTime);
       }
-      if (!hasCustomDays && d.workshop_operating_days) {
+      if (d.workshop_operating_days) {
         wDays = d.workshop_operating_days;
         localStorage.setItem('workshop_operating_days', wDays);
       }

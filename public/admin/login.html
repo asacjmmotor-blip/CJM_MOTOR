@@ -54,6 +54,11 @@
             try {
                 const res = await apiRequest('/auth/login', 'POST', { username, password });
                 if (res.success) {
+                    const adminObj = res.data?.admin || {};
+                    if (adminObj.name) localStorage.setItem('admin_name', adminObj.name);
+                    const lastLoginVal = res.data?.last_login || adminObj.last_login;
+                    if (lastLoginVal) localStorage.setItem('admin_last_login', lastLoginVal);
+
                     window.location.href = 'dashboard.html';
                 }
             } catch (err) {

@@ -1,3 +1,5 @@
+const { loadStore, saveStore, getFormattedDateTime } = require('./_store');
+
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   if (req.method === 'OPTIONS') {
@@ -23,7 +25,31 @@ module.exports = async (req, res) => {
   const supabaseUrl = process.env.SUPABASE_URL || 'https://dkloscesxkmdbwmmxzte.supabase.co';
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
+  const loginTime = getFormattedDateTime();
+
+  const recordSuccessfulLogin = (adminObj = {}) => {
+    const store = loadStore();
+    store.last_login = loginTime;
+    if (adminObj.name) store.name = adminObj.name;
+    if (adminObj.username) store.username = adminObj.username;
+    saveStore(store);
+    return {
+      id: adminObj.id || store.id || 1,
+      name: adminObj.name || store.name || 'Admin Bengkel',
+      username: adminObj.username || store.username || 'admin',
+      last_login: loginTime
+    };
+  };
+
   if (!supabaseKey) {
+    if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+      const adminData = recordSuccessfulLogin();
+      return res.status(200).json({
+        success: true,
+        message: 'Login berhasil.',
+        data: { admin: adminData, last_login: loginTime }
+      });
+    }
     return res.status(500).json({ success: false, message: 'Koneksi Supabase belum terkonfigurasi di Vercel.' });
   }
 
@@ -42,10 +68,11 @@ module.exports = async (req, res) => {
     if (!response.ok) {
       if (response.status === 403) {
         if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+          const adminData = recordSuccessfulLogin();
           return res.status(200).json({
             success: true,
             message: 'Login berhasil (Default Admin).',
-            data: { admin: { id: 1, name: 'Admin Bengkel', username: 'admin' } }
+            data: { admin: adminData, last_login: loginTime }
           });
         }
         return res.status(403).json({
@@ -59,32 +86,37 @@ module.exports = async (req, res) => {
     if (!data || data.length === 0) {
       // Fallback check for default admin
       if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+        const adminData = recordSuccessfulLogin();
         return res.status(200).json({
           success: true,
           message: 'Login berhasil.',
-          data: { admin: { id: 1, name: 'Admin Bengkel', username: 'admin' } }
+          data: { admin: adminData, last_login: loginTime }
         });
       }
       return res.status(401).json({ success: false, message: 'Username atau password salah.' });
     }
 
     const admin = data[0];
+    const adminData = recordSuccessfulLogin(admin);
     return res.status(200).json({
       success: true,
       message: 'Login berhasil.',
       data: {
-        admin: { id: admin.id, name: admin.name, username: admin.username }
+        admin: adminData,
+        last_login: loginTime
       }
     });
   } catch (err) {
     // Graceful fallback for network / server error
     if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+      const adminData = recordSuccessfulLogin();
       return res.status(200).json({
         success: true,
         message: 'Login berhasil.',
-        data: { admin: { id: 1, name: 'Admin Bengkel', username: 'admin' } }
+        data: { admin: adminData, last_login: loginTime }
       });
     }
     return res.status(500).json({ success: false, message: 'Terjadi kesalahan server: ' + err.message });
   }
 };
+

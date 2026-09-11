@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "username": "admin",
+  "name": "Admin Bengkel",
+  "phone": "0812-3456-7890",
+  "last_login": "11 Sep 2026 13:25",
+  "workshop_name": "CJM Motor",
+  "workshop_phone": "0812-3456-7890",
+  "workshop_address": "Jl. Contoh No. 123 Jakarta",
+  "workshop_open_time": "08:00",
+  "workshop_close_time": "20:00",
+  "workshop_operating_days": "Senin - Sabtu"
+}

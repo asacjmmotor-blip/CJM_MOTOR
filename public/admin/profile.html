@@ -349,10 +349,16 @@
             // Load saved admin name & phone from localStorage first
             const savedAdminName = localStorage.getItem('admin_name') || 'Admin Bengkel';
             const savedAdminPhone = localStorage.getItem('admin_phone') || '0812-3456-7890';
+            const savedLastLogin = localStorage.getItem('admin_last_login');
+
             document.getElementById('prof-name').textContent = savedAdminName;
             document.getElementById('drawer-admin-name').textContent = savedAdminName;
             document.getElementById('edit-name').value = savedAdminName;
             document.getElementById('edit-phone').value = savedAdminPhone;
+
+            if (savedLastLogin) {
+                document.getElementById('prof-last-login').textContent = `Terakhir Login: ${savedLastLogin}`;
+            }
 
             // Load saved workshop info
             const savedWName = localStorage.getItem('workshop_name') || 'CJM Motor';
@@ -370,41 +376,46 @@
             document.getElementById('workshop-days').value = savedWDays;
 
             try {
-                const res = await apiRequest('/auth/profile');
+                const res = await apiRequest('/auth/profile', 'GET', null, { useCache: false });
                 if (res.success && res.data) {
                     const d = res.data;
-                    const activeAdminName = localStorage.getItem('admin_name') || d.name || 'Admin Bengkel';
-                    const activeAdminPhone = localStorage.getItem('admin_phone') || d.phone || '0812-3456-7890';
+                    const activeAdminName = d.name || localStorage.getItem('admin_name') || 'Admin Bengkel';
+                    const activeAdminPhone = d.phone || localStorage.getItem('admin_phone') || '0812-3456-7890';
+                    const activeLastLogin = d.last_login || localStorage.getItem('admin_last_login') || '-';
 
                     document.getElementById('prof-name').textContent = activeAdminName;
                     document.getElementById('prof-username').textContent = `Username: ${d.username}`;
                     document.getElementById('drawer-admin-name').textContent = activeAdminName;
-                    document.getElementById('prof-last-login').textContent = `Terakhir Login: ${d.last_login || 'Hari ini'}`;
+                    document.getElementById('prof-last-login').textContent = `Terakhir Login: ${activeLastLogin}`;
+
+                    localStorage.setItem('admin_name', activeAdminName);
+                    localStorage.setItem('admin_phone', activeAdminPhone);
+                    localStorage.setItem('admin_last_login', activeLastLogin);
 
                     document.getElementById('edit-name').value = activeAdminName;
                     document.getElementById('edit-phone').value = activeAdminPhone;
 
-                    if (d.workshop_name && !localStorage.getItem('workshop_name')) {
+                    if (d.workshop_name) {
                         document.getElementById('workshop-name').value = d.workshop_name;
                         localStorage.setItem('workshop_name', d.workshop_name);
                     }
-                    if (d.workshop_phone && !localStorage.getItem('workshop_phone')) {
+                    if (d.workshop_phone) {
                         document.getElementById('workshop-phone').value = d.workshop_phone;
                         localStorage.setItem('workshop_phone', d.workshop_phone);
                     }
-                    if (d.workshop_address && !localStorage.getItem('workshop_address')) {
+                    if (d.workshop_address) {
                         document.getElementById('workshop-address').value = d.workshop_address;
                         localStorage.setItem('workshop_address', d.workshop_address);
                     }
-                    if (d.workshop_open_time && !localStorage.getItem('workshop_open_time')) {
+                    if (d.workshop_open_time) {
                         document.getElementById('workshop-open-time').value = d.workshop_open_time;
                         localStorage.setItem('workshop_open_time', d.workshop_open_time);
                     }
-                    if (d.workshop_close_time && !localStorage.getItem('workshop_close_time')) {
+                    if (d.workshop_close_time) {
                         document.getElementById('workshop-close-time').value = d.workshop_close_time;
                         localStorage.setItem('workshop_close_time', d.workshop_close_time);
                     }
-                    if (d.workshop_operating_days && !localStorage.getItem('workshop_operating_days')) {
+                    if (d.workshop_operating_days) {
                         document.getElementById('workshop-days').value = d.workshop_operating_days;
                         localStorage.setItem('workshop_operating_days', d.workshop_operating_days);
                     }
@@ -586,6 +597,9 @@
                 localStorage.setItem('workshop_close_time', wCloseTime);
                 localStorage.setItem('workshop_operating_days', wDays);
 
+                if (typeof clearApiCache === 'function') {
+                    clearApiCache();
+                }
                 if (typeof syncWorkshopInfoUi === 'function') {
                     syncWorkshopInfoUi();
                 }

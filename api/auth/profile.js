@@ -1,4 +1,5 @@
 const { parseReqBody, sendResponse } = require('../_supabase');
+const { loadStore, saveStore, getFormattedDateTime } = require('./_store');
 
 module.exports = async (req, res) => {
   const method = req.method;
@@ -7,22 +8,26 @@ module.exports = async (req, res) => {
     return sendResponse(res, 200, true, 'OK');
   }
 
+  const store = loadStore();
+
   if (method === 'GET') {
-    const now = new Date();
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const dateStr = `${String(now.getDate()).padStart(2, '0')} ${monthNames[now.getMonth()]} ${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    if (!store.last_login) {
+      store.last_login = getFormattedDateTime();
+      saveStore(store);
+    }
 
     return sendResponse(res, 200, true, 'Data profil admin.', {
-      id: 1,
-      username: 'admin',
-      name: 'Admin Bengkel',
-      last_login: dateStr,
-      workshop_name: 'CJM Motor',
-      workshop_phone: '0812-3456-7890',
-      workshop_address: 'Jl. Contoh No. 123 Jakarta',
-      workshop_open_time: '08:00',
-      workshop_close_time: '20:00',
-      workshop_operating_days: 'Senin - Sabtu'
+      id: store.id || 1,
+      username: store.username || 'admin',
+      name: store.name || 'Admin Bengkel',
+      phone: store.phone || '',
+      last_login: store.last_login,
+      workshop_name: store.workshop_name || 'CJM Motor',
+      workshop_phone: store.workshop_phone || '0812-3456-7890',
+      workshop_address: store.workshop_address || 'Jl. Contoh No. 123 Jakarta',
+      workshop_open_time: store.workshop_open_time || '08:00',
+      workshop_close_time: store.workshop_close_time || '20:00',
+      workshop_operating_days: store.workshop_operating_days || 'Senin - Sabtu'
     });
   }
 
@@ -39,9 +44,13 @@ module.exports = async (req, res) => {
           return sendResponse(res, 400, false, 'Nama admin wajib diisi.');
         }
 
+        store.name = name;
+        store.phone = phone;
+        saveStore(store);
+
         return sendResponse(res, 200, true, 'Data admin berhasil diperbarui!', {
-          name: name,
-          phone: phone
+          name: store.name,
+          phone: store.phone
         });
       }
 
@@ -57,13 +66,21 @@ module.exports = async (req, res) => {
           return sendResponse(res, 400, false, 'Nama bengkel wajib diisi.');
         }
 
+        store.workshop_name = workshopName;
+        store.workshop_phone = workshopPhone;
+        store.workshop_address = workshopAddress;
+        store.workshop_open_time = workshopOpenTime;
+        store.workshop_close_time = workshopCloseTime;
+        store.workshop_operating_days = workshopOperatingDays;
+        saveStore(store);
+
         return sendResponse(res, 200, true, 'Informasi bengkel berhasil diperbarui!', {
-          workshop_name: workshopName,
-          workshop_phone: workshopPhone,
-          workshop_address: workshopAddress,
-          workshop_open_time: workshopOpenTime,
-          workshop_close_time: workshopCloseTime,
-          workshop_operating_days: workshopOperatingDays
+          workshop_name: store.workshop_name,
+          workshop_phone: store.workshop_phone,
+          workshop_address: store.workshop_address,
+          workshop_open_time: store.workshop_open_time,
+          workshop_close_time: store.workshop_close_time,
+          workshop_operating_days: store.workshop_operating_days
         });
       }
 
