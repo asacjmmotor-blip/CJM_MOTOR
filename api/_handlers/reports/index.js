@@ -1,4 +1,4 @@
-const { supabaseFetch, sendResponse } = require('../_supabase');
+const { supabaseFetch, sendResponse } = require('../../_supabase');
 
 module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') {

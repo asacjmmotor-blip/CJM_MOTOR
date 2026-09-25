@@ -1,4 +1,4 @@
-const { parseReqBody, sendResponse } = require('../_supabase');
+const { parseReqBody, sendResponse } = require('../../_supabase');
 const { loadStore, saveStore, getFormattedDateTime } = require('./_store');
 
 module.exports = async (req, res) => {
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
         saveStore(store);
 
         try {
-          const { supabaseFetch } = require('../_supabase');
+          const { supabaseFetch } = require('../../_supabase');
           await supabaseFetch(`admins?username=eq.${encodeURIComponent(store.username || 'admin')}`, {
             method: 'PATCH',
             body: { name }

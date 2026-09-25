@@ -1,4 +1,4 @@
-const { supabaseFetch, parseReqBody, sendResponse } = require('../_supabase');
+const { supabaseFetch, parseReqBody, sendResponse } = require('../../_supabase');
 
 module.exports = async (req, res) => {
   const method = req.method;
