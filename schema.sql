@@ -140,5 +140,10 @@ ON CONFLICT (plate_number) DO NOTHING;
 ALTER TABLE services ADD COLUMN IF NOT EXISTS attachment_url TEXT;
 ALTER TABLE services ADD COLUMN IF NOT EXISTS pin_code VARCHAR(10);
 
--- 2. Memaksa Supabase me-reload cache schema secara instan
+-- 2. Menambahkan kolom phone dan role ke tabel admins
+ALTER TABLE admins ADD COLUMN IF NOT EXISTS phone VARCHAR(20);
+ALTER TABLE admins ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'Kasir / Front Desk';
+UPDATE admins SET role = 'Admin Utama' WHERE username = 'admin' AND (role IS NULL OR role = 'Kasir / Front Desk');
+
+-- 3. Memaksa Supabase me-reload cache schema secara instan
 NOTIFY pgrst, 'reload schema';

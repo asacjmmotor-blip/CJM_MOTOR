@@ -48,6 +48,14 @@ module.exports = async (req, res) => {
         store.phone = phone;
         saveStore(store);
 
+        try {
+          const { supabaseFetch } = require('../_supabase');
+          await supabaseFetch(`admins?username=eq.${encodeURIComponent(store.username || 'admin')}`, {
+            method: 'PATCH',
+            body: { name }
+          });
+        } catch (e) {}
+
         return sendResponse(res, 200, true, 'Data admin berhasil diperbarui!', {
           name: store.name,
           phone: store.phone

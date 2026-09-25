@@ -120,6 +120,20 @@
                 </div>
                 <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
             </button>
+
+            <!-- Item 4: Kelola Anggota Bengkel -->
+            <button onclick="openMembersModal()" class="w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-800 flex items-center justify-center group-hover:bg-indigo-700 group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-xl">group</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Kelola Anggota Bengkel</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Daftarkan anggota & kelola hak akses staf</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
+            </button>
         </div>
 
     </main>
@@ -303,6 +317,135 @@
                     <button type="button" onclick="closeModal('modal-profile-info')" class="h-11 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
                     <button type="submit" id="btn-save-admin" class="h-11 px-6 text-xs font-bold text-white bg-blue-950 hover:bg-blue-900 rounded-xl shadow-sm active:scale-[0.98]">
                         Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: KELOLA ANGGOTA BENGKEL -->
+    <div id="modal-members" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-indigo-700 text-2xl">group</span>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base">Kelola Anggota Bengkel</h3>
+                        <p class="text-[11px] text-slate-500">Daftar staf, kasir, & mekanik terdaftar</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModal('modal-members')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+
+            <div class="flex justify-between items-center mb-3 shrink-0">
+                <span id="member-count-badge" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">0 Anggota</span>
+                <button onclick="openModal('modal-add-member')" class="h-9 px-4 text-xs font-bold text-white bg-indigo-900 hover:bg-indigo-950 rounded-xl flex items-center gap-1.5 shadow-sm transition-all">
+                    <span class="material-symbols-outlined text-sm">person_add</span>
+                    <span>Tambah Anggota</span>
+                </button>
+            </div>
+
+            <div id="members-list-loading" class="py-8 text-center text-slate-400 text-xs font-medium">
+                <span class="material-symbols-outlined text-2xl animate-spin text-indigo-900 mb-1">progress_activity</span>
+                <p>Memuat daftar anggota...</p>
+            </div>
+
+            <div id="members-list-container" class="overflow-y-auto flex-1 divide-y divide-slate-100 pr-1 hidden">
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: TAMBAH ANGGOTA BARU -->
+    <div id="modal-add-member" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-indigo-900 text-2xl">person_add</span>
+                    <h3 class="font-extrabold text-slate-900 text-base">Tambah Anggota Baru</h3>
+                </div>
+                <button type="button" onclick="closeModal('modal-add-member')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+
+            <div id="add-member-notify" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
+
+            <form id="form-add-member" onsubmit="event.preventDefault(); handleAddMemberSave();" class="flex flex-col gap-4">
+                <div>
+                    <label for="member-name" class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap <span class="text-red-500">*</span></label>
+                    <input type="text" id="member-name" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-indigo-900 font-semibold" placeholder="Contoh: Ahmad Kasir"/>
+                </div>
+
+                <div>
+                    <label for="member-username" class="block text-xs font-bold text-slate-700 mb-1.5">Username Akses <span class="text-red-500">*</span></label>
+                    <input type="text" id="member-username" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-indigo-900 font-medium" placeholder="contoh: ahmad_kasir"/>
+                    <p class="text-[10px] text-slate-400 mt-1">Gunakan huruf, angka, atau underscore tanpa spasi.</p>
+                </div>
+
+                <div>
+                    <label for="member-phone" class="block text-xs font-bold text-slate-700 mb-1.5">No. Telepon / HP</label>
+                    <input type="tel" id="member-phone" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-indigo-900 font-medium" placeholder="0812-xxxx-xxxx"/>
+                </div>
+
+                <div>
+                    <label for="member-role" class="block text-xs font-bold text-slate-700 mb-1.5">Peran / Hak Akses <span class="text-red-500">*</span></label>
+                    <select id="member-role" required class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-indigo-900 font-semibold bg-white">
+                        <option value="Kasir / Front Desk">Kasir / Front Desk</option>
+                        <option value="Mekanik / Staff">Mekanik / Staff</option>
+                        <option value="Admin Utama">Admin Utama</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="member-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Password Akses <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <input type="password" id="member-pass" required minlength="8" class="w-full h-11 border border-slate-300 rounded-xl pl-3.5 pr-10 text-xs outline-none focus:border-indigo-900 font-medium" placeholder="••••••••••••••••"/>
+                        <button type="button" onclick="togglePassVisibility('member-pass', 'member-pass-eye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none">
+                            <span id="member-pass-eye" class="material-symbols-outlined text-lg">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2.5 mt-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('modal-add-member')" class="h-11 px-5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
+                    <button type="submit" id="btn-save-member" class="h-11 px-6 text-xs font-bold text-white bg-indigo-900 hover:bg-indigo-950 rounded-xl shadow-sm active:scale-[0.98] transition-all">
+                        Daftarkan Anggota
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 6: RESET PASSWORD ANGGOTA -->
+    <div id="modal-reset-member-pass" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[65] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-600 text-xl">key</span>
+                    <h3 class="font-extrabold text-slate-900 text-sm">Reset Password Anggota</h3>
+                </div>
+                <button type="button" onclick="closeModal('modal-reset-member-pass')" class="text-slate-400 hover:text-slate-600">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+
+            <div id="reset-member-notify" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold"></div>
+
+            <form id="form-reset-member-pass" onsubmit="event.preventDefault(); handleResetMemberPass();" class="flex flex-col gap-4">
+                <input type="hidden" id="reset-target-username"/>
+                <p class="text-xs text-slate-600 font-medium">Reset kata sandi untuk akun <span id="reset-target-username-label" class="font-bold text-indigo-900"></span>:</p>
+
+                <div>
+                    <label for="reset-new-pass" class="block text-xs font-bold text-slate-700 mb-1.5">Password Baru <span class="text-red-500">*</span></label>
+                    <input type="password" id="reset-new-pass" required minlength="8" class="w-full h-11 border border-slate-300 rounded-xl px-3.5 text-xs outline-none focus:border-indigo-900 font-medium" placeholder="••••••••••••••••"/>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-2">
+                    <button type="button" onclick="closeModal('modal-reset-member-pass')" class="h-10 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                    <button type="submit" id="btn-reset-member-submit" class="h-10 px-5 text-xs font-bold text-white bg-indigo-900 hover:bg-indigo-950 rounded-xl">
+                        Update Password
                     </button>
                 </div>
             </form>
@@ -644,6 +787,13 @@
                 document.getElementById('prof-name').textContent = name;
                 document.getElementById('drawer-admin-name').textContent = name;
 
+                if (typeof clearApiCache === 'function') {
+                    clearApiCache();
+                }
+                if (typeof syncAdminProfileUi === 'function') {
+                    syncAdminProfileUi();
+                }
+
                 notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
                 notify.textContent = res.message || 'Data admin berhasil diperbarui!';
                 notify.classList.remove('hidden');
@@ -658,6 +808,164 @@
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Simpan Perubahan';
+            }
+        }
+
+        async function openMembersModal() {
+            openModal('modal-members');
+            await loadMembers();
+        }
+
+        async function loadMembers() {
+            const container = document.getElementById('members-list-container');
+            const loading = document.getElementById('members-list-loading');
+            const badge = document.getElementById('member-count-badge');
+
+            loading.classList.remove('hidden');
+            container.classList.add('hidden');
+
+            try {
+                const res = await apiRequest('/auth/members', 'GET', null, { useCache: false });
+                loading.classList.add('hidden');
+                container.classList.remove('hidden');
+
+                if (res.success && Array.isArray(res.data)) {
+                    const members = res.data;
+                    badge.textContent = `${members.length} Anggota`;
+
+                    if (members.length === 0) {
+                        container.innerHTML = `<div class="py-8 text-center text-xs text-slate-400 font-semibold">Belum ada anggota terdaftar.</div>`;
+                        return;
+                    }
+
+                    container.innerHTML = members.map(m => {
+                        const isPrimaryAdmin = m.username === 'admin';
+                        const roleColor = m.role === 'Admin Utama' ? 'bg-blue-100 text-blue-900' : (m.role.includes('Kasir') ? 'bg-emerald-100 text-emerald-900' : 'bg-slate-100 text-slate-800');
+
+                        return `
+                            <div class="py-3 flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-900 flex items-center justify-center font-extrabold text-sm shrink-0">
+                                        ${m.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h5 class="font-bold text-slate-900 text-xs">${m.name}</h5>
+                                            <span class="px-2 py-0.5 text-[9px] font-extrabold rounded-full ${roleColor}">${m.role || 'Staff'}</span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-500 mt-0.5">@${m.username} ${m.phone && m.phone !== '-' ? '• ' + m.phone : ''}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="openResetMemberModal('${m.username}')" class="p-2 text-slate-400 hover:text-amber-600 rounded-lg transition-colors" title="Reset Password">
+                                        <span class="material-symbols-outlined text-lg">key</span>
+                                    </button>
+                                    ${!isPrimaryAdmin ? `
+                                        <button onclick="confirmDeleteMember('${m.username}', '${m.name}')" class="p-2 text-slate-400 hover:text-red-600 rounded-lg transition-colors" title="Hapus Anggota">
+                                            <span class="material-symbols-outlined text-lg">delete</span>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (err) {
+                loading.classList.add('hidden');
+                container.classList.remove('hidden');
+                container.innerHTML = `<div class="py-6 text-center text-xs text-red-600 font-semibold">Gagal memuat anggota: ${err.message}</div>`;
+            }
+        }
+
+        async function handleAddMemberSave() {
+            const name = document.getElementById('member-name').value.trim();
+            const username = document.getElementById('member-username').value.trim();
+            const phone = document.getElementById('member-phone').value.trim();
+            const role = document.getElementById('member-role').value;
+            const password = document.getElementById('member-pass').value.trim();
+
+            const notify = document.getElementById('add-member-notify');
+            const btn = document.getElementById('btn-save-member');
+
+            notify.classList.add('hidden');
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            try {
+                const res = await apiRequest('/auth/members', 'POST', {
+                    action: 'create',
+                    name,
+                    username,
+                    phone,
+                    role,
+                    password
+                });
+
+                showToast(res.message || 'Anggota baru berhasil terdaftar!', 'success');
+                document.getElementById('form-add-member').reset();
+                closeModal('modal-add-member');
+                await loadMembers();
+            } catch (err) {
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
+                notify.textContent = err.message || 'Gagal menambah anggota.';
+                notify.classList.remove('hidden');
+                showToast(err.message || 'Gagal menambah anggota.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Daftarkan Anggota';
+            }
+        }
+
+        function openResetMemberModal(username) {
+            document.getElementById('reset-target-username').value = username;
+            document.getElementById('reset-target-username-label').textContent = username;
+            document.getElementById('reset-new-pass').value = '';
+            document.getElementById('reset-member-notify').classList.add('hidden');
+            openModal('modal-reset-member-pass');
+        }
+
+        async function handleResetMemberPass() {
+            const username = document.getElementById('reset-target-username').value;
+            const newPassword = document.getElementById('reset-new-pass').value.trim();
+            const notify = document.getElementById('reset-member-notify');
+            const btn = document.getElementById('btn-reset-member-submit');
+
+            notify.classList.add('hidden');
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            try {
+                const res = await apiRequest('/auth/members', 'POST', {
+                    action: 'reset_password',
+                    username,
+                    new_password: newPassword
+                });
+
+                showToast(res.message || 'Password berhasil diperbarui!', 'success');
+                closeModal('modal-reset-member-pass');
+            } catch (err) {
+                notify.className = 'mb-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
+                notify.textContent = err.message || 'Gagal mereset password.';
+                notify.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Update Password';
+            }
+        }
+
+        async function confirmDeleteMember(username, name) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus anggota "${name}" (@${username})?`)) return;
+
+            try {
+                const res = await apiRequest('/auth/members', 'POST', {
+                    action: 'delete',
+                    username
+                });
+
+                showToast(res.message || 'Anggota berhasil dihapus.', 'success');
+                await loadMembers();
+            } catch (err) {
+                showToast(err.message || 'Gagal menghapus anggota.', 'error');
             }
         }
 
