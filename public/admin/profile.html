@@ -63,7 +63,7 @@
                 <h2 id="prof-name" class="text-xl font-bold">Admin Bengkel</h2>
                 <p id="prof-username" class="text-xs text-blue-200 font-medium mt-0.5">Username: admin</p>
                 <div class="mt-2">
-                    <span class="inline-block px-3 py-1 bg-blue-800/90 text-blue-100 text-[10px] font-extrabold rounded-full uppercase tracking-wider border border-blue-700">SYSTEM ADMINISTRATOR</span>
+                    <span id="prof-role-badge" class="inline-block px-3 py-1 bg-blue-800/90 text-blue-100 text-[10px] font-extrabold rounded-full uppercase tracking-wider border border-blue-700">ADMIN UTAMA</span>
                 </div>
                 <p class="text-[11px] text-blue-300/90 mt-2.5 flex items-center gap-1.5 font-medium">
                     <span class="material-symbols-outlined text-sm text-blue-400">schedule</span>
@@ -79,8 +79,8 @@
                 <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Pengaturan Profil & Sistem</h3>
             </div>
 
-            <!-- Item 1: Informasi Bengkel -->
-            <button onclick="openModal('modal-workshop')" class="w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
+            <!-- Item 1: Informasi Bengkel (Khusus Admin Utama) -->
+            <button onclick="openModal('modal-workshop')" class="role-admin-only w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
                 <div class="flex items-center gap-3.5">
                     <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-900 flex items-center justify-center group-hover:bg-blue-900 group-hover:text-white transition-colors">
                         <span class="material-symbols-outlined text-xl">storefront</span>
@@ -101,7 +101,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Ubah Password</h4>
-                        <p class="text-xs text-slate-500 mt-0.5">Kelola kata sandi akun admin</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Kelola kata sandi akun saya</p>
                     </div>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
@@ -114,20 +114,26 @@
                         <span class="material-symbols-outlined text-xl">badge</span>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Edit Informasi Admin</h4>
+                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Edit Informasi Akun</h4>
                         <p class="text-xs text-slate-500 mt-0.5">Nama lengkap & kontak administrator</p>
                     </div>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
             </button>
 
-            <!-- Item 4: Kelola Anggota Bengkel -->
-            <button onclick="openMembersModal()" class="w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
+            <!-- Item 4: Kelola Anggota Bengkel (Khusus Admin Utama) -->
+            <button onclick="openMembersModal()" class="role-admin-only w-full p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group text-left">
                 <div class="flex items-center gap-3.5">
                     <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-800 flex items-center justify-center group-hover:bg-indigo-700 group-hover:text-white transition-colors">
                         <span class="material-symbols-outlined text-xl">group</span>
                     </div>
                     <div>
+                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Kelola Anggota Bengkel</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Daftarkan anggota & kelola hak akses staf</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-700 group-hover:translate-x-1 transition-all">chevron_right</span>
+            </button>
                         <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-950">Kelola Anggota Bengkel</h4>
                         <p class="text-xs text-slate-500 mt-0.5">Daftarkan anggota & kelola hak akses staf</p>
                     </div>
@@ -525,15 +531,24 @@
                     const activeAdminName = d.name || localStorage.getItem('admin_name') || 'Admin Bengkel';
                     const activeAdminPhone = d.phone || localStorage.getItem('admin_phone') || '0812-3456-7890';
                     const activeLastLogin = d.last_login || localStorage.getItem('admin_last_login') || '-';
+                    const activeRole = d.role || localStorage.getItem('admin_role') || (d.username === 'admin' ? 'Admin Utama' : 'Kasir / Front Desk');
 
                     document.getElementById('prof-name').textContent = activeAdminName;
                     document.getElementById('prof-username').textContent = `Username: ${d.username}`;
                     document.getElementById('drawer-admin-name').textContent = activeAdminName;
                     document.getElementById('prof-last-login').textContent = `Terakhir Login: ${activeLastLogin}`;
+                    if (document.getElementById('prof-role-badge')) {
+                        document.getElementById('prof-role-badge').textContent = activeRole.toUpperCase();
+                    }
 
                     localStorage.setItem('admin_name', activeAdminName);
                     localStorage.setItem('admin_phone', activeAdminPhone);
+                    localStorage.setItem('admin_role', activeRole);
                     localStorage.setItem('admin_last_login', activeLastLogin);
+
+                    if (typeof syncAdminProfileUi === 'function') {
+                        syncAdminProfileUi();
+                    }
 
                     document.getElementById('edit-name').value = activeAdminName;
                     document.getElementById('edit-phone').value = activeAdminPhone;

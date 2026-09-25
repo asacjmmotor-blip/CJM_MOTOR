@@ -209,10 +209,18 @@ async function apiRequest(endpoint, method = 'GET', data = null, options = {}) {
 }
 
 /**
- * Automatically sync admin name & avatar image across all sidebar/drawers
+ * Get current logged in user role
+ */
+function getAdminRole() {
+  return localStorage.getItem('admin_role') || 'Admin Utama';
+}
+
+/**
+ * Automatically sync admin name, role & avatar image across all sidebar/drawers
  */
 function syncAdminProfileUi() {
   const savedName = localStorage.getItem('admin_name');
+  const savedRole = getAdminRole();
   const savedPhoto = localStorage.getItem('admin_profile_photo');
 
   if (savedName) {
@@ -221,6 +229,11 @@ function syncAdminProfileUi() {
       el.textContent = savedName;
     });
   }
+
+  const drawerRoleEls = document.querySelectorAll('#drawer-admin-role, .drawer-admin-role');
+  drawerRoleEls.forEach(el => {
+    el.textContent = savedRole;
+  });
 
   if (savedPhoto) {
     const drawerImgEls = document.querySelectorAll('#drawer-avatar-img, .drawer-avatar-img');
@@ -233,6 +246,33 @@ function syncAdminProfileUi() {
     drawerIconEls.forEach(icon => {
       icon.classList.add('hidden');
     });
+  }
+
+  // Apply Role-Based Access Control visibility for UI elements
+  applyRolePermissions(savedRole);
+}
+
+/**
+ * Enforce RBAC visibility rules on current page
+ */
+function applyRolePermissions(role) {
+  const isPrimaryAdmin = role === 'Admin Utama';
+  const isMekanik = role.includes('Mekanik');
+
+  // 1. Elements reserved strictly for Admin Utama
+  const adminOnlyEls = document.querySelectorAll('.role-admin-only, [data-role="admin-only"]');
+  adminOnlyEls.forEach(el => {
+    if (isPrimaryAdmin) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+
+  // 2. Elements hidden from Mekanik (Reports, Financials, Settings)
+  if (isMekanik) {
+    const noMekanikEls = document.querySelectorAll('.no-mekanik, [data-role="no-mekanik"]');
+    noMekanikEls.forEach(el => el.classList.add('hidden'));
   }
 }
 

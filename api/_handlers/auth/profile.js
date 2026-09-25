@@ -21,6 +21,7 @@ module.exports = async (req, res) => {
       username: store.username || 'admin',
       name: store.name || 'Admin Bengkel',
       phone: store.phone || '',
+      role: store.role || (store.username === 'admin' ? 'Admin Utama' : 'Kasir / Front Desk'),
       last_login: store.last_login,
       workshop_name: store.workshop_name || 'CJM Motor',
       workshop_phone: store.workshop_phone || '0812-3456-7890',

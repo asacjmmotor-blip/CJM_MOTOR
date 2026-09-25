@@ -56,6 +56,7 @@
                 if (res.success) {
                     const adminObj = res.data?.admin || {};
                     if (adminObj.name) localStorage.setItem('admin_name', adminObj.name);
+                    localStorage.setItem('admin_role', adminObj.role || (adminObj.username === 'admin' ? 'Admin Utama' : 'Kasir / Front Desk'));
                     const lastLoginVal = res.data?.last_login || adminObj.last_login;
                     if (lastLoginVal) localStorage.setItem('admin_last_login', lastLoginVal);
 

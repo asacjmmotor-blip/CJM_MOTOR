@@ -32,11 +32,14 @@ module.exports = async (req, res) => {
     store.last_login = loginTime;
     if (adminObj.name) store.name = adminObj.name;
     if (adminObj.username) store.username = adminObj.username;
+    const userRole = adminObj.role || (adminObj.username === 'admin' ? 'Admin Utama' : (store.members || []).find(m => m.username === adminObj.username)?.role || 'Kasir / Front Desk');
+    store.role = userRole;
     saveStore(store);
     return {
       id: adminObj.id || store.id || 1,
       name: adminObj.name || store.name || 'Admin Bengkel',
       username: adminObj.username || store.username || 'admin',
+      role: userRole,
       last_login: loginTime
     };
   };
