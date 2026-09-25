@@ -1,62 +1,58 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/auth/(.*)",
-      "dest": "/api/auth.js"
+      "source": "/api/auth/(.*)",
+      "destination": "/api/auth"
     },
     {
-      "src": "/api/auth",
-      "dest": "/api/auth.js"
+      "source": "/api/auth",
+      "destination": "/api/auth"
     },
     {
-      "src": "/api/services/(.*)",
-      "dest": "/api/services.js"
+      "source": "/api/services/(.*)",
+      "destination": "/api/services"
     },
     {
-      "src": "/api/services",
-      "dest": "/api/services.js"
+      "source": "/api/services",
+      "destination": "/api/services"
     },
     {
-      "src": "/api/vehicles/(.*)",
-      "dest": "/api/vehicles.js"
+      "source": "/api/vehicles/(.*)",
+      "destination": "/api/vehicles"
     },
     {
-      "src": "/api/vehicles",
-      "dest": "/api/vehicles.js"
+      "source": "/api/vehicles",
+      "destination": "/api/vehicles"
     },
     {
-      "src": "/api/reports/(.*)",
-      "dest": "/api/reports.js"
+      "source": "/api/reports/(.*)",
+      "destination": "/api/reports"
     },
     {
-      "src": "/api/reports",
-      "dest": "/api/reports.js"
+      "source": "/api/reports",
+      "destination": "/api/reports"
     },
     {
-      "src": "/cs",
-      "dest": "/public/cs/index.html"
+      "source": "/cs",
+      "destination": "/public/cs/index.html"
     },
     {
-      "src": "/cs/result",
-      "dest": "/public/cs/result.html"
+      "source": "/cs/result",
+      "destination": "/public/cs/result.html"
     },
     {
-      "src": "/cs/detail",
-      "dest": "/public/cs/detail.html"
+      "source": "/cs/detail",
+      "destination": "/public/cs/detail.html"
     },
     {
-      "src": "/result",
-      "dest": "/public/cs/result.html"
+      "source": "/result",
+      "destination": "/public/cs/result.html"
     },
     {
-      "src": "/detail",
-      "dest": "/public/cs/detail.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "source": "/detail",
+      "destination": "/public/cs/detail.html"
     }
   ]
 }
